@@ -2,7 +2,7 @@
 <html lang="zh-Hant-TW">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b2236">
 <title>悠游水族箱 · 養魚小遊戲</title>
 <style>
@@ -75,12 +75,24 @@ button{font-family:inherit;cursor:pointer}
 #modal .mb{display:flex;gap:8px;justify-content:center;margin-top:14px}
 #modal .mb button{border:none;border-radius:10px;padding:9px 18px;font-weight:800;background:linear-gradient(#ffd166,#f0a020);color:#4a2c00}
 #modal .mb button.sec2{background:#2a587a;color:#fff}
+
+:root{--bg:#071f29;--panel:#0c303c;--card:#153c47;--accent:#f6d995;--muted:#a3bec5;--text:#eef9f5}
+body{background:radial-gradient(ellipse at 20% 0,#1b4850,#071f29 70%)}
+.topbar{height:88px;display:flex;align-items:center;justify-content:space-between;padding:0 34px;border-bottom:1px solid #ffffff0e}.brand{display:flex;align-items:center;gap:12px;font-size:23px;font-weight:700;letter-spacing:3px}.brandmark{display:grid;place-items:center;width:42px;height:42px;border:1px solid #78b7ac66;border-radius:14px;color:#b4e3cd;font-size:30px;background:#a6e5cf0a}.brand span:not(.brandmark){font-size:11px;letter-spacing:3px;font-weight:500;color:#a7c6bf}.brand small{display:block;font-size:10px;letter-spacing:2px;color:#91adae;font-weight:400;margin-top:4px}.topnote{font-size:12px;color:#aac5c5;display:flex;align-items:center;gap:10px}.topnote i{width:6px;height:6px;border-radius:50%;background:#91d6b2;box-shadow:0 0 12px #91d6b2}.topnote button{margin-left:16px;border:1px solid #ffffff30;color:#c4ded8;background:transparent;border-radius:50%;width:28px;height:28px}
+#app{height:calc(100% - 88px);padding:20px 26px 26px;gap:20px}#tankWrap{border-radius:24px;border:1px solid #9bdfda40;box-shadow:0 20px 70px #0004,inset 0 0 30px #fff1}#tank{background:#15475b}#panel{width:366px;background:#0c2d37cc;border:1px solid #a4d1c51c;border-radius:24px;overflow:hidden}.panel-heading{padding:22px 22px 14px}.panel-heading small,.tank-title>span{font-size:9px;letter-spacing:3px;color:#a7d6c9}.panel-heading h2{font-size:22px;margin:7px 0 5px;letter-spacing:1px}.panel-heading h2 span{float:right;color:#cbe1be}.panel-heading p{font-size:12px;color:var(--muted);margin:0}.tank-title{position:absolute;left:28px;top:86px;pointer-events:none;opacity:.92}.tank-title h1{font-size:clamp(19px,2.3vw,30px);font-weight:500;letter-spacing:2px;margin:10px 0}.tank-title p{font-size:12px;color:#cae9e4;letter-spacing:1px;margin:0}#hud{top:20px;left:20px;right:20px;gap:7px}.chip{background:#082c3d99;border-color:#b3d9d326;font-size:12px;padding:9px 12px;box-shadow:none}.hbtn{background:#c8ddbc;color:#24443d;box-shadow:none;border-color:#e7f4df55;padding:9px 15px;font-size:12px}.hbtn.on{background:#f3bbd1}.tabs{padding:10px 16px 0;gap:8px}.tabs button{font-size:13px;padding:12px 0;border-radius:10px;border-bottom:0}.tabs button.on{background:#bde2ca18;color:#d9edcf;box-shadow:inset 0 0 0 1px #a7d7b833}#tabContent{padding:14px 16px}.sec{font-size:10px;margin:5px 2px 12px}.item{border:1px solid #b6e7d312;background:linear-gradient(120deg,#20465080,#143a4380);padding:13px 10px;margin-bottom:9px;border-radius:14px;transition:border-color .2s,background .2s}.item:hover{border-color:#bad8b94d;background:#234a53}.item img{width:58px;height:44px}.item .nm{font-size:13px}.item .ds{font-size:11px;line-height:1.65;margin-top:4px}.rar{font-size:9px}.buy{background:#eed49b;color:#4b432d;font-size:12px;min-width:60px;padding:9px}.buy:disabled{filter:none;background:#67818a;color:#d8e5e2;opacity:.45}.foot{border-color:#ffffff10;font-size:10px;padding:12px 16px}.foot button{font-size:10px;border-color:#ffffff20;color:#b8c8c5}.bk{background:#173e47}.tank-tools{position:absolute;bottom:20px;left:22px;right:22px;display:flex;align-items:center;justify-content:space-between;gap:8px}.tank-tools>span{font-size:11px;color:#e1eee5;text-shadow:0 1px 5px #000}.tank-tools button{border:1px solid #e4edd84a;border-radius:12px;background:#113940d9;color:#e6ebcc;padding:10px 14px;font-family:inherit;font-size:12px;font-weight:600;backdrop-filter:blur(12px)}.tank-tools button:disabled{opacity:.55;cursor:default}.tank-tools b{margin-left:8px;color:#f6d995}#questCard{margin:0 16px;padding:13px 14px;border-radius:14px;background:linear-gradient(120deg,#c9d69e15,#b8e7da07);border:1px solid #d6e7bd26}#questCard small{color:#d2dcb4;font-size:9px;letter-spacing:2px}.quest-line{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}.quest-line strong{font-size:12px}.quest-line p{font-size:10px;color:var(--muted);margin:4px 0}.quest-line button{font-family:inherit;border:0;border-radius:8px;padding:8px;background:#d9dfb5;color:#2a443a;font-weight:700;font-size:11px;white-space:nowrap}.quest-line button:disabled{background:#8baba52b;color:#abc5bc;cursor:default}#questCard .bar{height:3px;margin:8px 0 0}#combo{position:absolute;bottom:78px;left:24px;color:#ffe4a2;font-size:14px;font-weight:700;text-shadow:0 2px 10px #132f3e;pointer-events:none}#breedBar{max-width:calc(100% - 24px);white-space:normal;font-size:12px;top:67px}#info{top:70px}button:focus-visible{outline:2px solid #ffe3a7;outline-offset:3px}#modal .box{background:linear-gradient(145deg,#214a51,#0b2d39);border-radius:24px;max-width:410px;padding:30px}#modal p{font-size:14px;color:#bcd3cf}#modal .mb button{background:#e8d5a6}#toasts{bottom:95px}.toast{font-size:12px;backdrop-filter:blur(10px)}
+@media(min-width:1500px){#app{max-width:1700px;margin:auto;padding-bottom:30px}#panel{width:390px}}
+@media(max-width:820px){.topbar{height:68px;padding:0 18px}.brand{font-size:19px}.brand span:not(.brandmark){font-size:9px}.topnote{font-size:0;gap:0}.topnote button{font-size:14px}.topnote i{display:none}#app{height:calc(100% - 68px);padding:10px;gap:10px}#tankWrap{height:48%;min-height:235px;border-radius:18px}#panel{width:100%;border-radius:18px}.panel-heading{display:none}#questCard{margin:10px 12px 0;padding:9px 12px}.quest-line{margin-top:3px}.quest-line p{display:block;font-size:10px}#questCard small{font-size:8px}.tabs{padding:6px 12px 0}.tabs button{padding:8px}#tabContent{padding:10px 12px}.tank-title{top:68px;left:20px}.tank-title h1{font-size:19px;margin:7px 0}.tank-title p{font-size:10px}#hud{left:10px;right:10px;top:10px}.chip{padding:7px 9px;font-size:10px}.hbtn{padding:7px 10px;font-size:11px}.tank-tools{bottom:12px;left:14px;right:14px}.tank-tools>span{font-size:10px}.tank-tools button{font-size:11px;padding:8px 10px}.foot{padding:7px 12px}#combo{bottom:58px;font-size:12px}.item{padding:10px}.tank-title>span{font-size:8px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+<header class="topbar"><div class="brand"><span class="brandmark">◈</span><div>悠游 <span>AQUARIUM</span><small>把一點日常，養成一片海。</small></div></div><div class="topnote"><i></i> 你的療癒水世界 <button id="helpBtn" aria-label="遊戲說明">?</button></div></header>
 <div id="app">
   <div id="tankWrap">
-    <canvas id="tank"></canvas>
+    <canvas id="tank" aria-label="水族箱：點空白處餵食，點魚查看狀態"></canvas>
+    <div class="tank-title"><span>YOUR LITTLE OCEAN</span><h1>今天，也一起慢慢長大。</h1><p>餵一口幸福，收藏每一次相遇。</p></div>
+    <div id="combo" aria-live="polite"></div>
+    <div class="tank-tools"><span id="wellness">觀察魚兒的日常</span><button id="gatherBtn">✦ 收取金幣 <b id="pendingTxt">0</b></button></div>
     <div id="hud">
       <div class="chip" id="coinChip">🪙 <b id="coinTxt">0</b></div>
       <div class="chip">🐟 <span id="fishTxt">0/6</span></div>
@@ -93,7 +105,7 @@ button{font-family:inherit;cursor:pointer}
     <div id="toasts"></div>
   </div>
   <div id="panel">
-    <div class="tabs"><button data-tab="shop" class="on">🐠 魚店</button><button data-tab="up">🛠 升級</button><button data-tab="book">📖 圖鑑</button></div>
+    <div class="panel-heading"><small>OCEAN COMPANIONS</small><h2>我的水族館 <span>✧</span></h2><p>從一尾小魚，開始你的海洋故事。</p></div><div id="questCard"></div><div class="tabs"><button data-tab="shop" class="on">🐠 魚店</button><button data-tab="up">🛠 升級</button><button data-tab="book">📖 圖鑑</button></div>
     <div id="tabContent"></div>
     <div class="foot"><span>點擊水中投放飼料 · 點金幣收集</span><button id="resetBtn">重置進度</button></div>
   </div>
@@ -145,12 +157,12 @@ const HUNGER_RATE=.55;
 
 // ---------- 狀態 ----------
 let S;
-function freshState(){return{coins:60,fish:[],up:{cap:0,food:0,feeder:0,deco:[]},found:{},last:Date.now(),tut:0}}
+function freshState(){return{coins:60,fish:[],up:{cap:0,food:0,feeder:0,deco:[]},found:{},last:Date.now(),tut:0,journey:{eaten:0,collected:0,bred:0,claimed:[]}}}
 function load(){
   try{const raw=localStorage.getItem(SAVE_KEY);if(raw){const d=JSON.parse(raw);if(d&&Array.isArray(d.fish))return Object.assign(freshState(),d)}}catch(e){}
   return null;
 }
-function save(){S.last=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify({coins:S.coins,fish:S.fish.map(serial),up:S.up,found:S.found,last:S.last,tut:S.tut}))}catch(e){}}
+function save(){S.last=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify({coins:S.coins,fish:S.fish.map(serial),up:S.up,found:S.found,last:S.last,tut:S.tut,journey:S.journey}))}catch(e){}}
 const KEEP=['id','sp','name','hue','size','growth','full','starve','sick','cd','coinT','seed'];
 function serial(f){const o={};for(const k of KEEP)o[k]=f[k];return o}
 const capacity=()=>6+S.up.cap*3;
@@ -221,7 +233,12 @@ function updateFish(f,dt){
   f.puff=Math.max(0,f.puff-dt*.6);f.chomp=Math.max(0,f.chomp-dt*3);
   if(seek){const mx=f.x+f.dir*half*.8;if(Math.hypot(seek.x-mx,seek.y-f.y)<8+sc*6)eat(f,seek)}
 }
-function eat(f,fd){const lv=FOODS[fd.lv],st=stage(f);foods.splice(foods.indexOf(fd),1);f.full=Math.min(100,f.full+lv.nutr);f.growth+=lv.grow*(f.sick?.3:1);f.chomp=1;if(f.sp==='puffer')f.puff=1;
+let comboCount=0,comboUntil=0;
+function eat(f,fd){
+  S.journey.eaten++;comboCount=T<comboUntil?comboCount+1:1;comboUntil=T+7;
+  if(comboCount%5===0){const bonus=Math.min(10,comboCount);addCoins(bonus);floats.push({x:f.x,y:f.y-28,t:`連擊獎勵 +${bonus}`,life:1.8,c:'#ffe4a2'});}
+  parts.push({x:f.x,y:f.y-12,vx:0,vy:-22,life:1,max:1,type:'heart',r:2});
+const lv=FOODS[fd.lv],st=stage(f);foods.splice(foods.indexOf(fd),1);f.full=Math.min(100,f.full+lv.nutr);f.growth+=lv.grow*(f.sick?.3:1);f.chomp=1;if(f.sp==='puffer')f.puff=1;
   if(f.full>20&&f.sick){f.sick=false;f.starve=0;toast(`😊 ${f.name} 恢復健康了！`)}
   for(let i=0;i<4;i++)parts.push({x:fd.x,y:fd.y,vx:rand(-25,25),vy:rand(-25,10),life:.5,max:.5,type:'crumb',c:lv.col,r:rand(1,2)});
   if(stage(f)!==st)grewUp(f)}
@@ -233,7 +250,7 @@ function update(dt){
   for(const f of S.fish.slice())updateFish(f,dt);
   for(let i=foods.length-1;i>=0;i--){const fd=foods[i];if(fd.y<floorY()+4){fd.y+=fd.vy*dt;fd.x+=Math.sin(T*2+fd.ph)*8*dt}else{fd.life-=dt;if(fd.life<=0)foods.splice(i,1)}}
   for(let i=coins.length-1;i>=0;i--){const c=coins[i];c.t+=dt;
-    if(c.fly){c.ft+=dt*1.6;const p=Math.min(1,c.ft),e=p*p*(3-2*p);c.x=c.sx+(36-c.sx)*e;c.y=c.sy+(24-c.sy)*e-Math.sin(p*Math.PI)*60;if(p>=1){addCoins(c.v);coins.splice(i,1)}continue}
+    if(c.fly){c.ft+=dt*1.6;const p=Math.min(1,c.ft),e=p*p*(3-2*p);c.x=c.sx+(36-c.sx)*e;c.y=c.sy+(24-c.sy)*e-Math.sin(p*Math.PI)*60;if(p>=1){addCoins(c.v);S.journey.collected+=c.v;coins.splice(i,1)}continue}
     if(c.y<floorY()+8){c.y+=c.vy*dt;c.x+=Math.sin(T*1.5+c.ph)*6*dt}else c.ground=true;
     if(c.t>30)collectCoin(c)}
   bubbleT-=dt;if(bubbleT<=0){bubbleT=rand(.12,.3);const bx=W*.1+(S.up.deco.includes('chest')?0:0);bubbles.push({x:bx+rand(-4,4),y:floorY()+4,r:rand(1.5,4.5),vy:rand(35,60),ph:Math.random()*6});
@@ -313,13 +330,15 @@ function pattern(c,f,s,L,Hh,col){
 
 // ---------- 繪製：場景 ----------
 function drawBG(){
-  const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#5cc8ec');g.addColorStop(.35,'#2a95c4');g.addColorStop(.8,'#11577f');g.addColorStop(1,'#0b3b5c');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#59b9be');g.addColorStop(.35,'#278b9b');g.addColorStop(.8,'#15556e');g.addColorStop(1,'#0b3b5c');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
   // 光束
   ctx.save();ctx.globalCompositeOperation='lighter';
   for(const r of rays){const sw=Math.sin(T*r.sp+r.ph)*40,a=.05+.035*Math.sin(T*r.sp*1.7+r.ph);const gr=ctx.createLinearGradient(0,0,0,H*.9);gr.addColorStop(0,`rgba(255,255,230,${a})`);gr.addColorStop(1,'rgba(255,255,230,0)');ctx.fillStyle=gr;ctx.beginPath();ctx.moveTo(r.x+sw,0);ctx.lineTo(r.x+sw+r.w,0);ctx.lineTo(r.x+sw*2+r.w*1.8-60,H*.9);ctx.lineTo(r.x+sw*2-60,H*.9);ctx.closePath();ctx.fill()}
   ctx.restore();
   // 水面波光
   ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=2;ctx.beginPath();for(let x=0;x<=W;x+=10){const y=6+Math.sin(x*.03+T*1.5)*2;x?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke();
+  ctx.save();ctx.strokeStyle='rgba(178,245,224,.045)';ctx.lineWidth=1.3;
+  for(let row=0;row<7;row++){ctx.beginPath();for(let x=0;x<=W;x+=12){const y=H*.35+row*42+Math.sin(x*.018+T*.32+row)*10; x?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke();}ctx.restore();
   // 遠景
   ctx.fillStyle='rgba(10,50,80,.35)';ctx.beginPath();ctx.moveTo(0,floorY());for(let x=0;x<=W;x+=40)ctx.lineTo(x,floorY()-30-Math.sin(x*.012)*25-Math.sin(x*.031)*10);ctx.lineTo(W,floorY());ctx.fill();
 }
@@ -439,7 +458,7 @@ function breed(a,b){
   if(Math.random()<mut){mutated=true;if(Math.random()<.25+maxR*.12)sp=pick(['koi','dragon','rainbow']);else sp='betta';hue=(SPECIES[sp].hue+rand(-12,12)+360)%360}
   else{sp=Math.random()<.5?a.sp:b.sp;hue=(mixHue(a.hue,b.hue,rand(.3,.7))+rand(-14,14)+360)%360}
   const child=makeFish(sp,{hue,size:clamp((a.size+b.size)/2+rand(-.07,.07),.8,1.25),full:85});
-  addRuntime(child,(a.x+b.x)/2,(a.y+b.y)/2);S.fish.push(child);a.cd=b.cd=BREED_CD;
+  addRuntime(child,(a.x+b.x)/2,(a.y+b.y)/2);S.fish.push(child);S.journey.bred++;a.cd=b.cd=BREED_CD;
   for(let i=0;i<16;i++)parts.push({x:child.x,y:child.y,vx:rand(-50,50),vy:rand(-60,0),life:1.4,max:1.4,type:'heart',r:rand(2,4)});
   const isNew=discover(sp);const s=SPECIES[sp];
   if(isNew||mutated){showModal(`<h2>${mutated?'✨ 突變誕生！':'🐣 新生命誕生！'}</h2><img src="${preview(sp,hue)}"><p><b>${esc(child.name)}</b>（${s.name}）<span class="rar r${s.r}">${RARITY[s.r]}</span></p>${isNew?'<p>📖 圖鑑新增了一個品種！</p>':''}<p style="font-size:13px">父母：${esc(a.name)} × ${esc(b.name)}</p>`,[['太棒了！']])}
@@ -459,7 +478,26 @@ function preview(sp,hue,sil){const key=sp+'|'+Math.round(hue??-1)+'|'+(sil?1:0);
 let tab='shop',uiSig='';
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));refreshUI(true)});
 function uiSignature(){return tab+'|'+Math.floor(S.coins)+'|'+S.fish.length+'|'+JSON.stringify(S.up)+'|'+Object.keys(S.found).length+'|'+S.fish.map(f=>f.sp).join()}
+const QUESTS=[
+ {title:'第一口幸福',desc:'讓魚兒吃下 5 顆飼料',target:5,reward:25,value:()=>S.journey.eaten},
+ {title:'水中的小金庫',desc:'收集魚兒掉落的 10 枚金幣',target:10,reward:40,value:()=>S.journey.collected},
+ {title:'熱鬧的新鄰居',desc:'讓魚缸同時住進 4 條魚',target:4,reward:35,value:()=>S.fish.length},
+ {title:'心動的新生命',desc:'完成一次魚兒繁殖',target:1,reward:70,value:()=>S.journey.bred},
+ {title:'海洋收藏家',desc:'發現 5 種不同魚種',target:5,reward:100,value:()=>Object.keys(S.found).length}
+];
+function refreshJourney(){
+ const j=S.journey,q=QUESTS.find((q,i)=>!j.claimed.includes(i)),i=QUESTS.indexOf(q);
+ const sig=q?`${i}|${Math.min(q.target,q.value())}`:'complete',el=$('#questCard');
+ if(el.dataset.sig!==sig){el.dataset.sig=sig;el.innerHTML=q?`<small>小小成就 · ${i+1} / ${QUESTS.length}</small><div class="quest-line"><div><strong>${q.title}</strong><p>${q.desc} · ${Math.min(q.target,q.value())}/${q.target}</p></div><button data-claim="${i}" ${q.value()<q.target?'disabled':''}>${q.value()>=q.target?'領取':'目標'} +${q.reward} 🪙</button></div><div class="bar"><i style="width:${Math.min(100,q.value()/q.target*100)}%;background:#c8dfb1"></i></div>`:'<small>JOURNEY COMPLETE</small><div class="quest-line"><strong>✧ 新手旅程完成，繼續探索傳說魚種！</strong></div>';}
+ const pending=coins.filter(c=>!c.fly).reduce((n,c)=>n+c.v,0);$('#pendingTxt').textContent=pending;$('#gatherBtn').disabled=!pending;
+ const hungry=S.fish.filter(f=>f.full<30).length;$('#wellness').textContent=hungry?`🍽 ${hungry} 條魚等你開飯`:`♡ ${S.fish.length} 位小夥伴，悠游自在`;
+ $('#combo').textContent=T<comboUntil&&comboCount>1?`✦ ${comboCount} 連續餵食${comboCount<5?' · 5 連擊獲得獎勵':' · 繼續餵食累積獎勵'}`:'';
+}
+$('#questCard').onclick=e=>{const b=e.target.closest('[data-claim]');if(!b)return;const i=Number(b.dataset.claim),q=QUESTS[i];if(!q||S.journey.claimed.includes(i)||q.value()<q.target)return;S.journey.claimed.push(i);addCoins(q.reward);toast(`✦ ${q.title} 完成！獲得 ${q.reward} 金幣`,'gold');save();refreshUI(true)};
+$('#gatherBtn').onclick=()=>{const available=coins.filter(c=>!c.fly);available.forEach(collectCoin);if(available.length)toast('✦ 金幣正在游向你的口袋！')};
+$('#helpBtn').onclick=()=>showModal('<h2>你的小小海洋指南</h2><p>點水中空白處投放飼料，點魚兒查看飽食度、成長與繁殖狀態。</p><p>7 秒內連續吃到飼料就能累積連擊，每 5 連擊送出金幣獎勵。</p><p>完成小小成就、收取金幣，再讓兩條成年魚配對，遇見新的魚種。</p>',[['回到水族箱']]);
 function refreshUI(force){
+  refreshJourney();
   $('#coinTxt').textContent=fmt(S.coins);$('#fishTxt').textContent=`${S.fish.length}/${capacity()}`;$('#rateTxt').textContent=(ratePerSec()*60).toFixed(1);
   const sig=uiSignature();if(!force&&sig===uiSig)return;uiSig=sig;
   const full=S.fish.length>=capacity();let h='';
@@ -507,13 +545,13 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){hiddenAt=D
 window.addEventListener('pagehide',save);
 
 // ---------- 啟動 ----------
-function newGame(){S=freshState();foods=[];coins=[];closeInfo();setBreed(false);
+function newGame(){S=freshState();foods=[];coins=[];parts=[];floats=[];comboCount=0;comboUntil=0;feederT=0;$('#questCard').dataset.sig='';closeInfo();setBreed(false);
   for(const k of['goldfish','goldfish','clown']){const f=addRuntime(makeFish(k));S.fish.push(f);discover(k)}
   S.fish[0].growth=G1+5;S.fish[1].growth=G1+5;save();refreshUI(true);
   setTimeout(()=>showModal('<h2>🐠 悠游水族箱</h2><p>點擊水中投放飼料，餵飽魚兒讓牠們長大。</p><p>成魚會掉落金幣 🪙，點擊收集或等牠自動入帳。</p><p>用金幣買新魚、升級魚缸，再選兩條成魚 💕 繁殖，收集稀有與傳說魚種吧！</p>',[['開始養魚']]),50)}
 resize();
 const saved=load();
-if(saved){S=saved;S.fish.forEach(f=>{addRuntime(f);f.size=f.size||1});refreshUI(true);offline((Date.now()-(S.last||Date.now()))/1000)}else newGame();
+if(saved){S=saved;S.journey=Object.assign({eaten:0,collected:0,bred:0,claimed:[]},S.journey);S.fish.forEach(f=>{addRuntime(f);f.size=f.size||1});refreshUI(true);offline((Date.now()-(S.last||Date.now()))/1000)}else newGame();
 window.addEventListener('resize',resize);
 let last=performance.now(),speed=1;
 function loop(now){const dt=Math.min(.05,(now-last)/1000)*speed;last=now;update(dt);render();uiT+=dt;if(uiT>.25){uiT=0;refreshUI();updateInfo()}requestAnimationFrame(loop)}

@@ -286,7 +286,21 @@ function validateConfig(cfg) {
 
     str(`${p}.name`, d.name, 20); str(`${p}.icon`, d.icon, 8); num(`${p}.cost`, d.cost, 0, 1e12, true);
     num(`${p}.coinBonus`, d.coinBonus, 0, 10); num(`${p}.mutationBonus`, d.mutationBonus, 0, 1); str(`${p}.desc`, d.desc, 60, true);
-    if (d.draw != null) str(`${p}.draw`, d.draw, 20); optNum(`${p}.x`, d.x, 0, 1);
+    if (d.draw != null) str(`${p}.draw`, d.draw, 40); optNum(`${p}.x`, d.x, 0, 1);
+    if (d.series != null) str(`${p}.series`, d.series, 24);
+  }
+  if (cfg.decoSeries != null && obj('decoSeries', cfg.decoSeries)) {
+    for (const [sid, meta] of Object.entries(cfg.decoSeries)) {
+      const p = `decoSeries.${sid}`;
+      if (!KEY_RE.test(sid)) err(p, '系列代號格式錯誤');
+      if (!obj(p, meta)) continue;
+      str(`${p}.name`, meta.name, 24);
+      str(`${p}.bonusLabel`, meta.bonusLabel, 40, true);
+      str(`${p}.bonusDesc`, meta.bonusDesc, 120, true);
+      if (arr(`${p}.keys`, meta.keys, 1, 20)) {
+        for (const k of meta.keys) if (!cfg.decorations?.[k]) err(`${p}.keys`, `找不到造景「${k}」`);
+      }
+    }
   }
   if (obj('breeding', cfg.breeding)) {
     const b = cfg.breeding;

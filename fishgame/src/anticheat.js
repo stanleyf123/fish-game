@@ -130,6 +130,8 @@ function validateStructure(cfg, save) {
   errs.push(...validateLegacyDeco(cfg, save));
   const { validateDecoS } = require('./deco-scale');
   errs.push(...validateDecoS(cfg, save));
+  const { validateDecoSeries } = require('./deco-series');
+  errs.push(...validateDecoSeries(cfg, save));
   // 造景
   const A = AQ(cfg), PL = (A && A.plants) || {}, GE = (A && A.gear) || {}, R = (A && A.rules) || {};
   if (save.plants != null) {

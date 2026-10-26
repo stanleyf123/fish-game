@@ -1,0 +1,452 @@
+[
+ {
+  "key": "ds_sunken_temple",
+  "name": "古神殿",
+  "series": "sunken",
+  "seriesName": "沉沒古城",
+  "w": 586,
+  "h": 578,
+  "centerpiece": true
+ },
+ {
+  "key": "ds_sunken_column",
+  "name": "青苔石柱",
+  "series": "sunken",
+  "seriesName": "沉沒古城",
+  "w": 308,
+  "h": 562,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_sunken_fallen_column",
+  "name": "倒塌石柱",
+  "series": "sunken",
+  "seriesName": "沉沒古城",
+  "w": 458,
+  "h": 448,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_sunken_arch",
+  "name": "古城拱門",
+  "series": "sunken",
+  "seriesName": "沉沒古城",
+  "w": 478,
+  "h": 558,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_sunken_king_head",
+  "name": "國王石像",
+  "series": "sunken",
+  "seriesName": "沉沒古城",
+  "w": 414,
+  "h": 540,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_sunken_lion",
+  "name": "守護石獅",
+  "series": "sunken",
+  "seriesName": "沉沒古城",
+  "w": 370,
+  "h": 508,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_sunken_stairs",
+  "name": "古石階",
+  "series": "sunken",
+  "seriesName": "沉沒古城",
+  "w": 492,
+  "h": 416,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_sunken_amphora",
+  "name": "古陶罐",
+  "series": "sunken",
+  "seriesName": "沉沒古城",
+  "w": 318,
+  "h": 448,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_sunken_tablet",
+  "name": "漩渦石碑",
+  "series": "sunken",
+  "seriesName": "沉沒古城",
+  "w": 408,
+  "h": 418,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_sunken_rubble",
+  "name": "碎石堆",
+  "series": "sunken",
+  "seriesName": "沉沒古城",
+  "w": 486,
+  "h": 394,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_pirate_ship",
+  "name": "海盜沉船",
+  "series": "pirate",
+  "seriesName": "海盜沉船",
+  "w": 472,
+  "h": 506,
+  "centerpiece": true
+ },
+ {
+  "key": "ds_pirate_chest",
+  "name": "黃金寶箱",
+  "series": "pirate",
+  "seriesName": "海盜沉船",
+  "w": 428,
+  "h": 440,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_pirate_anchor",
+  "name": "生鏽船錨",
+  "series": "pirate",
+  "seriesName": "海盜沉船",
+  "w": 328,
+  "h": 456,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_pirate_cannon",
+  "name": "古炮",
+  "series": "pirate",
+  "seriesName": "海盜沉船",
+  "w": 480,
+  "h": 354,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_pirate_barrels",
+  "name": "木桶堆",
+  "series": "pirate",
+  "seriesName": "海盜沉船",
+  "w": 410,
+  "h": 458,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_pirate_wheel",
+  "name": "船舵",
+  "series": "pirate",
+  "seriesName": "海盜沉船",
+  "w": 432,
+  "h": 480,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_pirate_flag",
+  "name": "海盜旗",
+  "series": "pirate",
+  "seriesName": "海盜沉船",
+  "w": 412,
+  "h": 462,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_pirate_lantern",
+  "name": "船長提燈",
+  "series": "pirate",
+  "seriesName": "海盜沉船",
+  "w": 280,
+  "h": 474,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_pirate_coins",
+  "name": "金幣堆",
+  "series": "pirate",
+  "seriesName": "海盜沉船",
+  "w": 466,
+  "h": 366,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_pirate_rowboat",
+  "name": "小划艇",
+  "series": "pirate",
+  "seriesName": "海盜沉船",
+  "w": 456,
+  "h": 336,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_zen_torii",
+  "name": "鳥居",
+  "series": "zen",
+  "seriesName": "日式庭園",
+  "w": 492,
+  "h": 446,
+  "centerpiece": true
+ },
+ {
+  "key": "ds_zen_lantern",
+  "name": "石燈籠",
+  "series": "zen",
+  "seriesName": "日式庭園",
+  "w": 276,
+  "h": 490,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_zen_bridge",
+  "name": "紅木橋",
+  "series": "zen",
+  "seriesName": "日式庭園",
+  "w": 518,
+  "h": 288,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_zen_pagoda",
+  "name": "五重塔",
+  "series": "zen",
+  "seriesName": "日式庭園",
+  "w": 354,
+  "h": 588,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_zen_bonsai",
+  "name": "松樹盆景",
+  "series": "zen",
+  "seriesName": "日式庭園",
+  "w": 448,
+  "h": 502,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_zen_stones",
+  "name": "踏腳石",
+  "series": "zen",
+  "seriesName": "日式庭園",
+  "w": 412,
+  "h": 386,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_zen_shishiodoshi",
+  "name": "竹筒流水",
+  "series": "zen",
+  "seriesName": "日式庭園",
+  "w": 464,
+  "h": 468,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_zen_jizo",
+  "name": "地藏石像",
+  "series": "zen",
+  "seriesName": "日式庭園",
+  "w": 280,
+  "h": 458,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_zen_lucky_cat",
+  "name": "招財貓石像",
+  "series": "zen",
+  "seriesName": "日式庭園",
+  "w": 334,
+  "h": 472,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_zen_zen_rock",
+  "name": "禪意苔石",
+  "series": "zen",
+  "seriesName": "日式庭園",
+  "w": 478,
+  "h": 388,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_candy_house",
+  "name": "薑餅屋",
+  "series": "candy",
+  "seriesName": "糖果樂園",
+  "w": 522,
+  "h": 538,
+  "centerpiece": true
+ },
+ {
+  "key": "ds_candy_lollipop",
+  "name": "漩渦棒棒糖",
+  "series": "candy",
+  "seriesName": "糖果樂園",
+  "w": 338,
+  "h": 530,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_candy_cane",
+  "name": "拐杖糖",
+  "series": "candy",
+  "seriesName": "糖果樂園",
+  "w": 306,
+  "h": 508,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_candy_macaron",
+  "name": "馬卡龍塔",
+  "series": "candy",
+  "seriesName": "糖果樂園",
+  "w": 434,
+  "h": 480,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_candy_gummy",
+  "name": "軟糖熊",
+  "series": "candy",
+  "seriesName": "糖果樂園",
+  "w": 370,
+  "h": 512,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_candy_cupcake",
+  "name": "杯子蛋糕",
+  "series": "candy",
+  "seriesName": "糖果樂園",
+  "w": 352,
+  "h": 512,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_candy_donut",
+  "name": "甜甜圈",
+  "series": "candy",
+  "seriesName": "糖果樂園",
+  "w": 436,
+  "h": 388,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_candy_jellybean",
+  "name": "雷根糖堆",
+  "series": "candy",
+  "seriesName": "糖果樂園",
+  "w": 452,
+  "h": 402,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_candy_chocolate",
+  "name": "巧克力磚",
+  "series": "candy",
+  "seriesName": "糖果樂園",
+  "w": 448,
+  "h": 376,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_candy_icecream",
+  "name": "冰淇淋甜筒",
+  "series": "candy",
+  "seriesName": "糖果樂園",
+  "w": 380,
+  "h": 550,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_crystal_cave",
+  "name": "水晶洞穴",
+  "series": "crystal",
+  "seriesName": "海底水晶洞",
+  "w": 552,
+  "h": 544,
+  "centerpiece": true
+ },
+ {
+  "key": "ds_crystal_amethyst",
+  "name": "紫晶簇",
+  "series": "crystal",
+  "seriesName": "海底水晶洞",
+  "w": 346,
+  "h": 510,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_crystal_spire",
+  "name": "藍晶尖塔",
+  "series": "crystal",
+  "seriesName": "海底水晶洞",
+  "w": 344,
+  "h": 516,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_crystal_geode",
+  "name": "晶洞石",
+  "series": "crystal",
+  "seriesName": "海底水晶洞",
+  "w": 430,
+  "h": 496,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_crystal_mushroom",
+  "name": "發光晶菇",
+  "series": "crystal",
+  "seriesName": "海底水晶洞",
+  "w": 366,
+  "h": 450,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_crystal_teal",
+  "name": "青晶簇",
+  "series": "crystal",
+  "seriesName": "海底水晶洞",
+  "w": 364,
+  "h": 436,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_crystal_arch",
+  "name": "水晶拱門",
+  "series": "crystal",
+  "seriesName": "海底水晶洞",
+  "w": 450,
+  "h": 478,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_crystal_orb",
+  "name": "發光寶珠",
+  "series": "crystal",
+  "seriesName": "海底水晶洞",
+  "w": 384,
+  "h": 426,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_crystal_gems",
+  "name": "散落寶石",
+  "series": "crystal",
+  "seriesName": "海底水晶洞",
+  "w": 396,
+  "h": 352,
+  "centerpiece": false
+ },
+ {
+  "key": "ds_crystal_vein",
+  "name": "晶脈岩",
+  "series": "crystal",
+  "seriesName": "海底水晶洞",
+  "w": 396,
+  "h": 384,
+  "centerpiece": false
+ }
+]

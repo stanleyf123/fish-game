@@ -25,6 +25,7 @@ var stop=function(e){var t=e.target;if(t&&t.closest&&t.closest('#ftHud a,#ftHud 
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#0b2236">
 <title>悠游水族箱 · 養魚小遊戲</title>
+<script src="public/deco-series-client.js?v=1"></script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%90%A0%3C/text%3E%3C/svg%3E">
 <style>
 :root{--bg:#0b2236;--panel:#10314a;--card:#164463;--accent:#ffd166;--text:#eaf6ff;--muted:#8fb3c9;--pink:#ff7eb6;--ok:#5ee6a8}
@@ -2114,7 +2115,7 @@ html body #modal #modalBox:has(.tank-manage-nav) .my-fish-tools select{box-sizin
       bullies *= 1 - clamp(ctx.cover || 0, 0, .9); add += ctx.extraStress || 0;
       if (ctx.off) { add += bullies * S.bulliedPerHourPerLevel; f.finDmg = clamp((f.finDmg || 0) + (bullies ? C.offline.nipFinPerHour * hours * (i.longFins ? C.aggression.longFinMult : 1) : 0), 0, 1); }
       f.stress = clamp((f.stress || 0) + (add - S.decayPerHour) * hours, 0, 100);
-      if ((f.stress || 0) < S.finHealMaxStress && ctx.waterOk !== false) f.finDmg = Math.max(0, (f.finDmg || 0) - S.finHealPerHour * hours);
+      if ((f.stress || 0) < S.finHealMaxStress && ctx.waterOk !== false) { const fh = S.finHealPerHour * (window.DECO_SERIES?.finHealMult?.() || 1); f.finDmg = Math.max(0, (f.finDmg || 0) - fh * hours); }
       let loss = f.stress > S.harmAbove ? S.lossPerHourAt100 * (f.stress - S.harmAbove) / (100 - S.harmAbove) : 0;
       if (ctx.off && bullies) loss += C.offline.nipLossPerHourPerLevel * bullies * (i.longFins ? C.aggression.longFinMult : 1);
       return { loss, stress: f.stress };
@@ -3073,11 +3074,12 @@ function applyConfig(cfg){
   FOODS=CFG.food.tiers.map(t=>({n:t.name,nutr:t.nutrition,grow:t.growth,col:t.color,cnt:t.count,cost:t.cost}));FOOD_COST=FOODS.slice(1).map(t=>t.cost);
   CAP_COST=CFG.capacity.upgrades.map(u=>u.cost);
   FEEDER=CFG.feeder.tiers.map(t=>({n:t.name,iv:t.intervalHours}));FEEDER_COST=CFG.feeder.tiers.slice(1).map(t=>t.cost);
-  DECOS={};for(const[k,d]of Object.entries(CFG.decorations))DECOS[k]={n:d.name,ic:d.icon,cost:d.cost,priceGems:d.priceGems||0,bonus:d.coinBonus||0,mut:d.mutationBonus||0,desc:d.desc,draw:d.draw,x:d.x??.5,img:['wreck','chest','coral','crystal'].includes(d.draw)?'aquascape-v4/'+d.draw+'-v4.webp':null};/*EXPORT3-MERGE*/try{if(window.EXPORT3)EXPORT3.merge()}catch(e){}
+  DECOS={};for(const[k,d]of Object.entries(CFG.decorations))DECOS[k]={n:d.name,ic:d.icon,cost:d.cost,priceGems:d.priceGems||0,bonus:d.coinBonus||0,mut:d.mutationBonus||0,desc:d.desc,draw:d.draw,x:d.x??.5,series:d.series||null,centerpiece:!!d.centerpiece,img:['wreck','chest','coral','crystal'].includes(d.draw)?'aquascape-v4/'+d.draw+'-v4.webp':null};/*EXPORT3-MERGE*/try{if(window.EXPORT3)EXPORT3.merge()}catch(e){}/*DECO-SERIES*/try{if(window.DECO_SERIES)DECO_SERIES.merge()}catch(e){}
   BREED_CD=CFG.breeding.cooldownSec;OFFLINE_CAP=CFG.offline.capSec;OFFLINE_RATE=CFG.offline.rate;SAVE_KEY=CFG.saveKey;HUNGER_RATE=CFG.hunger.decayPerHour;NAMES=CFG.names;
   for(const k in prevCache)delete prevCache[k];
   const st=document.createElement('style');st.id='rarCss';st.textContent=CFG.rarity.map((r,i)=>`.r${i}{color:${r.color}}`).join('');document.getElementById('rarCss')?.remove();document.head.appendChild(st);
   if(S)sanitize(S);
+  try{window.__ffDeco=()=>({CFG,DECOS,S,ART,esc,fmt,DecoInventoryUI,decoMult,decoShopDesc,DECO_BOX,LAY})}catch(e){}
 }
 const prevCache={};
 
@@ -3289,7 +3291,7 @@ function careTick(sec,off){
   const fv=FEEDER[S.up.feeder].iv;if(fv){Wt.feederAccH+=h;while(Wt.feederAccH>=fv){Wt.feederAccH-=fv;autoFeed(off)}}
   const HG=C.hunger,HE=C.health;
   /*SICKTUNE-GRACE 只有新開的一局（存檔有 born）在 newPlayerGraceHours 內，髒水掉血乘 newPlayerDirtLossMult；舊存檔沒有 born → 倍數 1。離線補算用 simNow*/const sgNow=off?simNow:Date.now(),sgMs=(+HE.newPlayerGraceHours||0)*36e5,sgAge=S.born>0?sgNow-S.born:-1,sgMult=(sgMs>0&&sgAge>=0&&sgAge<sgMs)?Math.min(1,Math.max(0,+(HE.newPlayerDirtLossMult??1))):1;
-  const dirtLoss=Math.max(0,Wt.dirt-HE.healthyDirtBelow)/(100-HE.healthyDirtBelow)*HE.dirtyLossPerHourAt100*(AQ?AQ.diseaseMult(S):1)*(isFinite(sgMult)?sgMult:1);
+  const dirtLoss=Math.max(0,Wt.dirt-HE.healthyDirtBelow)/(100-HE.healthyDirtBelow)*HE.dirtyLossPerHourAt100*(AQ?AQ.diseaseMult(S):1)*(isFinite(sgMult)?sgMult:1)*(window.DECO_SERIES?.sickMult?.()||1);
   const cycLoss=(1-cf)*C.cycling.riskPerHour*Math.min(1.5,B/Math.max(1,capacity()));
   const mxUsed=MX?MX.usedSpace(S.fish):0;if(AQ)aqCache.o2=AQ.o2State(S,MX?mxUsed:S.fish.length,capacity());const aqCov=AQ?AQ.cover(S):0;
   for(const f of S.fish.slice()){const s=SPECIES[f.sp],st0=stage(f),wasSick=f.sick;
@@ -3640,7 +3642,7 @@ function eat(f,fd){const lv=FOODS[fd.lv],st=stage(f);foods.splice(foods.indexOf(
 function grewUpOld(f){const st=stage(f);if(st===2){S.adult=S.adult||{};S.adult[f.sp]=1}toast(`🎉 ${f.name} 長成${STAGES[st]}了！${st===1?'開始會掉金幣囉':'金幣產量提升！'}`,'gold');for(let i=0;i<14;i++)parts.push({x:f.x,y:f.y,vx:rand(-60,60),vy:rand(-60,40),life:1,max:1,type:'star',r:rand(2,4)})}
 // ---------- 成長進化（幼魚 → 亞成 → 成年）：寶可夢式的進化演出 ----------
 const EVO=()=>(CFG.mechanics&&CFG.mechanics.evolution)||{};
-const careGrowth=f=>(MX?MX.growthMult(f,{dirt:S.water.dirt}):1)*(AQ?aqMods(f).growth:1);
+const careGrowth=f=>(MX?MX.growthMult(f,{dirt:S.water.dirt}):1)*(AQ?aqMods(f).growth:1)*(window.DECO_SERIES?.growthMult?.()||1);
 function grewUp(f,from){const to=stage(f);if(to<=from)return;if(EVO().enabled===false||!(EVO().animSec>0))return grewUpOld(f);startEvo(f,from,to)}
 function startEvo(f,from,to){if(f.evo||!S.fish.includes(f))return;f.evo={t:0,dur:EVO().animSec||3.4,from,to};f.evS=from;delete f.evoFrom;f.vx*=.3;f.vy*=.3;Sound.play('evolve');if(selected===f)updateInfo(true)}
 function evoStep(f,dt){const e=f.evo;e.t+=dt;const p=e.t/e.dur;
@@ -3765,7 +3767,7 @@ function decoPixelHit(k,px,py){
  if(['wreck','chest','coral','crystal'].includes(D.draw)){
   im=legacyDecorImage(D.draw==='chest'&&chestOpen>6?'chest-open':D.draw);if(!im)return true;
   const spec={wreck:[156,112,0],chest:[56,56,0],coral:[86,86,14],crystal:[56,60,0]}[D.draw];w=spec[0];h=Math.min(spec[1],w*im.naturalHeight/im.naturalWidth);ax=w/2-spec[2];ay=h;
- }else{const spec=window.EXPORT3&&EXPORT3.spec[k];if(!spec)return true;im=EXPORT3.img(spec.sprite);if(!im)return true;w=spec.dw;h=spec.dh;ax=spec.anchor.x*w;ay=spec.anchor.y*h;}
+ }else{const hit=window.DECO_SERIES&&DECO_SERIES.pixelHitSpec(k,dx,dy);if(hit){im=hit.im;if(!im)return true;const u=hit.u,v=hit.v;if(u<0||u>=1||v<0||v>=1)return false;let mask=decoAlphaMasks.get(im);if(!mask){try{const cv=document.createElement('canvas');cv.width=128;cv.height=Math.max(1,Math.round(128*im.naturalHeight/im.naturalWidth));const c=cv.getContext('2d',{willReadFrequently:true});c.drawImage(im,0,0,cv.width,cv.height);mask={w:cv.width,h:cv.height,data:c.getImageData(0,0,cv.width,cv.height).data};decoAlphaMasks.set(im,mask)}catch(e){return true}}return mask.data[(Math.min(mask.h-1,Math.floor(v*mask.h))*mask.w+Math.min(mask.w-1,Math.floor(u*mask.w)))*4+3]>32}const spec=window.EXPORT3&&EXPORT3.spec[k];if(!spec)return true;im=EXPORT3.img(spec.sprite);if(!im)return true;w=spec.dw;h=spec.dh;ax=spec.anchor.x*w;ay=spec.anchor.y*h;}
  const u=(dx+ax)/w,v=(dy+ay)/h;if(u<0||u>=1||v<0||v>=1)return false;
  let mask=decoAlphaMasks.get(im);if(!mask){try{const cv=document.createElement('canvas');cv.width=128;cv.height=Math.max(1,Math.round(128*im.naturalHeight/im.naturalWidth));const c=cv.getContext('2d',{willReadFrequently:true});c.drawImage(im,0,0,cv.width,cv.height);mask={w:cv.width,h:cv.height,data:c.getImageData(0,0,cv.width,cv.height).data};decoAlphaMasks.set(im,mask)}catch(e){return true}}
  return mask.data[(Math.min(mask.h-1,Math.floor(v*mask.h))*mask.w+Math.min(mask.w-1,Math.floor(u*mask.w)))*4+3]>32;
@@ -4453,6 +4455,7 @@ function drawDecos(){
   /*MOVDECO-SEL 裝扮模式：選取中的造景畫虛線框＋左右箭頭*/if(aqEdit&&aqDeco===k&&!(S.up.moss?.[k]?.host)&&!(aqMossDrag&&aqMossDrag.k===k)){const b=decoScaleBox(k);ctx.save();ctx.strokeStyle='rgba(255,240,170,.95)';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();ctx.roundRect?ctx.roundRect(x+b[0]-6,fy-b[2]-6,b[1]-b[0]+12,b[2]+10,10):ctx.rect(x+b[0]-6,fy-b[2]-6,b[1]-b[0]+12,b[2]+10);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(255,240,170,.95)';ctx.font='bold 18px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('◀',x+b[0]-16,fy-b[2]/2);ctx.fillText('▶',x+b[1]+16,fy-b[2]/2);ctx.restore()}
   if(['wreck','chest','crystal','coral'].includes(D.draw)){const box=DECO_BOX[D.draw];ctx.save();ctx.fillStyle='rgba(10,36,40,.18)';ctx.beginPath();ctx.ellipse(x+(box[0]+box[1])*.3,fy+3,(box[1]-box[0])*.48,5,0,0,Math.PI*2);ctx.fill();ctx.restore()}
   if(drawLegacyDecor(ctx,D.draw,x,fy,T,chestOpen)){}
+  else if(window.DECO_SERIES&&DECO_SERIES.draw(ctx,k,D,x,fy)){}
   else if(window.EXPORT3&&EXPORT3.draw(ctx,k,D,x,fy)){/*EXPORT3-DRAW*/}else{ctx.font='34px sans-serif';ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillText(D.ic||'⭐',x,fy-2)}ctx.restore();if(isHardscape(k))aqDrawHostedPlants(k)}
   // 氣泡石
   {const xx=W*.1,yy=floorY()+8,stone=ctx.createLinearGradient(0,yy-7,0,yy+5);stone.addColorStop(0,'#b4c4bd');stone.addColorStop(.5,'#829792');stone.addColorStop(1,'#4b6b6d');ctx.fillStyle='rgba(21,51,49,.2)';ctx.beginPath();ctx.ellipse(xx,yy+3,14,4,0,0,Math.PI*2);ctx.fill();ctx.fillStyle=stone;ctx.beginPath();ctx.ellipse(xx,yy,12,6,0,0,Math.PI*2);ctx.fill();for(let i=0;i<12;i++){ctx.fillStyle=i%2?'#5f7e79':'#bdcec3';ctx.beginPath();ctx.arc(xx-8+(i*7%17),yy-3+(i*3%6),.7,0,Math.PI*2);ctx.fill()}}
@@ -4771,8 +4774,8 @@ window.DecoInventoryUI=(()=>{
  function bulkGold(){let n=0;for(const id of selected){const st=current().find(x=>x.id===id);n+=value(st?.ids||group(id))}return n}
  function multiTools(stored,list){if(!multi)return `<div class="fs-multi-tools"><div class="fs-multi-heading"><b>批次管理</b><button type="button" data-di-multi>☑ 多選</button></div></div>`;const n=selected.size,gold=bulkGold(),actBtn=stored?`<button type="button" class="fs-primary" data-di-bulk-place ${n?'':'disabled'}>放回所選</button>`:`<button type="button" class="fs-primary" data-di-bulk-store ${n?'':'disabled'}>收起所選</button>`;return `<section class="fs-multi-tools" aria-label="造景多選"><div class="fs-multi-heading"><b data-di-selection-count>已選 ${n} 組</b><button type="button" data-di-multi>取消多選</button></div><div class="fs-bulk-buttons"><button type="button" data-di-all ${list.length?'':'disabled'}>全選</button><button type="button" data-di-clear>清除</button>${actBtn}<button type="button" class="di-sell" data-di-bulk-sell ${n?'':'disabled'}>出售所選</button></div><small>可得 🪙${fmt(gold)}（出售不退鑽石）</small></section>`}
  function rowHtml(k,stored){const d=DECOS[k]||{},bundle=stored?current().find(b=>b.id===k):null,ids=bundle?.ids||group(k),m=S.up.moss?.[k],picked=selected.has(k);const chk=multi?`<label class="di-check"><input type="checkbox" data-di-pick="${esc(k)}" ${picked?'checked':''} aria-label="選擇${esc(d.n||k)}"></label>`:'';const acts=stored?`<button type="button" data-di-place="${esc(k)}">放回魚缸</button>`:`<button data-tank-deco-focus="${esc(k)}">調整位置</button><button type="button" data-di-store="${esc(k)}">收起來</button>`;return `<section class="my-fish-row${picked?' di-picked':''}">${chk}${d.img?`<img src="${ART.base+d.img}" alt="${esc(d.n||k)}">`:''}<div><b>${esc(d.n||k)}</b><small>${stored?'已收起':m?.host?'附著於「'+esc(DECOS[m.host]?.n||m.host)+'」':'魚缸中'}</small>${ids.length>1?`<small>組合共 ${ids.length} 件：${names(ids)}</small>`:''}</div><div class="my-fish-actions">${multi?'':acts}<button type="button" class="di-sell" data-di-sell="${esc(k)}" ${multi?'hidden':''}>出售 🪙${fmt(value(ids))}</button></div></section>`}
- function render(){pruneSel();const stored=pane==='stored',active=S.up.deco||[],list=stored?current().map(b=>b.id):active;showModal(`<h2>🪸 我的造景</h2>${tankManageNav('deco')}<div class="fish-location-tabs"><button data-di-pane="active" aria-pressed="${!stored}">魚缸中 ${active.length} 件</button><button data-di-pane="stored" aria-pressed="${stored}">已收起 ${current().reduce((n,b)=>n+b.ids.length,0)} 件</button></div><p class="fs-note">收起後保留物品，放回不需付費；收起的造景不提供魚缸加成。附著造景水草會一起收納、放回。出售換金幣，不退鑽石。可多選批次操作。</p><div class="my-tank-ops">${aqEditSession?'<button data-edit-resume>← 繼續編輯</button>':''}<button data-tank-edit="deco">↔️ 編輯造景位置</button><button data-auto-scape>✨ 自動造景</button><button data-tank-deco-shop>🛒 購買造景</button></div>${multiTools(stored,list)}<div class="my-fish-list di-list">${list.map(k=>rowHtml(k,stored)).join('')||'<p class="fs-note">目前沒有這類造景。</p>'}</div>`,[[aqEditSession?'繼續編輯':'關閉',aqEditSession?aqResumeEdit:null,'sec2']])}
- async function open(){try{await refresh();if(window.EXPORT3)await EXPORT3.boot();render()}catch(e){showModal('<h2>🪸 我的造景</h2><p class="fs-note">'+esc(e.message)+'</p>',[['重試',open],['關閉']])}}
+ function render(){pruneSel();const stored=pane==='stored',active=S.up.deco||[],list=stored?current().map(b=>b.id):active;const dsNote=!stored&&window.DECO_SERIES?DECO_SERIES.tankBadgesHtml():'';showModal(`<h2>🪸 我的造景</h2>${tankManageNav('deco')}<div class="fish-location-tabs"><button data-di-pane="active" aria-pressed="${!stored}">魚缸中 ${active.length} 件</button><button data-di-pane="stored" aria-pressed="${stored}">已收起 ${current().reduce((n,b)=>n+b.ids.length,0)} 件</button></div><p class="fs-note">收起後保留物品，放回不需付費；收起的造景不提供魚缸加成。附著造景水草會一起收納、放回。出售換金幣，不退鑽石。可多選批次操作。</p>${dsNote}<div class="my-tank-ops">${aqEditSession?'<button data-edit-resume>← 繼續編輯</button>':''}<button data-tank-edit="deco">↔️ 編輯造景位置</button><button data-auto-scape>✨ 自動造景</button><button data-tank-deco-shop>🛒 購買造景</button></div>${multiTools(stored,list)}<div class="my-fish-list di-list">${list.map(k=>rowHtml(k,stored)).join('')||'<p class="fs-note">目前沒有這類造景。</p>'}</div>`,[[aqEditSession?'繼續編輯':'關閉',aqEditSession?aqResumeEdit:null,'sec2']])}
+ async function open(){try{await refresh();if(window.EXPORT3)await EXPORT3.boot();if(window.DECO_SERIES)await DECO_SERIES.boot();render()}catch(e){showModal('<h2>🪸 我的造景</h2><p class="fs-note">'+esc(e.message)+'</p>',[['重試',open],['關閉']])}}
  async function mutate(action,id,opt={}){if(busy&&!opt.internal)return;const ownBusy=!opt.internal;if(ownBusy)busy=true;const who=token(),c=Cloud.state,k='di-pending:'+who+':'+action+':'+id;let locked=false,key;try{key=sessionStorage.getItem(k);if(!key){key='di_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2)+'_'+Math.random().toString(36).slice(2);sessionStorage.setItem(k,key)}const status=await Cloud.pushNow();if(who!==token())throw Error('帳號已切換');if(!['ok','idle'].includes(status))throw Error('請先完成雲端同步，尚未操作');c.busy=true;locked=true;const r=await api('POST',{action,id,rev:c.sdk.rev||0,idempotencyKey:key});const sv=await c.sdk.loadSave();if(who!==token())throw Error('帳號已切換');Cloud.adopt(sv.save||r.save,null);c.gems=r.balance??c.gems;sessionStorage.removeItem(k);uiSig='';refreshUI(true);if(action==='buy'){window.EXPORT3&&EXPORT3.onBuy(id);save()}pane=action==='store'?'stored':['place','buy'].includes(action)?'active':pane;selected.delete(id);if(!opt.silent){if(aqEditSession)aqResumeEdit();else render();toast(action==='sell'?`已出售造景，獲得 🪙${fmt(r.amount)}`:action==='store'?'已收起，物品保留在造景收納庫':action==='buy'?'已購買並放入魚缸':'已放回魚缸','gold')}return r}catch(e){if(e.status&&e.status<500)sessionStorage.removeItem(k);if(!opt.silent)showModal('<h2>暫時無法完成</h2><p class="fs-note">'+esc(e.message||'連線中斷，請重試；不會重複出售或扣款')+'</p>',[['返回造景',open]]);throw e}finally{if(locked)c.busy=false;if(ownBusy)busy=false}}
  async function bulkRun(action,ids){if(busy||!ids.length)return;busy=true;let ok=0,gold=0;try{for(const id of ids){try{const r=await mutate(action,id,{silent:true,internal:true});ok++;if(action==='sell')gold+=Number(r?.amount)||0}catch(e){}}selected.clear();render();if(!ok)return toast('批次操作未完成，請重試','bad');toast(action==='sell'?`已出售 ${ok} 組造景，共 🪙${fmt(gold)}`:action==='store'?`已收起 ${ok} 組造景`:`已放回 ${ok} 組造景`,'gold')}finally{busy=false}}
  async function buy(k,b){if(b)b.disabled=true;try{await refresh();if(S.up.deco.includes(k)||has(k)){toast('已擁有這件造景，可到我的造景放回','gold');return}const d=DECOS[k];if(d.priceGems>0)return Cloud.buyItem('deco',k,b);if(S.coins<d.cost)return toast('金幣不足','bad');await mutate('buy',k)}catch(e){toast(e.message||'無法確認已購造景，請重試','bad')}finally{if(b)b.disabled=false}}
@@ -4799,7 +4802,7 @@ function mixHue(a,b,t){let d=((b-a+540)%360)-180;return(a+d*t+360)%360}
 const premCd=()=>(CFG.premium&&CFG.premium.breedCooldownSec)||14400;
 // 配種：先判斷突變（稀有繁殖限定魚來自突變池）；否則同種→同種，跨種→父母其中一種或「A×B 混種」（species/hybrid.js）
 function breedResult(a,b){if(Math.max(FishHybrid.generation(a.sp),FishHybrid.generation(b.sp))>=6)return{sp:null,kind:'generation_limit'};const ra=SPECIES[a.sp].r,rb=SPECIES[b.sp].r,maxR=Math.max(ra,rb);
-  const MC=CFG.breeding.mutation,mut=MC.baseChance+maxR*MC.perParentRarity+decoMut();
+  const MC=CFG.breeding.mutation,mut=(MC.baseChance+maxR*MC.perParentRarity+decoMut())*(window.DECO_SERIES?.mutationRelMult?.()||1);
   let pools=MC.pools.map(p=>({...p,species:p.species.filter(k=>SPECIES[k])})).filter(p=>p.species.length);if(MX)pools=MX.filterMutationPools(pools,S.up.cap);
   const anyPrem=SPECIES[a.sp].premium||SPECIES[b.sp].premium;
   if(a.sp===b.sp&&!anyPrem&&pools.length&&Math.random()<mut){let pool=pools[pools.length-1];for(const p of pools){if(Math.random()<p.chance+maxR*(p.chancePerParentRarity||0)){pool=p;break}}return{sp:pick(pool.species),kind:'mutation'}}
@@ -6332,7 +6335,7 @@ function batchPreview(){
   setTimeout(wait,500);
 }
 
-async function boot(){if(window.FTV)return ftBoot();/*FRIENDTANK-VIEW-BOOT*/
+async function boot(){try{if(window.DECO_SERIES)DECO_SERIES.installHooks()}catch(e){}if(window.FTV)return ftBoot();/*FRIENDTANK-VIEW-BOOT*/
   const hasCloud=await Cloud.init();
   let remote=await fetchRemoteConfig();
   if(!remote&&hasCloud)remote=await Cloud.config();
@@ -6349,6 +6352,7 @@ async function boot(){if(window.FTV)return ftBoot();/*FRIENDTANK-VIEW-BOOT*/
   try{if(window.FFGA){FFGA.startAfterPaint(CFG);const pl=Cloud.state&&Cloud.state.player;if(pl)FFGA.setUser(pl)}}catch(e){}
   try{ART.boot()}catch(e){}
   try{if(window.EXPORT3)EXPORT3.boot()}catch(e){}/*EXPORT3-BOOT*/
+  try{if(window.DECO_SERIES)DECO_SERIES.boot()}catch(e){}/*DECO-SERIES-BOOT*/
   for(const id of (S.up.deco||[]).filter(id=>['wreck','chest','coral','crystal'].includes(id)))legacyDecorImage(id);if((S.up.deco||[]).includes('chest'))legacyDecorImage('chest-open');
   try{castTank()}catch(e){}
   /*EXPORT6-PREVIEW*/try{batchPreview()}catch(e){}
@@ -6935,7 +6939,7 @@ window.ShopV2=(()=>{
     return h}
   // ---------- 💊 用品藥品 ----------
   function row(ic,n,ds,cost,key){return`<div class="item sv2-it"><div class="ic">${ic}</div><div class="txt"><div class="nm">${n}</div><div class="ds">${ds}</div></div><button class="buy ${cost==null?'done':''}" data-up="${key}" ${cost==null||S.coins<cost?'disabled':''}>${cost==null?'已滿級':'🪙'+fmt(cost)}</button></div>`}
-  function decoShopHtml(){let h=`<div class="card sv2-note"><h4>🪸 造景商店</h4><div class="note">沉木、石頭與經典造景。從現在起新購造景為純裝飾；既有玩家已擁有的加成造景會保留「老玩家保留加成」（見各品項說明）。目前收益 ×${decoMult().toFixed(2)}</div></div>`;
+  function decoShopHtml(){if(window.DECO_SERIES&&DECO_SERIES.enabled())return DECO_SERIES.decoShopHtml(decoMult,decoShopDesc);let h=`<div class="card sv2-note"><h4>🪸 造景商店</h4><div class="note">沉木、石頭與經典造景。從現在起新購造景為純裝飾；既有玩家已擁有的加成造景會保留「老玩家保留加成」（見各品項說明）。目前收益 ×${decoMult().toFixed(2)}</div></div>`;
     for(const k of Object.keys(DECOS).sort((a,b)=>(!!DECOS[b].priceGems)-(!!DECOS[a].priceGems))){const d=DECOS[k],own=S.up.deco.includes(k)||DecoInventoryUI.has(k);h+=`<div class="item sv2-it${d.priceGems>0?' gem-deco-card':''}"><div class="ic">${d.img?'<img alt="" src="'+ART.base+d.img+'" style="width:46px;height:46px;object-fit:contain">':d.ic}</div><div class="txt"><div class="nm">${d.n}${d.priceGems>0?'<span class="prem-badge">💎 精品造景</span>':''}${own?'<span class="col-badge got">✅ 已購買</span>':''}</div><div class="ds">${esc(decoShopDesc(k))}</div></div><button class="buy ${own?'done':''}" data-deco="${k}" ${own||(!(d.priceGems>0)&&S.coins<d.cost)?'disabled':''}>${own?'已購買':d.priceGems>0?'💎'+fmt(d.priceGems):'🪙'+fmt(d.cost)}</button></div>`}
     if(window.G41)h+='<div class="note sv2-hint">🎨 魚缸背景在 <button type="button" class="sv2-link" data-sv2cat="vip">⭐ 限定特權 →</button></div>';return h}
   function supplyHtml(){const s=V.sup;let h=seg(s,[['','全部'],['med','💊 藥品'],['water','🧪 水質'],['gear','🍤 飼料設備']],'sup');

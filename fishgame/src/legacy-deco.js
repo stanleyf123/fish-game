@@ -122,6 +122,8 @@ function addLegacyForOwned(cfg, save, keys) {
   if (!save) return;
   const leg = new Set(normList(save.legacyDeco));
   for (const k of keys || []) {
+    const d = cfg.decorations && cfg.decorations[k];
+    if (d && d.series) continue;
     if (!hasBonus(cfg, k)) continue;
     leg.add(k);
   }

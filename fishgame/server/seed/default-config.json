@@ -521,6 +521,606 @@
       "desc": "繁殖突變機率 +8%",
       "draw": "crystal",
       "x": 0.25
+    },
+    "ds_sunken_temple": {
+      "name": "古神殿",
+      "icon": "🏛️",
+      "cost": 1500,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "半沉的古神殿柱廊，青苔沿石縫攀上雕飾。",
+      "draw": "ds_sunken_temple",
+      "x": 0.5,
+      "series": "sunken",
+      "centerpiece": true
+    },
+    "ds_sunken_column": {
+      "name": "青苔石柱",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "筆直的青苔石柱，坑洞裡藏著細小氣泡。",
+      "draw": "ds_sunken_column",
+      "x": 0.5,
+      "series": "sunken",
+      "centerpiece": false
+    },
+    "ds_sunken_fallen_column": {
+      "name": "倒塌石柱",
+      "icon": "✨",
+      "cost": 420,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "橫倒的石柱斷面粗糙，像剛從遺跡裡翻出的碎塊。",
+      "draw": "ds_sunken_fallen_column",
+      "x": 0.5,
+      "series": "sunken",
+      "centerpiece": false
+    },
+    "ds_sunken_arch": {
+      "name": "古城拱門",
+      "icon": "✨",
+      "cost": 420,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "殘缺的石拱門，洞口望向幽藍深水。",
+      "draw": "ds_sunken_arch",
+      "x": 0.5,
+      "series": "sunken",
+      "centerpiece": false
+    },
+    "ds_sunken_king_head": {
+      "name": "國王石像",
+      "icon": "✨",
+      "cost": 420,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "巨大的國王石像側臉，眉間覆著薄薄水藻。",
+      "draw": "ds_sunken_king_head",
+      "x": 0.5,
+      "series": "sunken",
+      "centerpiece": false
+    },
+    "ds_sunken_lion": {
+      "name": "守護石獅",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "守護石獅蜷伏水中，鬃毛刻痕被水流磨得圓滑。",
+      "draw": "ds_sunken_lion",
+      "x": 0.5,
+      "series": "sunken",
+      "centerpiece": false
+    },
+    "ds_sunken_stairs": {
+      "name": "古石階",
+      "icon": "✨",
+      "cost": 420,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "幾級古石階向沙底延伸，邊角磨得發亮。",
+      "draw": "ds_sunken_stairs",
+      "x": 0.5,
+      "series": "sunken",
+      "centerpiece": false
+    },
+    "ds_sunken_amphora": {
+      "name": "古陶罐",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "雙耳陶罐傾斜插沙，罐身裂紋像歲月的筆跡。",
+      "draw": "ds_sunken_amphora",
+      "x": 0.5,
+      "series": "sunken",
+      "centerpiece": false
+    },
+    "ds_sunken_tablet": {
+      "name": "漩渦石碑",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "直立石碑刻著漩渦浮雕，碑角缺了一小塊。",
+      "draw": "ds_sunken_tablet",
+      "x": 0.5,
+      "series": "sunken",
+      "centerpiece": false
+    },
+    "ds_sunken_rubble": {
+      "name": "碎石堆",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "大小不一的碎石堆成小山，縫隙間可藏身。",
+      "draw": "ds_sunken_rubble",
+      "x": 0.5,
+      "series": "sunken",
+      "centerpiece": false
+    },
+    "ds_pirate_ship": {
+      "name": "海盜沉船",
+      "icon": "🏛️",
+      "cost": 1400,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "傾側的海盜船殘骸，斷桅浸在水色裡。",
+      "draw": "ds_pirate_ship",
+      "x": 0.5,
+      "series": "pirate",
+      "centerpiece": true
+    },
+    "ds_pirate_chest": {
+      "name": "黃金寶箱",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "半開的黃金寶箱，釘邊生銹卻仍亮眼。",
+      "draw": "ds_pirate_chest",
+      "x": 0.5,
+      "series": "pirate",
+      "centerpiece": false
+    },
+    "ds_pirate_anchor": {
+      "name": "生鏽船錨",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "生鏽大船錨半埋沙中，鐵鏈纏成厚厚一團。",
+      "draw": "ds_pirate_anchor",
+      "x": 0.5,
+      "series": "pirate",
+      "centerpiece": false
+    },
+    "ds_pirate_cannon": {
+      "name": "古炮",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "古炮筒口朝前，炮身漆色剝落露出暗木。",
+      "draw": "ds_pirate_cannon",
+      "x": 0.5,
+      "series": "pirate",
+      "centerpiece": false
+    },
+    "ds_pirate_barrels": {
+      "name": "木桶堆",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "幾只木桶疊放，箍環微微歪斜卻很踏實。",
+      "draw": "ds_pirate_barrels",
+      "x": 0.5,
+      "series": "pirate",
+      "centerpiece": false
+    },
+    "ds_pirate_wheel": {
+      "name": "船舵",
+      "icon": "✨",
+      "cost": 420,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "斑駁的船舵木輪，握把處磨出深凹痕。",
+      "draw": "ds_pirate_wheel",
+      "x": 0.5,
+      "series": "pirate",
+      "centerpiece": false
+    },
+    "ds_pirate_flag": {
+      "name": "海盜旗",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "破舊海盜旗迎著水流微晃，骷髏圖仍清晰。",
+      "draw": "ds_pirate_flag",
+      "x": 0.5,
+      "series": "pirate",
+      "centerpiece": false
+    },
+    "ds_pirate_lantern": {
+      "name": "船長提燈",
+      "icon": "✨",
+      "cost": 160,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "船長提燈懸在短鏈上，玻璃罩內彷著暖光。",
+      "draw": "ds_pirate_lantern",
+      "x": 0.5,
+      "series": "pirate",
+      "centerpiece": false
+    },
+    "ds_pirate_coins": {
+      "name": "金幣堆",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "金幣與飾品散成一小堆，邊緣反光像碎星。",
+      "draw": "ds_pirate_coins",
+      "x": 0.5,
+      "series": "pirate",
+      "centerpiece": false
+    },
+    "ds_pirate_rowboat": {
+      "name": "小划艇",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "小划艇半浸水中，船身漆裂卻仍完整。",
+      "draw": "ds_pirate_rowboat",
+      "x": 0.5,
+      "series": "pirate",
+      "centerpiece": false
+    },
+    "ds_zen_torii": {
+      "name": "鳥居",
+      "icon": "🏛️",
+      "cost": 1300,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "朱紅鳥居立於沙上，柱腳被細砂輕輕環抱。",
+      "draw": "ds_zen_torii",
+      "x": 0.5,
+      "series": "zen",
+      "centerpiece": true
+    },
+    "ds_zen_lantern": {
+      "name": "石燈籠",
+      "icon": "✨",
+      "cost": 160,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "青石燈籠三層疊立，頂蓋積了一薄層苔。",
+      "draw": "ds_zen_lantern",
+      "x": 0.5,
+      "series": "zen",
+      "centerpiece": false
+    },
+    "ds_zen_bridge": {
+      "name": "紅木橋",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "小巧紅木橋微微拱起，橋面木紋細緻耐看。",
+      "draw": "ds_zen_bridge",
+      "x": 0.5,
+      "series": "zen",
+      "centerpiece": false
+    },
+    "ds_zen_pagoda": {
+      "name": "五重塔",
+      "icon": "✨",
+      "cost": 420,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "五重塔逐層收尖，檐角像指尖探入水中。",
+      "draw": "ds_zen_pagoda",
+      "x": 0.5,
+      "series": "zen",
+      "centerpiece": false
+    },
+    "ds_zen_bonsai": {
+      "name": "松樹盆景",
+      "icon": "✨",
+      "cost": 420,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "盆景松樹盤根於淺皿，枝幹彎曲很有禪意。",
+      "draw": "ds_zen_bonsai",
+      "x": 0.5,
+      "series": "zen",
+      "centerpiece": false
+    },
+    "ds_zen_stones": {
+      "name": "踏腳石",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "幾塊踏腳石鋪成小徑，表面平滑適合落脚。",
+      "draw": "ds_zen_stones",
+      "x": 0.5,
+      "series": "zen",
+      "centerpiece": false
+    },
+    "ds_zen_shishiodoshi": {
+      "name": "竹筒流水",
+      "icon": "✨",
+      "cost": 420,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "竹筒一端抬起，仿佛下一刻就要敲石有聲。",
+      "draw": "ds_zen_shishiodoshi",
+      "x": 0.5,
+      "series": "zen",
+      "centerpiece": false
+    },
+    "ds_zen_jizo": {
+      "name": "地藏石像",
+      "icon": "✨",
+      "cost": 160,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "圓臉地藏石像系著小事巾，神情安詳。",
+      "draw": "ds_zen_jizo",
+      "x": 0.5,
+      "series": "zen",
+      "centerpiece": false
+    },
+    "ds_zen_lucky_cat": {
+      "name": "招財貓石像",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "招財貓石像舉起一爪，釉面被水色洗得柔和。",
+      "draw": "ds_zen_lucky_cat",
+      "x": 0.5,
+      "series": "zen",
+      "centerpiece": false
+    },
+    "ds_zen_zen_rock": {
+      "name": "禪意苔石",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "苔石表面綠茸茸，白砂環繞像枯山水一隅。",
+      "draw": "ds_zen_zen_rock",
+      "x": 0.5,
+      "series": "zen",
+      "centerpiece": false
+    },
+    "ds_candy_house": {
+      "name": "薑餅屋",
+      "icon": "🏛️",
+      "cost": 1200,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "薑餅小屋糖霜屋頂，窗框像用糖粒黏成。",
+      "draw": "ds_candy_house",
+      "x": 0.5,
+      "series": "candy",
+      "centerpiece": true
+    },
+    "ds_candy_lollipop": {
+      "name": "漩渦棒棒糖",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "漩渦棒棒糖色彩層層，棒身細長好亮眼。",
+      "draw": "ds_candy_lollipop",
+      "x": 0.5,
+      "series": "candy",
+      "centerpiece": false
+    },
+    "ds_candy_cane": {
+      "name": "拐杖糖",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "拐杖糖紅白扭紋，彎鉤剛好勾在沙面上。",
+      "draw": "ds_candy_cane",
+      "x": 0.5,
+      "series": "candy",
+      "centerpiece": false
+    },
+    "ds_candy_macaron": {
+      "name": "馬卡龍塔",
+      "icon": "✨",
+      "cost": 420,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "馬卡龍疊成小塔，邊緣粉彩柔和討喜。",
+      "draw": "ds_candy_macaron",
+      "x": 0.5,
+      "series": "candy",
+      "centerpiece": false
+    },
+    "ds_candy_gummy": {
+      "name": "軟糖熊",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "半透明軟糖熊坐姿可愛，色塊像果味凝結。",
+      "draw": "ds_candy_gummy",
+      "x": 0.5,
+      "series": "candy",
+      "centerpiece": false
+    },
+    "ds_candy_cupcake": {
+      "name": "杯子蛋糕",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "杯子蛋糕奶油旋出尖峰，糖粒灑了一圈。",
+      "draw": "ds_candy_cupcake",
+      "x": 0.5,
+      "series": "candy",
+      "centerpiece": false
+    },
+    "ds_candy_donut": {
+      "name": "甜甜圈",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "胖圓甜甜圈裹著糖霜，中間孔洞像小窗。",
+      "draw": "ds_candy_donut",
+      "x": 0.5,
+      "series": "candy",
+      "centerpiece": false
+    },
+    "ds_candy_jellybean": {
+      "name": "雷根糖堆",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "雷根糖堆成一袋傾倒，顆顆圓潤繽紛。",
+      "draw": "ds_candy_jellybean",
+      "x": 0.5,
+      "series": "candy",
+      "centerpiece": false
+    },
+    "ds_candy_chocolate": {
+      "name": "巧克力磚",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "巧克力磚切出幾格，表面亮澤像剛脫模。",
+      "draw": "ds_candy_chocolate",
+      "x": 0.5,
+      "series": "candy",
+      "centerpiece": false
+    },
+    "ds_candy_icecream": {
+      "name": "冰淇淋甜筒",
+      "icon": "✨",
+      "cost": 420,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "冰淇淋甜筒堆了三球，最上球快要滑下來。",
+      "draw": "ds_candy_icecream",
+      "x": 0.5,
+      "series": "candy",
+      "centerpiece": false
+    },
+    "ds_crystal_cave": {
+      "name": "水晶洞穴",
+      "icon": "🏛️",
+      "cost": 1350,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "洞窟口晶簇向外蔓延，內裡微光像星團。",
+      "draw": "ds_crystal_cave",
+      "x": 0.5,
+      "series": "crystal",
+      "centerpiece": true
+    },
+    "ds_crystal_amethyst": {
+      "name": "紫晶簇",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "紫晶簇自岩石迸出，稜面折射深紫光。",
+      "draw": "ds_crystal_amethyst",
+      "x": 0.5,
+      "series": "crystal",
+      "centerpiece": false
+    },
+    "ds_crystal_spire": {
+      "name": "藍晶尖塔",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "細長藍晶尖塔直指上方，尖端近乎透明。",
+      "draw": "ds_crystal_spire",
+      "x": 0.5,
+      "series": "crystal",
+      "centerpiece": false
+    },
+    "ds_crystal_geode": {
+      "name": "晶洞石",
+      "icon": "✨",
+      "cost": 420,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "半開晶洞露出內層晶牙，外殼仍粗糙多樣。",
+      "draw": "ds_crystal_geode",
+      "x": 0.5,
+      "series": "crystal",
+      "centerpiece": false
+    },
+    "ds_crystal_mushroom": {
+      "name": "發光晶菇",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "發光晶菇傘蓋圓潤，菌柄像琉璃柱。",
+      "draw": "ds_crystal_mushroom",
+      "x": 0.5,
+      "series": "crystal",
+      "centerpiece": false
+    },
+    "ds_crystal_teal": {
+      "name": "青晶簇",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "青綠晶簇緊貼岩面，色帶由深轉淺很自然。",
+      "draw": "ds_crystal_teal",
+      "x": 0.5,
+      "series": "crystal",
+      "centerpiece": false
+    },
+    "ds_crystal_arch": {
+      "name": "水晶拱門",
+      "icon": "✨",
+      "cost": 420,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "水晶拱門由稜面拼成，走過像穿過光幕。",
+      "draw": "ds_crystal_arch",
+      "x": 0.5,
+      "series": "crystal",
+      "centerpiece": false
+    },
+    "ds_crystal_orb": {
+      "name": "發光寶珠",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "懸浮的光球寶珠，表面流動淡淡彩暈。",
+      "draw": "ds_crystal_orb",
+      "x": 0.5,
+      "series": "crystal",
+      "centerpiece": false
+    },
+    "ds_crystal_gems": {
+      "name": "散落寶石",
+      "icon": "✨",
+      "cost": 160,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "各色小寶石散落沙上，折射像水底碎光。",
+      "draw": "ds_crystal_gems",
+      "x": 0.5,
+      "series": "crystal",
+      "centerpiece": false
+    },
+    "ds_crystal_vein": {
+      "name": "晶脈岩",
+      "icon": "✨",
+      "cost": 280,
+      "coinBonus": 0,
+      "mutationBonus": 0,
+      "desc": "岩面露出晶脈紋路，像一道凝固的閃電。",
+      "draw": "ds_crystal_vein",
+      "x": 0.5,
+      "series": "crystal",
+      "centerpiece": false
     }
   },
   "breeding": {
@@ -16939,5 +17539,108 @@
         "sparkle": "rgba(255,210,90,.9)"
       }
     }
-  }
+  },
+  "decoSeries": {
+    "sunken": {
+      "name": "沉沒古城",
+      "bonusLabel": "受傷魚鰭修復 +25%",
+      "bonusDesc": "魚缸內擺滿本系列 10 件時，魚鰭修復速度提高 25%（不增加金幣收益）。",
+      "bonus": {
+        "finHealMult": 1.25
+      },
+      "keys": [
+        "ds_sunken_temple",
+        "ds_sunken_column",
+        "ds_sunken_fallen_column",
+        "ds_sunken_arch",
+        "ds_sunken_king_head",
+        "ds_sunken_lion",
+        "ds_sunken_stairs",
+        "ds_sunken_amphora",
+        "ds_sunken_tablet",
+        "ds_sunken_rubble"
+      ]
+    },
+    "pirate": {
+      "name": "海盜沉船",
+      "bonusLabel": "繁殖突變機率 +10%",
+      "bonusDesc": "魚缸內擺滿本系列 10 件時，繁殖突變機率相對提高 10%。",
+      "bonus": {
+        "mutationRelMult": 1.1
+      },
+      "keys": [
+        "ds_pirate_ship",
+        "ds_pirate_chest",
+        "ds_pirate_anchor",
+        "ds_pirate_cannon",
+        "ds_pirate_barrels",
+        "ds_pirate_wheel",
+        "ds_pirate_flag",
+        "ds_pirate_lantern",
+        "ds_pirate_coins",
+        "ds_pirate_rowboat"
+      ]
+    },
+    "zen": {
+      "name": "日式庭園",
+      "bonusLabel": "污染累積 −10%",
+      "bonusDesc": "魚缸內擺滿本系列 10 件時，水質污染累積速度 ×0.9。",
+      "bonus": {
+        "dirtRateMult": 0.9
+      },
+      "keys": [
+        "ds_zen_torii",
+        "ds_zen_lantern",
+        "ds_zen_bridge",
+        "ds_zen_pagoda",
+        "ds_zen_bonsai",
+        "ds_zen_stones",
+        "ds_zen_shishiodoshi",
+        "ds_zen_jizo",
+        "ds_zen_lucky_cat",
+        "ds_zen_zen_rock"
+      ]
+    },
+    "candy": {
+      "name": "糖果樂園",
+      "bonusLabel": "魚成長 +10%",
+      "bonusDesc": "魚缸內擺滿本系列 10 件時，魚成長速度 ×1.1。",
+      "bonus": {
+        "growthMult": 1.1
+      },
+      "keys": [
+        "ds_candy_house",
+        "ds_candy_lollipop",
+        "ds_candy_cane",
+        "ds_candy_macaron",
+        "ds_candy_gummy",
+        "ds_candy_cupcake",
+        "ds_candy_donut",
+        "ds_candy_jellybean",
+        "ds_candy_chocolate",
+        "ds_candy_icecream"
+      ]
+    },
+    "crystal": {
+      "name": "海底水晶洞",
+      "bonusLabel": "生病機率 −10%",
+      "bonusDesc": "魚缸內擺滿本系列 10 件時，因水質生病的累積 ×0.9。",
+      "bonus": {
+        "sickRateMult": 0.9
+      },
+      "keys": [
+        "ds_crystal_cave",
+        "ds_crystal_amethyst",
+        "ds_crystal_spire",
+        "ds_crystal_geode",
+        "ds_crystal_mushroom",
+        "ds_crystal_teal",
+        "ds_crystal_arch",
+        "ds_crystal_orb",
+        "ds_crystal_gems",
+        "ds_crystal_vein"
+      ]
+    }
+  },
+  "decoSeriesCatalogVersion": 1
 }

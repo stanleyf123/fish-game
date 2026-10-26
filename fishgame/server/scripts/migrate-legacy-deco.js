@@ -7,18 +7,26 @@
  *   DATA_DIR=/var/lib/fishgame node scripts/migrate-legacy-deco.js --dry-run
  */
 const path = require('path');
-const Database = require('better-sqlite3');
-const { collectOwnedDecoKeys, addLegacyForOwned, normList, hasBonus } = require('../src/legacy-deco');
+const { openDb } = require('../src/db');
+const { ConfigStore } = require('../src/config-store');
+const {
+  collectOwnedDecoKeys,
+  addLegacyForOwned,
+  normList,
+  hasBonus,
+  pruneLegacyDeco,
+} = require('../src/legacy-deco');
 
 const dry = process.argv.includes('--dry-run');
 const dataDir = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
-const dbPath = path.join(dataDir, 'fishgame.db');
-const cfg = require(path.join(__dirname, '..', 'seed', 'default-config.json'));
+const db = openDb(dataDir);
+const configStore = new ConfigStore(db);
+configStore.ensureSeed(path.join(__dirname, '..', 'seed', 'default-config.json'));
+const cfg = configStore.active().config;
 
-const db = new Database(dbPath, { readonly: dry });
-const stored = db.prepare('SELECT player_id, bundle FROM deco_storage').all();
+const storedRows = db.prepare('SELECT player_id, bundle FROM deco_storage').all();
 const byPlayer = new Map();
-for (const r of stored) {
+for (const r of storedRows) {
   let bundle;
   try {
     bundle = JSON.parse(r.bundle);
@@ -29,32 +37,78 @@ for (const r of stored) {
   byPlayer.get(r.player_id).push(bundle);
 }
 
-const rows = db.prepare('SELECT player_id, data FROM saves').all();
-let players = 0;
-let updated = 0;
-let keysAdded = 0;
+const rows = db.prepare('SELECT player_id, data, rev FROM saves').all();
+let playersScanned = 0;
+let playersMarked = 0;
+let keysMarked = 0;
 
-const upd = dry ? null : db.prepare('UPDATE saves SET data=? WHERE player_id=?');
+function migrateSave(save, bundles) {
+  const before = new Set(normList(save.legacyDeco));
+  pruneLegacyDeco(cfg, save, bundles);
+  const owned = collectOwnedDecoKeys(save, bundles);
+  const toAdd = owned.filter((k) => hasBonus(cfg, k) && !before.has(k) && !normList(save.legacyDeco).includes(k));
+  if (toAdd.length) addLegacyForOwned(cfg, save, toAdd);
+  const after = new Set(normList(save.legacyDeco));
+  if (before.size === after.size && [...before].every((k) => after.has(k))) return { changed: false, keysDelta: 0 };
+  let keysDelta = 0;
+  for (const k of after) if (!before.has(k)) keysDelta++;
+  for (const k of before) if (!after.has(k)) keysDelta++;
+  return { changed: true, keysDelta };
+}
 
+const pending = [];
 for (const row of rows) {
-  players++;
+  playersScanned++;
   let save;
   try {
     save = JSON.parse(row.data);
   } catch {
     continue;
   }
-  const before = new Set(normList(save.legacyDeco));
-  const owned = collectOwnedDecoKeys(save, byPlayer.get(row.player_id) || []);
-  const toAdd = owned.filter((k) => hasBonus(cfg, k) && !before.has(k));
-  if (!toAdd.length) continue;
-  addLegacyForOwned(cfg, save, toAdd);
-  const after = normList(save.legacyDeco);
-  if (after.length === before.size) continue;
-  updated++;
-  keysAdded += after.length - before.size;
-  if (!dry) upd.run(JSON.stringify(save), row.player_id);
+  const bundles = byPlayer.get(row.player_id) || [];
+  const { changed, keysDelta } = migrateSave(save, bundles);
+  if (!changed) continue;
+  playersMarked++;
+  keysMarked += keysDelta;
+  pending.push({ row, save });
 }
 
-console.log(JSON.stringify({ dryRun: dry, dbPath, players, updated, keysAdded }, null, 2));
-if (!dry) db.close();
+if (!dry && pending.length) {
+  const t = Date.now();
+  const upd = db.prepare(
+    `UPDATE saves SET data=?, rev=?, updated_at=?, coins=?, fish_count=?, found_count=? WHERE player_id=?`
+  );
+  db.transaction(() => {
+    for (const { row, save } of pending) {
+      const rev = row.rev + 1;
+      save._serverSync = rev;
+      const found = save.found && typeof save.found === 'object' ? Object.keys(save.found) : [];
+      upd.run(
+        JSON.stringify(save),
+        rev,
+        t,
+        save.coins || 0,
+        (save.fish || []).length,
+        found.length,
+        row.player_id
+      );
+    }
+  })();
+}
+db.close();
+
+const dbPath = dataDir === ':memory:' ? ':memory:' : path.join(dataDir, 'fishgame.sqlite');
+console.log(
+  JSON.stringify(
+    {
+      dryRun: dry,
+      dbPath,
+      configDecor: Object.keys(cfg.decorations || {}).length,
+      playersScanned,
+      playersMarked,
+      keysMarked,
+    },
+    null,
+    2
+  )
+);

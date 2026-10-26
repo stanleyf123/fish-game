@@ -214,7 +214,7 @@ function checkSave(cfg, prev, prevClientSavedAt, next, nowMs, opts = {}) {
   if(usedDelta<0||!Number.isSafeInteger(usedDelta)||usedDelta>20000)suspicious.push('硝化菌用量紀錄異常');
   if (bac) { const purchased=Math.max(0,((next.items?.bacteria||0)-(prev.items?.bacteria||0))+Math.max(bd,bacteriaUsedCount)); spent+=purchased*bac.cost; }
   { const until=next.water?.bacteriaUntil||0,old=prev.water?.bacteriaUntil||0;
-    if(until>old){if(!bd||bd>20)suspicious.push('硝化菌強化缺少使用紀錄');if(until>nowMs+4*3600000+120000)suspicious.push('硝化菌強化時間超出上限');}
+    if(until>old){if(!bd||bd>200)suspicious.push('硝化菌強化缺少使用紀錄');if(until>nowMs+4*3600000+120000)suspicious.push('硝化菌強化時間超出上限');}
   }
   // 💊 藥品：寶石藥只能由伺服器增加；金幣藥計入花費；新的免疫／草本藥效必須有用掉對應的藥
   { const mc = require('./medicine').medCheck(cfg, prev, next, nowMs); spent += mc.spent; suspicious.push(...mc.suspicious); if (mc.limit && mc.limit.length) info.medLimit = mc.limit; } /*V406M*/

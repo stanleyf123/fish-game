@@ -65,12 +65,30 @@ function maxLegacyCoinBonus(cfg, save) {
 function validateLegacyDeco(cfg, save) {
   const errs = [];
   if (save.legacyDeco == null) return errs;
-  const dec = cfg.decorations || {};
   const list = normList(save.legacyDeco);
   if (!Array.isArray(save.legacyDeco)) errs.push('legacyDeco 必須是陣列');
   else if (list.length !== save.legacyDeco.length) errs.push('legacyDeco 含重複或非法鍵');
-  else for (const k of list) if (!dec[k] || !hasBonus(cfg, k)) errs.push(`legacyDeco 含無加成或未知造景「${k}」`);
   return errs;
+}
+
+/** Drop legacyDeco keys the player no longer owns (tank + stored); strip unknown entries server-side. */
+function pruneLegacyDeco(cfg, save, storedBundles) {
+  if (!save || !Array.isArray(save.legacyDeco) || !save.legacyDeco.length) return 0;
+  const owned = new Set(collectOwnedDecoKeys(save, storedBundles));
+  const before = normList(save.legacyDeco);
+  const kept = before.filter((k) => owned.has(k));
+  if (kept.length === before.length) return 0;
+  if (kept.length) save.legacyDeco = kept;
+  else delete save.legacyDeco;
+  return before.length - kept.length;
+}
+
+function sanitizeLegacyDeco(cfg, save, storedBundles) {
+  if (!save || save.legacyDeco == null) return;
+  const owned = new Set(collectOwnedDecoKeys(save, storedBundles));
+  const list = normList(save.legacyDeco).filter((k) => owned.has(k));
+  if (list.length) save.legacyDeco = list;
+  else delete save.legacyDeco;
 }
 
 function stripClientLegacy(prev, next) {
@@ -122,4 +140,6 @@ module.exports = {
   removeLegacy,
   addLegacyForOwned,
   collectOwnedDecoKeys,
+  pruneLegacyDeco,
+  sanitizeLegacyDeco,
 };

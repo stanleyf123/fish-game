@@ -193,8 +193,12 @@ class Players {
         if (cfg.decorations[id]?.priceGems > 0 && !next.up.deco.includes(id)) next.up.deco.push(id);
       }
       if(this.decoInventory)this.decoInventory.guard(pid,next);
-      const { stripClientLegacy } = require('./legacy-deco');
+      const { stripClientLegacy, pruneLegacyDeco } = require('./legacy-deco');
       stripClientLegacy(prev, next);
+      if (next && this.decoInventory) {
+        const bundles = this.decoInventory.list(pid).map((b) => ({ ids: b.ids }));
+        pruneLegacyDeco(cfg, next, bundles);
+      }
       const vipBonus = this.commerceRef.current ? this.commerceRef.current.vipPerks(pid).coinBonus || 0 : 0;
       // 這段存檔時間內的客戶端繁殖／賣魚事件（反作弊補算「生了又賣掉」的魚）
       const events = prev && row.client_saved_at ? this.db.prepare("SELECT type, data FROM events WHERE player_id=? AND created_at>? AND created_at<=? AND type IN ('c:breed','c:sell_fish','c:fish_died') ORDER BY id LIMIT 500").all(pid, row.client_saved_at - 15000, t).map((e) => { let d = null; try { d = JSON.parse(e.data); } catch {} return { type: e.type, data: d }; }) : [];

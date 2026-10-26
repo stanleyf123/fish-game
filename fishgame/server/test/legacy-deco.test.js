@@ -9,6 +9,8 @@ const {
   coinBonusSum,
   mutationBonusSum,
   checkLegacyUnchanged,
+  validateLegacyDeco,
+  pruneLegacyDeco,
 } = require('../src/legacy-deco');
 const { startServer, adminClient, relaxAntiCheat, sampleSave, sleep } = require('./helpers');
 const cfg = () => JSON.parse(JSON.stringify(require('../seed/default-config.json')));
@@ -86,6 +88,23 @@ test('legacyDeco：新購買不進 legacyDeco', async (t) => {
   const back = await sdk.loadSave();
   assert.ok(back.save.up.deco.includes(deco));
   assert.ok(!back.save.legacyDeco?.includes(deco));
+});
+
+test('legacyDeco：過期或無加成鍵不觸發 structural 錯誤', () => {
+  const c = cfg();
+  const save = sampleSave({ legacyDeco: ['coral', 'removed_fake', 'crystal'] });
+  assert.deepEqual(validateLegacyDeco(c, save), []);
+});
+
+test('legacyDeco：prune 移除未持有的 grandfather 鍵', () => {
+  const c = cfg();
+  const save = sampleSave({
+    up: { cap: 0, food: 0, feeder: 0, filter: 0, deco: ['coral'] },
+    legacyDeco: ['coral', 'wreck'],
+  });
+  const n = pruneLegacyDeco(c, save, []);
+  assert.equal(n, 1);
+  assert.deepEqual(normList(save.legacyDeco), ['coral']);
 });
 
 test('migrate-legacy-deco：idempotent add', () => {

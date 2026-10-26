@@ -54,8 +54,9 @@ test('legacyDeco：出售後失去 grandfather（deco-inventory）', async (t) =
   const me = await sdk.ensureSession();
   const gs = await sdk.loadSave();
   const pid = me.id;
-  const s0 = { ...gs.save, coins: 5000, up: { ...gs.save.up, deco: [deco] }, legacyDeco: [deco] };
-  srv.ctx.players.writeSaveRow(pid, s0, gs.rev + 1, Date.now(), false);
+  const base = gs.save || sampleSave();
+  const s0 = { ...base, coins: 5000, up: { ...base.up, deco: [deco] }, legacyDeco: [deco] };
+  srv.ctx.players.writeSaveRow(pid, s0, (gs.rev || 0) + 1, Date.now(), false);
   const key = 'di_test_' + Date.now();
   const rev = (await sdk.loadSave()).rev;
   const r = await srv.req('POST', '/api/deco-inventory', { action: 'sell', id: deco, rev, idempotencyKey: key }, { Authorization: 'Bearer ' + sdk.token() });

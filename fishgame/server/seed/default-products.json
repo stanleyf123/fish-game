@@ -1,0 +1,10 @@
+[
+  { "sku": "gems_60", "type": "gems", "name": "一小袋寶石", "description": "60 顆寶石", "priceTwd": 30, "grants": { "gems": 60 }, "sort": 10 },
+  { "sku": "gems_330", "type": "gems", "name": "一盒寶石", "description": "300 顆 + 加贈 30 顆", "priceTwd": 150, "grants": { "gems": 300, "bonusGems": 30 }, "sort": 11 },
+  { "sku": "gems_1280", "type": "gems", "name": "一箱寶石", "description": "1080 顆 + 加贈 200 顆", "priceTwd": 490, "grants": { "gems": 1080, "bonusGems": 200 }, "sort": 12 },
+  { "sku": "vip_month", "type": "vip", "name": "月卡會員（30 天）", "description": "立即獲得 100 寶石；30 天內每日領 10 寶石、金幣收益 +10%、離線收益上限 +4 小時", "priceTwd": 150, "grants": { "gems": 100, "vipDays": 30, "vipPerks": { "coinBonus": 0.1, "offlineCapBonusSec": 14400, "dailyGems": 10 } }, "sort": 1 },
+  { "sku": "starter_pack", "type": "bundle", "name": "新手禮包", "description": "3000 金幣、神仙魚 ×1、60 寶石（限購一次）", "priceTwd": 90, "limitPerPlayer": 1, "grants": { "coins": 3000, "gems": 60, "fish": [{ "species": "angel", "count": 1 }], "entitlements": ["starter"] }, "sort": 2 },
+  { "sku": "no_ads", "type": "bundle", "name": "永久去廣告", "description": "移除所有廣告（預留，遊戲目前無廣告）", "priceTwd": 120, "limitPerPlayer": 1, "grants": { "entitlements": ["no_ads"] }, "sort": 3 },
+  { "sku": "deco_crystal", "type": "item", "name": "許願水晶", "description": "直接獲得裝飾「許願水晶」", "priceGems": 200, "limitPerPlayer": 1, "grants": { "decorations": ["crystal"] }, "sort": 20 },
+  { "sku": "fish_koi", "type": "item", "name": "錦鯉魚苗", "description": "直接獲得一條錦鯉（傳說）", "priceGems": 300, "grants": { "fish": [{ "species": "koi", "count": 1 }] }, "sort": 21 }
+]

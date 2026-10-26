@@ -1,0 +1,1247 @@
+{
+  "version": 1,
+  "series": {
+    "sunken": {
+      "name": "沉沒古城",
+      "bonusLabel": "受傷魚鰭修復 +25%",
+      "bonusDesc": "魚缸內擺滿本系列 10 件時，魚鰭修復速度提高 25%（不增加金幣收益）。",
+      "bonus": {
+        "finHealMult": 1.25
+      }
+    },
+    "pirate": {
+      "name": "海盜沉船",
+      "bonusLabel": "繁殖突變機率 +10%",
+      "bonusDesc": "魚缸內擺滿本系列 10 件時，繁殖突變機率相對提高 10%。",
+      "bonus": {
+        "mutationRelMult": 1.1
+      }
+    },
+    "zen": {
+      "name": "日式庭園",
+      "bonusLabel": "污染累積 −10%",
+      "bonusDesc": "魚缸內擺滿本系列 10 件時，水質污染累積速度 ×0.9。",
+      "bonus": {
+        "dirtRateMult": 0.9
+      }
+    },
+    "candy": {
+      "name": "糖果樂園",
+      "bonusLabel": "魚成長 +10%",
+      "bonusDesc": "魚缸內擺滿本系列 10 件時，魚成長速度 ×1.1。",
+      "bonus": {
+        "growthMult": 1.1
+      }
+    },
+    "crystal": {
+      "name": "海底水晶洞",
+      "bonusLabel": "生病機率 −10%",
+      "bonusDesc": "魚缸內擺滿本系列 10 件時，因水質生病的累積 ×0.9。",
+      "bonus": {
+        "sickRateMult": 0.9
+      }
+    }
+  },
+  "items": [
+    {
+      "id": "ds_sunken_temple",
+      "name": "古神殿",
+      "series": "sunken",
+      "seriesName": "沉沒古城",
+      "centerpiece": true,
+      "cost": 1500,
+      "icon": "🏛️",
+      "desc": "半沉的古神殿柱廊，青苔沿石縫攀上雕飾。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_sunken_temple.webp",
+      "shadow": null,
+      "dw": 117,
+      "dh": 116,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -56,
+        56,
+        107
+      ]
+    },
+    {
+      "id": "ds_sunken_column",
+      "name": "青苔石柱",
+      "series": "sunken",
+      "seriesName": "沉沒古城",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "筆直的青苔石柱，坑洞裡藏著細小氣泡。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_sunken_column.webp",
+      "shadow": null,
+      "dw": 62,
+      "dh": 112,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -30,
+        30,
+        103
+      ]
+    },
+    {
+      "id": "ds_sunken_fallen_column",
+      "name": "倒塌石柱",
+      "series": "sunken",
+      "seriesName": "沉沒古城",
+      "centerpiece": false,
+      "cost": 420,
+      "icon": "✨",
+      "desc": "橫倒的石柱斷面粗糙，像剛從遺跡裡翻出的碎塊。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_sunken_fallen_column.webp",
+      "shadow": null,
+      "dw": 101,
+      "dh": 99,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -48,
+        48,
+        91
+      ]
+    },
+    {
+      "id": "ds_sunken_arch",
+      "name": "古城拱門",
+      "series": "sunken",
+      "seriesName": "沉沒古城",
+      "centerpiece": false,
+      "cost": 420,
+      "icon": "✨",
+      "desc": "殘缺的石拱門，洞口望向幽藍深水。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_sunken_arch.webp",
+      "shadow": null,
+      "dw": 96,
+      "dh": 112,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -46,
+        46,
+        103
+      ]
+    },
+    {
+      "id": "ds_sunken_king_head",
+      "name": "國王石像",
+      "series": "sunken",
+      "seriesName": "沉沒古城",
+      "centerpiece": false,
+      "cost": 420,
+      "icon": "✨",
+      "desc": "巨大的國王石像側臉，眉間覆著薄薄水藻。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_sunken_king_head.webp",
+      "shadow": null,
+      "dw": 83,
+      "dh": 108,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -40,
+        40,
+        99
+      ]
+    },
+    {
+      "id": "ds_sunken_lion",
+      "name": "守護石獅",
+      "series": "sunken",
+      "seriesName": "沉沒古城",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "守護石獅蜷伏水中，鬃毛刻痕被水流磨得圓滑。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_sunken_lion.webp",
+      "shadow": null,
+      "dw": 81,
+      "dh": 112,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -39,
+        39,
+        103
+      ]
+    },
+    {
+      "id": "ds_sunken_stairs",
+      "name": "古石階",
+      "series": "sunken",
+      "seriesName": "沉沒古城",
+      "centerpiece": false,
+      "cost": 420,
+      "icon": "✨",
+      "desc": "幾級古石階向沙底延伸，邊角磨得發亮。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_sunken_stairs.webp",
+      "shadow": null,
+      "dw": 108,
+      "dh": 92,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -52,
+        52,
+        85
+      ]
+    },
+    {
+      "id": "ds_sunken_amphora",
+      "name": "古陶罐",
+      "series": "sunken",
+      "seriesName": "沉沒古城",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "雙耳陶罐傾斜插沙，罐身裂紋像歲月的筆跡。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_sunken_amphora.webp",
+      "shadow": null,
+      "dw": 70,
+      "dh": 99,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -34,
+        34,
+        91
+      ]
+    },
+    {
+      "id": "ds_sunken_tablet",
+      "name": "漩渦石碑",
+      "series": "sunken",
+      "seriesName": "沉沒古城",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "直立石碑刻著漩渦浮雕，碑角缺了一小塊。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_sunken_tablet.webp",
+      "shadow": null,
+      "dw": 98,
+      "dh": 100,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -47,
+        47,
+        92
+      ]
+    },
+    {
+      "id": "ds_sunken_rubble",
+      "name": "碎石堆",
+      "series": "sunken",
+      "seriesName": "沉沒古城",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "大小不一的碎石堆成小山，縫隙間可藏身。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_sunken_rubble.webp",
+      "shadow": null,
+      "dw": 107,
+      "dh": 87,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -51,
+        51,
+        80
+      ]
+    },
+    {
+      "id": "ds_pirate_ship",
+      "name": "海盜沉船",
+      "series": "pirate",
+      "seriesName": "海盜沉船",
+      "centerpiece": true,
+      "cost": 1400,
+      "icon": "🏛️",
+      "desc": "傾側的海盜船殘骸，斷桅浸在水色裡。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_pirate_ship.webp",
+      "shadow": null,
+      "dw": 104,
+      "dh": 111,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -50,
+        50,
+        102
+      ]
+    },
+    {
+      "id": "ds_pirate_chest",
+      "name": "黃金寶箱",
+      "series": "pirate",
+      "seriesName": "海盜沉船",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "半開的黃金寶箱，釘邊生銹卻仍亮眼。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_pirate_chest.webp",
+      "shadow": null,
+      "dw": 94,
+      "dh": 97,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -45,
+        45,
+        89
+      ]
+    },
+    {
+      "id": "ds_pirate_anchor",
+      "name": "生鏽船錨",
+      "series": "pirate",
+      "seriesName": "海盜沉船",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "生鏽大船錨半埋沙中，鐵鏈纏成厚厚一團。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_pirate_anchor.webp",
+      "shadow": null,
+      "dw": 72,
+      "dh": 100,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -35,
+        35,
+        92
+      ]
+    },
+    {
+      "id": "ds_pirate_cannon",
+      "name": "古炮",
+      "series": "pirate",
+      "seriesName": "海盜沉船",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "古炮筒口朝前，炮身漆色剝落露出暗木。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_pirate_cannon.webp",
+      "shadow": null,
+      "dw": 106,
+      "dh": 78,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -51,
+        51,
+        72
+      ]
+    },
+    {
+      "id": "ds_pirate_barrels",
+      "name": "木桶堆",
+      "series": "pirate",
+      "seriesName": "海盜沉船",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "幾只木桶疊放，箍環微微歪斜卻很踏實。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_pirate_barrels.webp",
+      "shadow": null,
+      "dw": 90,
+      "dh": 101,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -43,
+        43,
+        93
+      ]
+    },
+    {
+      "id": "ds_pirate_wheel",
+      "name": "船舵",
+      "series": "pirate",
+      "seriesName": "海盜沉船",
+      "centerpiece": false,
+      "cost": 420,
+      "icon": "✨",
+      "desc": "斑駁的船舵木輪，握把處磨出深凹痕。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_pirate_wheel.webp",
+      "shadow": null,
+      "dw": 95,
+      "dh": 106,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -46,
+        46,
+        98
+      ]
+    },
+    {
+      "id": "ds_pirate_flag",
+      "name": "海盜旗",
+      "series": "pirate",
+      "seriesName": "海盜沉船",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "破舊海盜旗迎著水流微晃，骷髏圖仍清晰。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_pirate_flag.webp",
+      "shadow": null,
+      "dw": 91,
+      "dh": 102,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -44,
+        44,
+        94
+      ]
+    },
+    {
+      "id": "ds_pirate_lantern",
+      "name": "船長提燈",
+      "series": "pirate",
+      "seriesName": "海盜沉船",
+      "centerpiece": false,
+      "cost": 160,
+      "icon": "✨",
+      "desc": "船長提燈懸在短鏈上，玻璃罩內彷著暖光。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_pirate_lantern.webp",
+      "shadow": null,
+      "dw": 62,
+      "dh": 104,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -30,
+        30,
+        96
+      ]
+    },
+    {
+      "id": "ds_pirate_coins",
+      "name": "金幣堆",
+      "series": "pirate",
+      "seriesName": "海盜沉船",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "金幣與飾品散成一小堆，邊緣反光像碎星。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_pirate_coins.webp",
+      "shadow": null,
+      "dw": 103,
+      "dh": 81,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -49,
+        49,
+        75
+      ]
+    },
+    {
+      "id": "ds_pirate_rowboat",
+      "name": "小划艇",
+      "series": "pirate",
+      "seriesName": "海盜沉船",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "小划艇半浸水中，船身漆裂卻仍完整。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_pirate_rowboat.webp",
+      "shadow": null,
+      "dw": 100,
+      "dh": 74,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -48,
+        48,
+        68
+      ]
+    },
+    {
+      "id": "ds_zen_torii",
+      "name": "鳥居",
+      "series": "zen",
+      "seriesName": "日式庭園",
+      "centerpiece": true,
+      "cost": 1300,
+      "icon": "🏛️",
+      "desc": "朱紅鳥居立於沙上，柱腳被細砂輕輕環抱。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_zen_torii.webp",
+      "shadow": null,
+      "dw": 108,
+      "dh": 98,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -52,
+        52,
+        90
+      ]
+    },
+    {
+      "id": "ds_zen_lantern",
+      "name": "石燈籠",
+      "series": "zen",
+      "seriesName": "日式庭園",
+      "centerpiece": false,
+      "cost": 160,
+      "icon": "✨",
+      "desc": "青石燈籠三層疊立，頂蓋積了一薄層苔。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_zen_lantern.webp",
+      "shadow": null,
+      "dw": 61,
+      "dh": 108,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -29,
+        29,
+        99
+      ]
+    },
+    {
+      "id": "ds_zen_bridge",
+      "name": "紅木橋",
+      "series": "zen",
+      "seriesName": "日式庭園",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "小巧紅木橋微微拱起，橋面木紋細緻耐看。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_zen_bridge.webp",
+      "shadow": null,
+      "dw": 114,
+      "dh": 63,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -55,
+        55,
+        58
+      ]
+    },
+    {
+      "id": "ds_zen_pagoda",
+      "name": "五重塔",
+      "series": "zen",
+      "seriesName": "日式庭園",
+      "centerpiece": false,
+      "cost": 420,
+      "icon": "✨",
+      "desc": "五重塔逐層收尖，檐角像指尖探入水中。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_zen_pagoda.webp",
+      "shadow": null,
+      "dw": 71,
+      "dh": 118,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -34,
+        34,
+        109
+      ]
+    },
+    {
+      "id": "ds_zen_bonsai",
+      "name": "松樹盆景",
+      "series": "zen",
+      "seriesName": "日式庭園",
+      "centerpiece": false,
+      "cost": 420,
+      "icon": "✨",
+      "desc": "盆景松樹盤根於淺皿，枝幹彎曲很有禪意。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_zen_bonsai.webp",
+      "shadow": null,
+      "dw": 99,
+      "dh": 110,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -48,
+        48,
+        101
+      ]
+    },
+    {
+      "id": "ds_zen_stones",
+      "name": "踏腳石",
+      "series": "zen",
+      "seriesName": "日式庭園",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "幾塊踏腳石鋪成小徑，表面平滑適合落脚。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_zen_stones.webp",
+      "shadow": null,
+      "dw": 99,
+      "dh": 93,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -48,
+        48,
+        86
+      ]
+    },
+    {
+      "id": "ds_zen_shishiodoshi",
+      "name": "竹筒流水",
+      "series": "zen",
+      "seriesName": "日式庭園",
+      "centerpiece": false,
+      "cost": 420,
+      "icon": "✨",
+      "desc": "竹筒一端抬起，仿佛下一刻就要敲石有聲。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_zen_shishiodoshi.webp",
+      "shadow": null,
+      "dw": 102,
+      "dh": 103,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -49,
+        49,
+        95
+      ]
+    },
+    {
+      "id": "ds_zen_jizo",
+      "name": "地藏石像",
+      "series": "zen",
+      "seriesName": "日式庭園",
+      "centerpiece": false,
+      "cost": 160,
+      "icon": "✨",
+      "desc": "圓臉地藏石像系著小事巾，神情安詳。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_zen_jizo.webp",
+      "shadow": null,
+      "dw": 62,
+      "dh": 101,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -30,
+        30,
+        93
+      ]
+    },
+    {
+      "id": "ds_zen_lucky_cat",
+      "name": "招財貓石像",
+      "series": "zen",
+      "seriesName": "日式庭園",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "招財貓石像舉起一爪，釉面被水色洗得柔和。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_zen_lucky_cat.webp",
+      "shadow": null,
+      "dw": 73,
+      "dh": 104,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -35,
+        35,
+        96
+      ]
+    },
+    {
+      "id": "ds_zen_zen_rock",
+      "name": "禪意苔石",
+      "series": "zen",
+      "seriesName": "日式庭園",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "苔石表面綠茸茸，白砂環繞像枯山水一隅。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_zen_zen_rock.webp",
+      "shadow": null,
+      "dw": 105,
+      "dh": 85,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -50,
+        50,
+        78
+      ]
+    },
+    {
+      "id": "ds_candy_house",
+      "name": "薑餅屋",
+      "series": "candy",
+      "seriesName": "糖果樂園",
+      "centerpiece": true,
+      "cost": 1200,
+      "icon": "🏛️",
+      "desc": "薑餅小屋糖霜屋頂，窗框像用糖粒黏成。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_candy_house.webp",
+      "shadow": null,
+      "dw": 104,
+      "dh": 108,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -50,
+        50,
+        99
+      ]
+    },
+    {
+      "id": "ds_candy_lollipop",
+      "name": "漩渦棒棒糖",
+      "series": "candy",
+      "seriesName": "糖果樂園",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "漩渦棒棒糖色彩層層，棒身細長好亮眼。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_candy_lollipop.webp",
+      "shadow": null,
+      "dw": 68,
+      "dh": 106,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -33,
+        33,
+        98
+      ]
+    },
+    {
+      "id": "ds_candy_cane",
+      "name": "拐杖糖",
+      "series": "candy",
+      "seriesName": "糖果樂園",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "拐杖糖紅白扭紋，彎鉤剛好勾在沙面上。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_candy_cane.webp",
+      "shadow": null,
+      "dw": 67,
+      "dh": 112,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -32,
+        32,
+        103
+      ]
+    },
+    {
+      "id": "ds_candy_macaron",
+      "name": "馬卡龍塔",
+      "series": "candy",
+      "seriesName": "糖果樂園",
+      "centerpiece": false,
+      "cost": 420,
+      "icon": "✨",
+      "desc": "馬卡龍疊成小塔，邊緣粉彩柔和討喜。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_candy_macaron.webp",
+      "shadow": null,
+      "dw": 95,
+      "dh": 106,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -46,
+        46,
+        98
+      ]
+    },
+    {
+      "id": "ds_candy_gummy",
+      "name": "軟糖熊",
+      "series": "candy",
+      "seriesName": "糖果樂園",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "半透明軟糖熊坐姿可愛，色塊像果味凝結。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_candy_gummy.webp",
+      "shadow": null,
+      "dw": 81,
+      "dh": 113,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -39,
+        39,
+        104
+      ]
+    },
+    {
+      "id": "ds_candy_cupcake",
+      "name": "杯子蛋糕",
+      "series": "candy",
+      "seriesName": "糖果樂園",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "杯子蛋糕奶油旋出尖峰，糖粒灑了一圈。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_candy_cupcake.webp",
+      "shadow": null,
+      "dw": 77,
+      "dh": 113,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -37,
+        37,
+        104
+      ]
+    },
+    {
+      "id": "ds_candy_donut",
+      "name": "甜甜圈",
+      "series": "candy",
+      "seriesName": "糖果樂園",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "胖圓甜甜圈裹著糖霜，中間孔洞像小窗。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_candy_donut.webp",
+      "shadow": null,
+      "dw": 96,
+      "dh": 85,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -46,
+        46,
+        78
+      ]
+    },
+    {
+      "id": "ds_candy_jellybean",
+      "name": "雷根糖堆",
+      "series": "candy",
+      "seriesName": "糖果樂園",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "雷根糖堆成一袋傾倒，顆顆圓潤繽紛。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_candy_jellybean.webp",
+      "shadow": null,
+      "dw": 99,
+      "dh": 88,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -48,
+        48,
+        81
+      ]
+    },
+    {
+      "id": "ds_candy_chocolate",
+      "name": "巧克力磚",
+      "series": "candy",
+      "seriesName": "糖果樂園",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "巧克力磚切出幾格，表面亮澤像剛脫模。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_candy_chocolate.webp",
+      "shadow": null,
+      "dw": 99,
+      "dh": 83,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -48,
+        48,
+        76
+      ]
+    },
+    {
+      "id": "ds_candy_icecream",
+      "name": "冰淇淋甜筒",
+      "series": "candy",
+      "seriesName": "糖果樂園",
+      "centerpiece": false,
+      "cost": 420,
+      "icon": "✨",
+      "desc": "冰淇淋甜筒堆了三球，最上球快要滑下來。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_candy_icecream.webp",
+      "shadow": null,
+      "dw": 76,
+      "dh": 110,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -36,
+        36,
+        101
+      ]
+    },
+    {
+      "id": "ds_crystal_cave",
+      "name": "水晶洞穴",
+      "series": "crystal",
+      "seriesName": "海底水晶洞",
+      "centerpiece": true,
+      "cost": 1350,
+      "icon": "🏛️",
+      "desc": "洞窟口晶簇向外蔓延，內裡微光像星團。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_crystal_cave.webp",
+      "shadow": null,
+      "dw": 110,
+      "dh": 109,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -53,
+        53,
+        100
+      ]
+    },
+    {
+      "id": "ds_crystal_amethyst",
+      "name": "紫晶簇",
+      "series": "crystal",
+      "seriesName": "海底水晶洞",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "紫晶簇自岩石迸出，稜面折射深紫光。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_crystal_amethyst.webp",
+      "shadow": null,
+      "dw": 76,
+      "dh": 112,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -36,
+        36,
+        103
+      ]
+    },
+    {
+      "id": "ds_crystal_spire",
+      "name": "藍晶尖塔",
+      "series": "crystal",
+      "seriesName": "海底水晶洞",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "細長藍晶尖塔直指上方，尖端近乎透明。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_crystal_spire.webp",
+      "shadow": null,
+      "dw": 76,
+      "dh": 114,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -36,
+        36,
+        105
+      ]
+    },
+    {
+      "id": "ds_crystal_geode",
+      "name": "晶洞石",
+      "series": "crystal",
+      "seriesName": "海底水晶洞",
+      "centerpiece": false,
+      "cost": 420,
+      "icon": "✨",
+      "desc": "半開晶洞露出內層晶牙，外殼仍粗糙多樣。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_crystal_geode.webp",
+      "shadow": null,
+      "dw": 95,
+      "dh": 109,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -46,
+        46,
+        100
+      ]
+    },
+    {
+      "id": "ds_crystal_mushroom",
+      "name": "發光晶菇",
+      "series": "crystal",
+      "seriesName": "海底水晶洞",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "發光晶菇傘蓋圓潤，菌柄像琉璃柱。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_crystal_mushroom.webp",
+      "shadow": null,
+      "dw": 81,
+      "dh": 99,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -39,
+        39,
+        91
+      ]
+    },
+    {
+      "id": "ds_crystal_teal",
+      "name": "青晶簇",
+      "series": "crystal",
+      "seriesName": "海底水晶洞",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "青綠晶簇緊貼岩面，色帶由深轉淺很自然。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_crystal_teal.webp",
+      "shadow": null,
+      "dw": 80,
+      "dh": 96,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -38,
+        38,
+        88
+      ]
+    },
+    {
+      "id": "ds_crystal_arch",
+      "name": "水晶拱門",
+      "series": "crystal",
+      "seriesName": "海底水晶洞",
+      "centerpiece": false,
+      "cost": 420,
+      "icon": "✨",
+      "desc": "水晶拱門由稜面拼成，走過像穿過光幕。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_crystal_arch.webp",
+      "shadow": null,
+      "dw": 99,
+      "dh": 105,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -48,
+        48,
+        97
+      ]
+    },
+    {
+      "id": "ds_crystal_orb",
+      "name": "發光寶珠",
+      "series": "crystal",
+      "seriesName": "海底水晶洞",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "懸浮的光球寶珠，表面流動淡淡彩暈。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_crystal_orb.webp",
+      "shadow": null,
+      "dw": 84,
+      "dh": 94,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -40,
+        40,
+        86
+      ]
+    },
+    {
+      "id": "ds_crystal_gems",
+      "name": "散落寶石",
+      "series": "crystal",
+      "seriesName": "海底水晶洞",
+      "centerpiece": false,
+      "cost": 160,
+      "icon": "✨",
+      "desc": "各色小寶石散落沙上，折射像水底碎光。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_crystal_gems.webp",
+      "shadow": null,
+      "dw": 95,
+      "dh": 84,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -46,
+        46,
+        77
+      ]
+    },
+    {
+      "id": "ds_crystal_vein",
+      "name": "晶脈岩",
+      "series": "crystal",
+      "seriesName": "海底水晶洞",
+      "centerpiece": false,
+      "cost": 280,
+      "icon": "✨",
+      "desc": "岩面露出晶脈紋路，像一道凝固的閃電。",
+      "kind": "ornament",
+      "sprite": "deco-series-v1/ds_crystal_vein.webp",
+      "shadow": null,
+      "dw": 95,
+      "dh": 92,
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "box": [
+        -46,
+        46,
+        85
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "fishgame-server",
+  "version": "1.0.0",
+  "description": "悠游水族箱 後端 API + 管理後台",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "SERVE_GAME_DIR=.. node src/server.js",
+    "test": "node --test test/*.test.js",
+    "seed:config": "node scripts/extract-config.js",
+    "demo:seed": "node scripts/seed-demo.js",
+    "demo:clear": "node scripts/clear-demo.js",
+    "shots": "node scripts/screenshots.js",
+    "build:render": "node scripts/build-render.js seed/game-index.snapshot.html",
+    "integrate": "node scripts/integrate-game.js",
+    "snapshot:game": "cp ../index.html seed/game-index.snapshot.html && node scripts/extract-config.js seed/game-index.snapshot.html && node scripts/build-render.js seed/game-index.snapshot.html",
+    "e2e": "node scripts/e2e-game.js",
+    "e2e:decor-touch": "node scripts/e2e-decor-touch.js"
+  },
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.10.0",
+    "express": "^4.22.3",
+    "sharp": "0.34.5"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  }
+}

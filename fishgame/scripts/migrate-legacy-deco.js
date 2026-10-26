@@ -22,6 +22,20 @@ const dataDir = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
 const db = openDb(dataDir);
 const cfg = new ConfigStore(db).active().config;
 
+const storedRows = db.prepare('SELECT player_id, bundle FROM deco_storage').all();
+const byPlayer = new Map();
+for (const r of storedRows) {
+  let bundle;
+  try {
+    bundle = JSON.parse(r.bundle);
+  } catch {
+    continue;
+  }
+  if (!byPlayer.has(r.player_id)) byPlayer.set(r.player_id, []);
+  byPlayer.get(r.player_id).push(bundle);
+}
+
+const rows = db.prepare('SELECT player_id, data, rev FROM saves').all();
 let playersScanned = 0;
 let playersMarked = 0;
 let keysMarked = 0;
@@ -40,59 +54,45 @@ function migrateSave(save, bundles) {
   return { changed: true, keysDelta };
 }
 
-const runMigration = () => {
-  const storedRows = db.prepare('SELECT player_id, bundle FROM deco_storage').all();
-  const byPlayer = new Map();
-  for (const r of storedRows) {
-    let bundle;
-    try {
-      bundle = JSON.parse(r.bundle);
-    } catch {
-      continue;
-    }
-    if (!byPlayer.has(r.player_id)) byPlayer.set(r.player_id, []);
-    byPlayer.get(r.player_id).push(bundle);
+const pending = [];
+for (const row of rows) {
+  playersScanned++;
+  let save;
+  try {
+    save = JSON.parse(row.data);
+  } catch {
+    continue;
   }
-  const rows = db.prepare('SELECT player_id, data, rev FROM saves').all();
-  const pending = [];
-  for (const row of rows) {
-    playersScanned++;
-    let save;
-    try {
-      save = JSON.parse(row.data);
-    } catch {
-      continue;
-    }
-    const bundles = byPlayer.get(row.player_id) || [];
-    const { changed, keysDelta } = migrateSave(save, bundles);
-    if (!changed) continue;
-    playersMarked++;
-    keysMarked += keysDelta;
-    pending.push({ row, save });
-  }
-  if (!pending.length) return;
+  const bundles = byPlayer.get(row.player_id) || [];
+  const { changed, keysDelta } = migrateSave(save, bundles);
+  if (!changed) continue;
+  playersMarked++;
+  keysMarked += keysDelta;
+  pending.push({ row, save });
+}
+
+if (!dry && pending.length) {
   const t = Date.now();
   const upd = db.prepare(
     `UPDATE saves SET data=?, rev=?, updated_at=?, coins=?, fish_count=?, found_count=? WHERE player_id=?`
   );
-  for (const { row, save } of pending) {
-    const rev = row.rev + 1;
-    save._serverSync = rev;
-    const found = save.found && typeof save.found === 'object' ? Object.keys(save.found) : [];
-    upd.run(
-      JSON.stringify(save),
-      rev,
-      t,
-      save.coins || 0,
-      (save.fish || []).length,
-      found.length,
-      row.player_id
-    );
-  }
-};
-
-if (!dry) db.transaction(runMigration)();
-else runMigration();
+  db.transaction(() => {
+    for (const { row, save } of pending) {
+      const rev = row.rev + 1;
+      save._serverSync = rev;
+      const found = save.found && typeof save.found === 'object' ? Object.keys(save.found) : [];
+      upd.run(
+        JSON.stringify(save),
+        rev,
+        t,
+        save.coins || 0,
+        (save.fish || []).length,
+        found.length,
+        row.player_id
+      );
+    }
+  })();
+}
 db.close();
 
 const dbPath = dataDir === ':memory:' ? ':memory:' : path.join(dataDir, 'fishgame.sqlite');

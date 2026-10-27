@@ -1,0 +1,82 @@
+[
+ {
+  "key": "hairgrass",
+  "name": "牛毛氈",
+  "w": 248,
+  "h": 266,
+  "png": "plants/hairgrass.png",
+  "webp": "plants/hairgrass.webp"
+ },
+ {
+  "key": "hc_cuba",
+  "name": "矮珍珠",
+  "w": 248,
+  "h": 208,
+  "png": "plants/hc_cuba.png",
+  "webp": "plants/hc_cuba.webp"
+ },
+ {
+  "key": "riccia",
+  "name": "鹿角苔",
+  "w": 248,
+  "h": 299,
+  "png": "plants/riccia.png",
+  "webp": "plants/riccia.webp"
+ },
+ {
+  "key": "rotala_macrandra",
+  "name": "紅蝴蝶",
+  "w": 248,
+  "h": 304,
+  "png": "plants/rotala_macrandra.png",
+  "webp": "plants/rotala_macrandra.webp"
+ },
+ {
+  "key": "anubias_petite",
+  "name": "小榕",
+  "w": 248,
+  "h": 278,
+  "png": "plants/anubias_petite.png",
+  "webp": "plants/anubias_petite.webp"
+ },
+ {
+  "key": "java_fern",
+  "name": "鐵皇冠",
+  "w": 248,
+  "h": 343,
+  "png": "plants/java_fern.png",
+  "webp": "plants/java_fern.webp"
+ },
+ {
+  "key": "green_palace",
+  "name": "綠宮廷",
+  "w": 248,
+  "h": 305,
+  "png": "plants/green_palace.png",
+  "webp": "plants/green_palace.webp"
+ },
+ {
+  "key": "limnophila_pagoda",
+  "name": "大寶塔",
+  "w": 248,
+  "h": 347,
+  "png": "plants/limnophila_pagoda.png",
+  "webp": "plants/limnophila_pagoda.webp"
+ },
+ {
+  "key": "water_orchid",
+  "name": "水蘭",
+  "w": 248,
+  "h": 323,
+  "png": "plants/water_orchid.png",
+  "webp": "plants/water_orchid.webp"
+ },
+ {
+  "key": "crypt_parva",
+  "name": "迷你椒草",
+  "w": 248,
+  "h": 303,
+  "png": "plants/crypt_parva.png",
+  "webp": "plants/crypt_parva.webp"
+ }
+]

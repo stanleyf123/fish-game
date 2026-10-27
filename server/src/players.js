@@ -1,6 +1,6 @@
 'use strict';
 const bcrypt = require('bcryptjs');
-const { sha256, randToken, HttpError, bad, parseJSON, clampStr } = require('./util');
+const { sha256, randToken, HttpError, bad, parseJSON, clampStr, RateLimiter } = require('./util');
 const { checkSave } = require('./anticheat');
 
 const USERNAME_RE = /^[A-Za-z0-9_]{3,20}$/;
@@ -15,6 +15,7 @@ function cmpBuild(a, b) { const x = String(a).split(/[.\-]/).map((n) => parseInt
 class Players {
   constructor(db, configStore, dayFn, commerceRef) {
     this.db = db; this.cfg = configStore; this.day = dayFn; this.commerceRef = commerceRef;
+    this._syncRejectRl = new RateLimiter({ windowMs: 60000, max: 12 });
   }
 
   // ---------- 帳號 ----------
@@ -181,8 +182,11 @@ class Players {
       // A current SDK revision alone cannot prove an old queued snapshot adopted a server grant.
       // Pin every server-written state until the client echoes its generation; no flags on sync races.
       if (prev && prev._serverSync && next && typeof next === 'object' && !Array.isArray(next) && next._serverSync !== prev._serverSync) {
-        if (!build || cmpBuild(build, '4.2.10') < 0) throw new HttpError(422, 'suspicious_save', '儲值或獎勵已入帳，請更新遊戲載入最新魚缸', {code:'sync_required',reload:false,reasons:['儲值或獎勵已安全入帳，請手動重新整理以完成同步']});
-        throw new HttpError(409, 'server_state_changed', '儲值、獎勵或魚缸資料已更新，已保留雲端版本', {rev:curRev,save:prev});
+        const syncKey = `sync:${pid}:${prev._serverSync}:${baseRev}`;
+        const rl = this._syncRejectRl.check(syncKey);
+        if (!rl.ok) throw new HttpError(429, 'too_frequent', '同步衝突過於頻繁，請稍後再試', { retryAfter: rl.retryAfter });
+        // 一律回 409 + 雲端存檔，讓現行客戶端自動採用並重試（避免舊版卡在 422 無限重試）
+        throw new HttpError(409, 'server_state_changed', '儲值、獎勵或魚缸資料已更新，已保留雲端版本', { rev: curRev, save: prev, code: 'sync_required', reload: false, reasons: ['儲值或獎勵已安全入帳，請載入最新魚缸後再同步'] });
       }
       if(next && typeof next === 'object' && !Array.isArray(next)) next._serverSync = prev?._serverSync || 0;
 
@@ -212,7 +216,7 @@ class Players {
       }
       const vipBonus = this.commerceRef.current ? this.commerceRef.current.vipPerks(pid).coinBonus || 0 : 0;
       // 這段存檔時間內的客戶端繁殖／賣魚事件（反作弊補算「生了又賣掉」的魚）
-      const events = prev && row.client_saved_at ? this.db.prepare("SELECT type, data FROM events WHERE player_id=? AND created_at>? AND created_at<=? AND type IN ('c:breed','c:sell_fish','c:fish_died') ORDER BY id LIMIT 500").all(pid, row.client_saved_at - 15000, t).map((e) => { let d = null; try { d = JSON.parse(e.data); } catch {} return { type: e.type, data: d }; }) : [];
+      const events = prev && row.client_saved_at ? this.db.prepare("SELECT type, data FROM events WHERE player_id=? AND created_at>? AND created_at<=? AND type IN ('c:breed','c:sell_fish','c:fish_died','deco_sell','fish_storage_buy','fish_storage_sell','fish_storage_sell_many','task_coin_claim') ORDER BY id LIMIT 500").all(pid, row.client_saved_at - 15000, t).map((e) => { let d = null; try { d = JSON.parse(e.data); } catch {} return { type: e.type, data: d }; }) : [];
       // A due, server-issued egg creates one baby without purchase or breeding costs.
       // Validate against a virtual baseline containing only that newborn; all other checks stay active.
       // Older pages do not understand nested hybrid IDs. Keep those fish server-side when omitted.

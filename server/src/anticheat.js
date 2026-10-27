@@ -257,7 +257,11 @@ function checkSave(cfg, prev, prevClientSavedAt, next, nowMs, opts = {}) {
   { const ev = Array.isArray(opts.events) ? opts.events : [], bred = {}, sells = {};
     for (const e of ev) { const d = e && e.data; if (!d || typeof d !== 'object') continue;
       if (e.type === 'c:breed' && typeof d.child === 'string' && spOf(cfg, d.child)) bred[d.child] = (bred[d.child] || 0) + 1;
-      else if (e.type === 'c:sell_fish' && typeof d.sp === 'string' && spOf(cfg, d.sp)) sells[d.sp] = (sells[d.sp] || 0) + 1; }
+      else if (e.type === 'c:sell_fish' && typeof d.sp === 'string' && spOf(cfg, d.sp)) sells[d.sp] = (sells[d.sp] || 0) + 1;
+      else if (e.type === 'deco_sell' && d.amount > 0) sold += Math.floor(d.amount);
+      else if ((e.type === 'fish_storage_sell' || e.type === 'fish_storage_sell_many') && d.amount > 0) sold += Math.floor(d.amount);
+      else if (e.type === 'fish_storage_buy' && d.amount > 0) spent += Math.floor(d.amount);
+      else if (e.type === 'task_coin_claim' && d.coins > 0) sold += Math.floor(d.coins); }
     const adults = Math.max((prev.fish || []).length, next.fish.length), cd = Math.max(10, (cfg.breeding && cfg.breeding.cooldownSec) || 90);
     let cap = Math.max(1, Math.floor(adults / 2)) * (Math.floor(elapsed / cd) + 1);
     if (Number.isFinite(opts.serverBreeds)) cap = Math.min(cap, opts.serverBreeds);

@@ -1,0 +1,27 @@
+# cursor-batch-1028 manifest
+snap_utc=2026-10-27T17:09:00Z
+client_build=4.2.126
+7d7f8d3a8a92c8ff50b00a18733607b6  client-index-live.html
+6ae25fa80c26146b868a98fe23f64a1f  deco-series-client.js
+db4af485bbf400989b7102da30c00eb8  server-src-live.tgz
+9b786fb957ae281ef5eb8e9c3cdd819d  422-report.md
+c5b7716278228225811010f093398ced  plants-spec.md
+7a8d23450455b4ee585a2b8e6aa4b484  plants-config.json
+3bb631c2dbfe054a43d24b091772121a  fish-spec.md
+ebcb0c71021e472130988d2a0cd025cb  species-summary.json
+671df024d74e002039a064b465442316  plants-existing.json
+6c8d5dc2eac8db04c4de6d998e6d9850  plants/check.png
+72b393f6c516231a20310d0ad09791fc  plants-sheet-raw.jpg
+3ad4e0c84368acc9f0682768d3d1a190  README.md
+5c5b4201b194172bc8427f4e31a524b0  MANIFEST.md5
+--- plants ---
+fee9bb4bfcbec3b583ade529dbafae64  plants/anubias_petite.webp
+b86a67cd6fb2d62bbea6ad6cc7b0eb1f  plants/crypt_parva.webp
+27b5390231cfca6bd3cf3271e5ecc6b3  plants/green_palace.webp
+c2ffba1a3bd0b7f137cdcbc5aea607f8  plants/hairgrass.webp
+62fb3fa4d2276cf7e2c992292dc0aaf4  plants/hc_cuba.webp
+5318a66e4360607a6306aa39d7333506  plants/java_fern.webp
+91b44b1001de3fcb5f64bf658a93d523  plants/limnophila_pagoda.webp
+f2ea45685fdd1c888ce3d050de60f4e5  plants/riccia.webp
+7ce81487faa1f1c72ef13667384149eb  plants/rotala_macrandra.webp
+f038cbbcc230a59de8aaa28655a32d5b  plants/water_orchid.webp

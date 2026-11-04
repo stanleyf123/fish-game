@@ -3,9 +3,12 @@ const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
-const { softcapMult, theoreticalRatePerHour, multForSave, softcapCfg } = require('../src/coin-softcap');
+const { softcapMult, theoreticalRatePerHour, multForSave, softcapCfg, clientMirrorRatePerHour } = require('../src/coin-softcap');
 const { saleActive, shopVisible, parseWhen } = require('../src/sale-window');
+const { gateNewDecoPurchase } = require('../src/deco-purchase-gate');
 const { checkSave, maxCoinRate } = require('../src/anticheat');
+const { coinBonusSum } = require('../src/legacy-deco');
+const { clientMultFromHtml } = require('./client-coinsoftcap-html');
 
 function merge(a, b) {
   const out = { ...a };
@@ -27,25 +30,20 @@ function mkFish(sp, growth, id = 'f1') {
   return { id, sp, name: 't', growth, full: 100, health: 100, coinT: 10, size: 1 };
 }
 
-function clientSoftMult(cfg, save) {
-  const sc = cfg.coins?.softcap || {};
-  if (sc.enabled === false) return 1;
-  let r = 0;
-  const g1 = cfg.stages[1]?.growth ?? 100;
-  const g2 = cfg.stages[2]?.growth ?? 100;
-  const stg = (f) => (f.growth >= g2 ? 2 : f.growth >= g1 ? 1 : 0);
-  for (const f of save.fish || []) {
-    const st = stg(f);
-    const iv = cfg.coins.intervalSecByStage[st];
-    if (st <= 0 || !iv) continue;
-    const s = cfg.species[f.sp];
-    const drop = Math.max(1, Math.round((s.coin || 0) * cfg.stages[st].coinMultiplier));
-    r += drop / ((iv[0] + iv[1]) / 2) * (cfg.care?.timeScale || 1);
-  }
-  const R = r * 3600;
-  const K = sc.kneePerHour ?? 60000;
-  const exp = sc.exp ?? 0.8;
-  return R <= K ? 1 : Math.pow(K / R, 1 - exp);
+function htmlHelpers(cfg, save) {
+  return {
+    decoMult: () => 1 + coinBonusSum(cfg, save),
+    waterGrade: () => {
+      const grades = cfg.water?.grades || [];
+      const d = save.water?.dirt ?? 0;
+      for (const g of grades) if (d < g.below) return g;
+      return grades[grades.length - 1] || { coinMultiplier: 1 };
+    },
+    vip: { coinBonus: 0 },
+    nbOn: () => false,
+    AQ: null,
+    aqMods: () => ({ coin: 1 }),
+  };
 }
 
 describe('COINSINK-B1-CURVE', () => {
@@ -67,23 +65,34 @@ describe('COINSINK-B1-CURVE', () => {
   });
 
   it('Lv9-scale R below knee unchanged (m=1)', () => {
-    const save = { fish: [mkFish('neon', cfg.stages[2].growth)], up: { cap: 9, deco: [], food: 0, feeder: 0, filter: 0 }, water: { cycle: 100 }, legacyDeco: [] };
+    const save = { fish: [mkFish('neon', cfg.stages[2].growth)], up: { cap: 9, deco: [], food: 0, feeder: 0, filter: 0 }, water: { dirt: 10 }, legacyDeco: [] };
     const R = theoreticalRatePerHour(cfg, save);
     assert.ok(R < 60000, `expected R<60k got ${R}`);
     assert.equal(multForSave(cfg, save), 1);
     assert.equal(softcapMult(cfg, 24000), 1);
   });
 
-  it('client and server mult match within rounding', () => {
+  it('softcap mult within 0.5% of (60000/R)^0.2 at reference R', () => {
+    const exp = 0.8;
+    for (const R of [73500, 85000, 141000, 250000]) {
+      const expected = Math.pow(60000 / R, 1 - exp);
+      const got = softcapMult(cfg, R);
+      assert.ok(Math.abs(got - expected) / expected < 0.005, `R=${R} got ${got} expected ${expected}`);
+    }
+  });
+
+  it('client index.html coinSoftMult matches server mirror within 0.5%', () => {
     const save = {
       fish: Array.from({ length: 80 }, (_, i) => mkFish('neon', cfg.stages[2].growth, 'n' + i)),
       up: { cap: 11, deco: [], food: 2, feeder: 2, filter: 2 },
-      water: { cycle: 100 },
+      water: { dirt: 12 },
       legacyDeco: [],
     };
     const sm = multForSave(cfg, save);
-    const cm = clientSoftMult(cfg, save);
-    assert.ok(Math.abs(sm - cm) < 0.02, `server ${sm} vs client ${cm}`);
+    const cmHtml = clientMultFromHtml(cfg, save, htmlHelpers(cfg, save));
+    assert.ok(Math.abs(sm - cmHtml) / Math.max(sm, 1e-9) < 0.005, `server ${sm} vs html ${cmHtml}`);
+    const R = clientMirrorRatePerHour(cfg, save);
+    assert.ok(Math.abs(softcapMult(cfg, R) - sm) < 1e-9);
   });
 
   it('anticheat accepts income at curved cap', () => {
@@ -91,7 +100,7 @@ describe('COINSINK-B1-CURVE', () => {
       coins: 1000,
       fish: Array.from({ length: 120 }, (_, i) => mkFish('neon', cfg.stages[2].growth, 'x' + i)),
       up: { cap: 12, deco: [], food: 2, feeder: 2, filter: 2 },
-      water: { cycle: 100 },
+      water: { dirt: 10 },
       last: Date.now() - 3600000,
       legacyDeco: [],
     };
@@ -123,7 +132,7 @@ describe('COINSINK-B1-CURVE', () => {
     assert.ok(top.length >= 3);
     const fish = [];
     for (let i = 0; i < 120; i++) fish.push(mkFish(top[i % top.length], cfg.stages[2].growth, 'h' + i));
-    const save = { fish, up: { cap: 12, deco: [], food: 2, feeder: 2, filter: 2 }, water: { cycle: 100 }, legacyDeco: [] };
+    const save = { fish, up: { cap: 12, deco: [], food: 2, feeder: 2, filter: 2 }, water: { dirt: 8 }, legacyDeco: [] };
     const R = theoreticalRatePerHour(cfg, save);
     const mSave = multForSave(cfg, save);
     const mDirect = softcapMult(cfg, R);
@@ -159,5 +168,40 @@ describe('COINSINK-B1-XMAS gating', () => {
   it('deco minTankLevel present on patch items', () => {
     assert.equal(cfg.decorations.cs_b1_ruins_pillar.minTankLevel, 11);
     assert.equal(cfg.decorations.cs_b1_garden_lantern.minTankLevel, 10);
+  });
+
+  it('Christmas decos omit minTankLevel', () => {
+    assert.equal(cfg.decorations.cs_b1_xmas_snowman.minTankLevel, undefined);
+  });
+
+  it('gate rejects xmas deco before sale window', () => {
+    const t = parseWhen(xmasDeco.availableFrom) - 1000;
+    const save = { up: { cap: 12, deco: [] }, coins: 1e9 };
+    assert.equal(gateNewDecoPurchase(cfg, 'cs_b1_xmas_snowman', save, t), 'sale_window');
+  });
+
+  it('anticheat flags forged coinsink decos before sale / below cap', () => {
+    const beforeXmas = parseWhen(xmasDeco.availableFrom) - 86400000;
+    const prev = { coins: 5e6, fish: [], up: { cap: 8, deco: [], food: 0, feeder: 0, filter: 0 }, water: { dirt: 0 }, last: beforeXmas - 1000 };
+    const next = {
+      ...prev,
+      up: { cap: 8, deco: ['cs_b1_xmas_snowman', 'cs_b1_star_flag'], food: 0, feeder: 0, filter: 0 },
+      last: beforeXmas,
+    };
+    const r = checkSave(cfg, prev, prev.last, next, beforeXmas, {});
+    assert.ok(r.suspicious.some((s) => s.includes('不在販售期間')));
+    assert.ok(r.suspicious.some((s) => s.includes('容量 Lv12')));
+  });
+});
+
+describe('COINSINK-B1 patch assets', () => {
+  const cfg = loadCfg();
+
+  it('coin background images omit art/ prefix', () => {
+    for (const th of Object.values(cfg.cosmetics.coinBackgrounds || {})) {
+      if (!th.image || String(th.image).startsWith('/')) continue;
+      assert.ok(!String(th.image).startsWith('art/'), th.image);
+      assert.match(String(th.image), /^coinsink\//);
+    }
   });
 });

@@ -2,7 +2,7 @@
 'use strict';
 /**
  * Headless shop screenshots for COINSINK-B1 (390px, CPU throttle).
- * Requires: server on PORT (default 3000) with coinsink config seeded.
+ * Requires: server on PORT (default 3000). Optional devDep: npx puppeteer (not bundled in package.json).
  */
 const fs = require('fs');
 const path = require('path');
@@ -78,10 +78,38 @@ async function main() {
   await new Promise((r) => setTimeout(r, 2000));
   await page.screenshot({ path: path.join(outDir, 'coinsink-vip-unlocked-cap12.png'), fullPage: true });
 
+  await setup(12, false);
+  await page.evaluate(() => { ShopV2.open('hardscape'); });
+  await new Promise((r) => setTimeout(r, 2000));
+  await page.screenshot({ path: path.join(outDir, 'coinsink-deco-shop-before-xmas.png'), fullPage: true });
+
   await setup(12, true);
   await page.evaluate(() => { ShopV2.open('hardscape'); });
   await new Promise((r) => setTimeout(r, 2000));
   await page.screenshot({ path: path.join(outDir, 'coinsink-deco-xmas-badge.png'), fullPage: true });
+
+  await page.evaluate(() => {
+    const S = window.__aquarium.state;
+    const k = 'cs_b1_garden_lantern';
+    if (!S.up.deco.includes(k)) S.up.deco.push(k);
+    S.up.decoPos = S.up.decoPos || {};
+    S.up.decoPos[k] = 0.5;
+    window.__aquarium.render?.();
+  });
+  await new Promise((r) => setTimeout(r, 1500));
+  const loopOk = await page.evaluate(async () => {
+    const errs = [];
+    const prev = window.onerror;
+    window.onerror = (m) => { errs.push(String(m)); };
+    for (let i = 0; i < 30; i++) {
+      try { window.__aquarium.update?.(1 / 30); window.__aquarium.render?.(); } catch (e) { errs.push(String(e)); }
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    window.onerror = prev;
+    return errs;
+  });
+  await page.screenshot({ path: path.join(outDir, 'coinsink-tank-coin-deco-placed.png'), fullPage: false });
+  if (loopOk.length) errors.push(...loopOk);
 
   await browser.close();
   const shots = fs.readdirSync(outDir).filter((f) => f.startsWith('coinsink-'));

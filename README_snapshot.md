@@ -2,7 +2,7 @@
 
 Pulled read-only from production on 2026-11-04 ~09:25 JST (UTC+9). No deploy, no server changes.
 
-**Live `/var/www/feedfishs/index.html` md5 at pull time: `b47d2a8b84e95a51eed24fb9c47d7c54`** (copy in `client/index.html` matches). BUILD: see `BUILD=` in index.html → BUILD='4.2.186'.
+**Live `/var/www/feedfishs/index.html` md5 at pull time: `b47d2a8b84e95a51eed24fb9c47d7c54`** (copy in `client/index.html` matches). BUILD: see `BUILD=` in index.html → BUILD='4.2.187'.
 
 > ⚠️ GitHub `stanleyf123/fish-game` is **STALE** — do NOT use it as a base. This package is the source of truth. Do not push to GitHub as a deploy path.
 

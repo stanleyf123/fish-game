@@ -8,7 +8,8 @@
     }
   },
   "announcements": {
-    "coinsinkB1Notice": "🌟 大型水族館經營升級：典藏金幣主題與造景系列登場！人氣滿載時，部分表演小費會略為減少（高等級魚缸），但經營樂趣與收藏目標更豐富。詳見商店「限定特權」。"
+    "coinsinkB1Notice": "🌟 大型水族館經營升級：典藏金幣主題與造景系列登場！人氣滿載時，部分表演小費會略為減少（高等級魚缸），但經營樂趣與收藏目標更豐富。詳見商店「限定特權」。",
+    "_coinsinkB1NoticeNote": "optional copy; not auto-posted by server"
   },
   "coinsinkEvents": {
     "xmas2026": {
@@ -27,7 +28,7 @@
         "minTankLevel": 9,
         "shopGroup": "coinsink_collectible",
         "desc": "晨光穿過蕨葉，水面映著森林的寧靜。典藏水彩，只改外觀。",
-        "image": "art/coinsink/bg_coin_forest_spring.webp",
+        "image": "coinsink/bg_coin_forest_spring.webp",
         "top": "#b8e8c8",
         "mid": "#5fa892",
         "low": "#2d6b5c",
@@ -46,7 +47,7 @@
         "minTankLevel": 10,
         "shopGroup": "coinsink_collectible",
         "desc": "積雲倒映在溫暖水面，像漂浮在天空之海。",
-        "image": "art/coinsink/bg_coin_summer_cloud.webp",
+        "image": "coinsink/bg_coin_summer_cloud.webp",
         "top": "#87ceeb",
         "mid": "#6eb5d9",
         "low": "#3a7a9e",
@@ -65,7 +66,7 @@
         "minTankLevel": 11,
         "shopGroup": "coinsink_collectible",
         "desc": "長滿青苔的石柱與光束，古老遺跡浮在雲端。",
-        "image": "art/coinsink/bg_coin_cloud_ruins.webp",
+        "image": "coinsink/bg_coin_cloud_ruins.webp",
         "top": "#9cb4d4",
         "mid": "#6a849e",
         "low": "#3d5268",
@@ -84,7 +85,7 @@
         "minTankLevel": 12,
         "shopGroup": "coinsink_collectible",
         "desc": "深藍極光與螢光浮游，最頂級的典藏水景。",
-        "image": "art/coinsink/bg_coin_star_sea.webp",
+        "image": "coinsink/bg_coin_star_sea.webp",
         "top": "#2a3a72",
         "mid": "#1a2858",
         "low": "#0f1838",
@@ -108,7 +109,7 @@
         "availableFrom": "2026-12-01T00:00:00+08:00",
         "availableUntil": "2027-01-06T00:00:00+08:00",
         "desc": "燈火點亮的雪中小鎮，聖誕限時典藏。",
-        "image": "art/coinsink/bg_coin_xmas_town.webp",
+        "image": "coinsink/bg_coin_xmas_town.webp",
         "top": "#3a4a6a",
         "mid": "#2a3550",
         "low": "#182038",
@@ -196,11 +197,11 @@
     "cs_b1_star_moon_stone": {"name": "月之石", "icon": "🌙", "cost": 180000, "coinBonus": 0, "mutationBonus": 0, "minTankLevel": 12, "shopGroup": "coinsink_collectible", "series": "cs_b1_star", "desc": "柔和月光的石頭。", "draw": "cs_b1_star_moon_stone", "x": 0.28},
     "cs_b1_star_wreck": {"name": "星塵沉木", "icon": "🪵", "cost": 180000, "coinBonus": 0, "mutationBonus": 0, "minTankLevel": 12, "shopGroup": "coinsink_collectible", "series": "cs_b1_star", "desc": "閃著星塵的沉木。", "draw": "cs_b1_star_wreck", "x": 0.45},
     "cs_b1_star_flag": {"name": "航海旗", "icon": "🚩", "cost": 180000, "coinBonus": 0, "mutationBonus": 0, "minTankLevel": 12, "shopGroup": "coinsink_collectible", "series": "cs_b1_star", "desc": "星海探險的旗幟。", "draw": "cs_b1_star_flag", "x": 0.62},
-    "cs_b1_xmas_snowman": {"name": "雪人燈籠", "icon": "⛄", "cost": 50000, "coinBonus": 0, "mutationBonus": 0, "minTankLevel": 8, "shopGroup": "coinsink_event", "series": "cs_b1_xmas", "eventKey": "xmas2026", "eventBadge": "限定", "availableFrom": "2026-12-01T00:00:00+08:00", "availableUntil": "2027-01-06T00:00:00+08:00", "desc": "暖光雪人裝飾。", "draw": "cs_b1_xmas_snowman", "x": 0.3},
-    "cs_b1_xmas_ginger": {"name": "薑餅小屋", "icon": "🏠", "cost": 50000, "coinBonus": 0, "mutationBonus": 0, "minTankLevel": 8, "shopGroup": "coinsink_event", "series": "cs_b1_xmas", "eventKey": "xmas2026", "eventBadge": "限定", "availableFrom": "2026-12-01T00:00:00+08:00", "availableUntil": "2027-01-06T00:00:00+08:00", "desc": "糖霜屋頂的小屋。", "draw": "cs_b1_xmas_ginger", "x": 0.55},
-    "cs_b1_xmas_fir": {"name": "雪松", "icon": "🌲", "cost": 80000, "coinBonus": 0, "mutationBonus": 0, "minTankLevel": 8, "shopGroup": "coinsink_event", "series": "cs_b1_xmas", "eventKey": "xmas2026", "eventBadge": "限定", "availableFrom": "2026-12-01T00:00:00+08:00", "availableUntil": "2027-01-06T00:00:00+08:00", "desc": "掛著小燈的雪松。", "draw": "cs_b1_xmas_fir", "x": 0.72},
-    "cs_b1_xmas_gifts": {"name": "禮物堆", "icon": "🎁", "cost": 80000, "coinBonus": 0, "mutationBonus": 0, "minTankLevel": 8, "shopGroup": "coinsink_event", "series": "cs_b1_xmas", "eventKey": "xmas2026", "eventBadge": "限定", "availableFrom": "2026-12-01T00:00:00+08:00", "availableUntil": "2027-01-06T00:00:00+08:00", "desc": "繽紛禮盒堆。", "draw": "cs_b1_xmas_gifts", "x": 0.4},
-    "cs_b1_xmas_sleigh": {"name": "馴鹿雪橇", "icon": "🛷", "cost": 120000, "coinBonus": 0, "mutationBonus": 0, "minTankLevel": 8, "shopGroup": "coinsink_event", "series": "cs_b1_xmas", "eventKey": "xmas2026", "eventBadge": "限定", "availableFrom": "2026-12-01T00:00:00+08:00", "availableUntil": "2027-01-06T00:00:00+08:00", "desc": "馴鹿拉的雪橇。", "draw": "cs_b1_xmas_sleigh", "x": 0.62},
-    "cs_b1_xmas_arch": {"name": "星光燈串拱門", "icon": "✨", "cost": 200000, "coinBonus": 0, "mutationBonus": 0, "minTankLevel": 8, "shopGroup": "coinsink_event", "series": "cs_b1_xmas", "eventKey": "xmas2026", "eventBadge": "限定", "availableFrom": "2026-12-01T00:00:00+08:00", "availableUntil": "2027-01-06T00:00:00+08:00", "desc": "燈串織成的拱門。", "draw": "cs_b1_xmas_arch", "x": 0.48}
+    "cs_b1_xmas_snowman": {"name": "雪人燈籠", "icon": "⛄", "cost": 50000, "coinBonus": 0, "mutationBonus": 0, "shopGroup": "coinsink_event", "series": "cs_b1_xmas", "eventKey": "xmas2026", "eventBadge": "限定", "availableFrom": "2026-12-01T00:00:00+08:00", "availableUntil": "2027-01-06T00:00:00+08:00", "desc": "暖光雪人裝飾。", "draw": "cs_b1_xmas_snowman", "x": 0.3},
+    "cs_b1_xmas_ginger": {"name": "薑餅小屋", "icon": "🏠", "cost": 50000, "coinBonus": 0, "mutationBonus": 0, "shopGroup": "coinsink_event", "series": "cs_b1_xmas", "eventKey": "xmas2026", "eventBadge": "限定", "availableFrom": "2026-12-01T00:00:00+08:00", "availableUntil": "2027-01-06T00:00:00+08:00", "desc": "糖霜屋頂的小屋。", "draw": "cs_b1_xmas_ginger", "x": 0.55},
+    "cs_b1_xmas_fir": {"name": "雪松", "icon": "🌲", "cost": 80000, "coinBonus": 0, "mutationBonus": 0, "shopGroup": "coinsink_event", "series": "cs_b1_xmas", "eventKey": "xmas2026", "eventBadge": "限定", "availableFrom": "2026-12-01T00:00:00+08:00", "availableUntil": "2027-01-06T00:00:00+08:00", "desc": "掛著小燈的雪松。", "draw": "cs_b1_xmas_fir", "x": 0.72},
+    "cs_b1_xmas_gifts": {"name": "禮物堆", "icon": "🎁", "cost": 80000, "coinBonus": 0, "mutationBonus": 0, "shopGroup": "coinsink_event", "series": "cs_b1_xmas", "eventKey": "xmas2026", "eventBadge": "限定", "availableFrom": "2026-12-01T00:00:00+08:00", "availableUntil": "2027-01-06T00:00:00+08:00", "desc": "繽紛禮盒堆。", "draw": "cs_b1_xmas_gifts", "x": 0.4},
+    "cs_b1_xmas_sleigh": {"name": "馴鹿雪橇", "icon": "🛷", "cost": 120000, "coinBonus": 0, "mutationBonus": 0, "shopGroup": "coinsink_event", "series": "cs_b1_xmas", "eventKey": "xmas2026", "eventBadge": "限定", "availableFrom": "2026-12-01T00:00:00+08:00", "availableUntil": "2027-01-06T00:00:00+08:00", "desc": "馴鹿拉的雪橇。", "draw": "cs_b1_xmas_sleigh", "x": 0.62},
+    "cs_b1_xmas_arch": {"name": "星光燈串拱門", "icon": "✨", "cost": 200000, "coinBonus": 0, "mutationBonus": 0, "shopGroup": "coinsink_event", "series": "cs_b1_xmas", "eventKey": "xmas2026", "eventBadge": "限定", "availableFrom": "2026-12-01T00:00:00+08:00", "availableUntil": "2027-01-06T00:00:00+08:00", "desc": "燈串織成的拱門。", "draw": "cs_b1_xmas_arch", "x": 0.48}
   }
 }

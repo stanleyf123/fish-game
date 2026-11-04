@@ -228,7 +228,20 @@ function checkSave(cfg, prev, prevClientSavedAt, next, nowMs, opts = {}) {
     for (const [kind, key] of Object.entries(KINDS)) { const d = Math.floor((nw[key] || 0) - (pw[key] || 0)); if (d < 0) suspicious.push(`water.${key} 不能減少`); else if (d > 0) { spent += d * costOf(cfg, kind, capPrev); if (kind !== 'clean') paidChanges += d; } }
     if (pw.paidSmall != null && (nw.lastChange || 0) > (pw.lastChange || 0) && !paidChanges && costOf(cfg, 'small', capPrev) > 0) suspicious.push('換水沒有付費紀錄'); }
   const prevDeco = new Set(prev.up?.deco || []);
-  for (const d of next.up.deco) if (!prevDeco.has(d)) spent += cfg.decorations[d].cost;
+  const { gateNewDecoPurchase } = require('./deco-purchase-gate');
+  for (const d of next.up.deco) {
+    if (!prevDeco.has(d)) {
+      const deco = cfg.decorations[d];
+      if (!deco) { suspicious.push(`未知造景 ${d}`); continue; }
+      spent += deco.cost || 0;
+      const gate = gateNewDecoPurchase(cfg, d, next, nowMs);
+      if (gate === 'tank_level') suspicious.push(`造景「${deco.name || d}」需魚缸容量 Lv${deco.minTankLevel || 0} 才能購買`);
+      else if (gate === 'sale_window') suspicious.push(`造景「${deco.name || d}」不在販售期間`);
+      else if (gate === 'gem_only') suspicious.push(`造景「${deco.name || d}」不可由存檔直接新增`);
+      else if (gate === 'not_for_sale') suspicious.push(`造景「${deco.name || d}」不可購買`);
+      else if (gate === 'missing') suspicious.push(`未知造景 ${d}`);
+    }
+  }
   // 造景：新買的設備／海洋館、新種的水草（扣掉用插枝種的）、賣掉的插枝
   { const A = AQ(cfg);
     if (A) { const GE = A.gear || {}, PL = A.plants || {}, po = (prev.gear && prev.gear.own) || {}, no = (next.gear && next.gear.own) || {};

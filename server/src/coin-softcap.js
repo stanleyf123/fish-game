@@ -35,14 +35,47 @@ function avgIntervalSec(cfg, st) {
 }
 
 function waterMult(cfg, save) {
-  const w = save?.water || {};
   const grades = (cfg.water && cfg.water.grades) || [];
-  let best = 1;
+  const dirt = save?.water?.dirt ?? 0;
   for (const g of grades) {
-    const cycle = g.minCycle != null ? g.minCycle : 0;
-    if ((w.cycle || 0) >= cycle) best = Math.max(best, g.coinMultiplier || 1);
+    if (dirt < g.below) return g.coinMultiplier || 1;
   }
-  return best;
+  return grades.length ? (grades[grades.length - 1].coinMultiplier || 1) : 1;
+}
+
+/** 造景美觀金幣倍率（與 client AQ.coinMult 對齊） */
+function aquascapeBeauty(cfg, save) {
+  const A = cfg.aquascape;
+  const ps = save?.plants;
+  if (!A || !ps?.length) return 0;
+  const PL = A.plants || {};
+  const R = A.rules || {};
+  const zones = new Set();
+  const kinds = new Set();
+  let health = 0;
+  let over = 0;
+  let cover = 0;
+  const trimAt = R.trimAt || 130;
+  for (const p of ps) {
+    const P = PL[p.sp];
+    if (!P) continue;
+    zones.add(P.zone);
+    kinds.add(p.sp);
+    health += (p.hp != null ? p.hp : 100) / 100;
+    if ((p.g || 0) >= trimAt) over++;
+    cover += Math.min(1, (p.g || 0) / 100);
+  }
+  const algae = (save.water && save.water.algae) || 0;
+  const sc = Math.min(30, kinds.size * 4) + Math.min(25, zones.size * 5) + Math.min(25, cover * 2.5)
+    + 20 * (health / ps.length) - over * 6 - Math.max(0, algae - 30) * 0.3;
+  return Math.round(Math.min(100, Math.max(0, sc)));
+}
+
+function aquascapeCoinMult(cfg, save) {
+  const A = cfg.aquascape;
+  if (!A || A.enabled === false) return 1;
+  const R = A.rules || {};
+  return 1 + (R.beautyBonusMax ?? 0.08) * aquascapeBeauty(cfg, save) / 100;
 }
 
 function decoMult(cfg, save) {
@@ -57,7 +90,8 @@ function baseDrop(cfg, save, f, opts = {}) {
   if (st <= 0) return 0;
   const stageMult = cfg.stages[st]?.coinMultiplier || 0;
   const vip = opts.vipCoinBonus || 0;
-  const raw = (s.coin || 0) * stageMult * decoMult(cfg, save) * waterMult(cfg, save) * (1 + vip);
+  const aqM = opts.aquascapeCoinMult != null ? opts.aquascapeCoinMult : aquascapeCoinMult(cfg, save);
+  const raw = (s.coin || 0) * stageMult * decoMult(cfg, save) * waterMult(cfg, save) * (1 + vip) * aqM;
   return Math.max(1, Math.round(raw));
 }
 
@@ -65,14 +99,21 @@ function baseDrop(cfg, save, f, opts = {}) {
 function theoreticalRatePerHour(cfg, save, opts = {}) {
   if (!save || !Array.isArray(save.fish)) return 0;
   const timeScale = (cfg.care && cfg.care.timeScale) || 1;
+  const aqM = aquascapeCoinMult(cfg, save);
+  const dropOpts = { ...opts, aquascapeCoinMult: aqM };
   let perSec = 0;
   for (const f of save.fish) {
     const st = stageOf(cfg, f);
     const iv = avgIntervalSec(cfg, st);
     if (st <= 0 || !iv) continue;
-    perSec += baseDrop(cfg, save, f, opts) / iv;
+    perSec += baseDrop(cfg, save, f, dropOpts) / iv;
   }
   return perSec * timeScale * 3600;
+}
+
+/** 與 client/index.html coinSoftMult 的 R 計算對齊（COINSINK-B1-CURVE）；邏輯變更時兩處同步 */
+function clientMirrorRatePerHour(cfg, save, opts = {}) {
+  return theoreticalRatePerHour(cfg, save, opts);
 }
 
 function newbieActive(cfg, save, nowMs = Date.now()) {
@@ -99,9 +140,12 @@ function multForSave(cfg, save, opts = {}) {
 module.exports = {
   softcapCfg,
   theoreticalRatePerHour,
+  clientMirrorRatePerHour,
   softcapMult,
   multForSave,
   baseDrop,
   stageOf,
   newbieActive,
+  waterMult,
+  aquascapeCoinMult,
 };

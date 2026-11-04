@@ -1,0 +1,41 @@
+{
+  "v": "aea8ef37",
+  "w": 512,
+  "h": 336,
+  "ar": 1.524,
+  "eye": [
+    0.748,
+    0.464
+  ],
+  "mouth": [
+    0.949,
+    0.544
+  ],
+  "tailStart": 0.24,
+  "bodyAxisY": 0.493,
+  "bend": 0.0,
+  "tailAmp": 0.09,
+  "hueBase": 220,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.24,
+    "y": 0.493
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.24
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "地圖魚",
+  "family": "cichlid_sa",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 3,
+  "price": 150,
+  "scientificName": "Astronotus ocellatus",
+  "bytes1": 10866,
+  "eyeScale": 1.4,
+  "repaint": true
+}

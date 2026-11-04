@@ -1,0 +1,162 @@
+[
+  {
+    "id": "hit",
+    "label": "Hit spark",
+    "frameW": 128,
+    "frameH": 128,
+    "frames": 10,
+    "fps": 14,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "loop": false,
+    "blend": "lighter",
+    "bytes": 9650,
+    "quality": 80
+  },
+  {
+    "id": "crit",
+    "label": "Crit burst",
+    "frameW": 128,
+    "frameH": 128,
+    "frames": 10,
+    "fps": 14,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "loop": false,
+    "blend": "lighter",
+    "bytes": 25274,
+    "quality": 80
+  },
+  {
+    "id": "heal",
+    "label": "Heal",
+    "frameW": 128,
+    "frameH": 128,
+    "frames": 10,
+    "fps": 12,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "loop": false,
+    "blend": "lighter",
+    "bytes": 13280,
+    "quality": 80
+  },
+  {
+    "id": "shield",
+    "label": "Shield",
+    "frameW": 128,
+    "frameH": 128,
+    "frames": 10,
+    "fps": 10,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "loop": false,
+    "blend": "lighter",
+    "bytes": 24748,
+    "quality": 80
+  },
+  {
+    "id": "water",
+    "label": "Water",
+    "frameW": 128,
+    "frameH": 128,
+    "frames": 10,
+    "fps": 12,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "loop": false,
+    "blend": "lighter",
+    "bytes": 19362,
+    "quality": 80
+  },
+  {
+    "id": "fire",
+    "label": "Fire",
+    "frameW": 128,
+    "frameH": 128,
+    "frames": 10,
+    "fps": 12,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "loop": false,
+    "blend": "lighter",
+    "bytes": 13438,
+    "quality": 80
+  },
+  {
+    "id": "leaf",
+    "label": "Leaf",
+    "frameW": 128,
+    "frameH": 128,
+    "frames": 10,
+    "fps": 12,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "loop": false,
+    "blend": "lighter",
+    "bytes": 12028,
+    "quality": 80
+  },
+  {
+    "id": "thunder",
+    "label": "Thunder",
+    "frameW": 128,
+    "frameH": 128,
+    "frames": 10,
+    "fps": 14,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "loop": false,
+    "blend": "lighter",
+    "bytes": 17728,
+    "quality": 80
+  },
+  {
+    "id": "ko",
+    "label": "KO puff",
+    "frameW": 128,
+    "frameH": 128,
+    "frames": 10,
+    "fps": 10,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "loop": false,
+    "blend": "lighter",
+    "bytes": 20018,
+    "quality": 80
+  },
+  {
+    "id": "confetti",
+    "label": "Victory confetti",
+    "frameW": 128,
+    "frameH": 128,
+    "frames": 10,
+    "fps": 12,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "loop": false,
+    "blend": "lighter",
+    "bytes": 15470,
+    "quality": 80
+  }
+]

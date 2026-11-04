@@ -1,0 +1,41 @@
+{
+  "v": "bb23e4dd",
+  "w": 512,
+  "h": 266,
+  "ar": 1.925,
+  "eye": [
+    0.881,
+    0.459
+  ],
+  "mouth": [
+    0.945,
+    0.539
+  ],
+  "tailStart": 0.271,
+  "bodyAxisY": 0.5,
+  "bend": 0.0,
+  "tailAmp": 0.12,
+  "hueBase": 55,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.271,
+    "y": 0.5
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.271
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "藍眼燈",
+  "family": "rainbowfish",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 2,
+  "price": 40,
+  "scientificName": "Pseudomugil furcatus",
+  "bytes1": 8986,
+  "eyeScale": 1.4,
+  "repaint": false
+}

@@ -1,0 +1,41 @@
+{
+  "v": "a8fd2281",
+  "w": 512,
+  "h": 302,
+  "ar": 1.695,
+  "eye": [
+    0.873,
+    0.517
+  ],
+  "mouth": [
+    0.959,
+    0.597
+  ],
+  "tailStart": 0.25,
+  "bodyAxisY": 0.517,
+  "bend": 0.0,
+  "tailAmp": 0.12,
+  "hueBase": 130,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.25,
+    "y": 0.517
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.25
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "綠虎皮",
+  "family": "cyprinid",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 1,
+  "price": 30,
+  "scientificName": "Puntigrus tetrazona (Moss)",
+  "bytes1": 10394,
+  "eyeScale": 1.4,
+  "repaint": false
+}

@@ -1,0 +1,41 @@
+{
+  "v": "00aa7f15",
+  "w": 512,
+  "h": 260,
+  "ar": 1.969,
+  "eye": [
+    0.768,
+    0.531
+  ],
+  "mouth": [
+    0.945,
+    0.611
+  ],
+  "tailStart": 0.26,
+  "bodyAxisY": 0.552,
+  "bend": 0.0,
+  "tailAmp": 0.09,
+  "hueBase": 30,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.26,
+    "y": 0.552
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.26
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "大鬍子",
+  "family": "pleco",
+  "role": "glass",
+  "breedOnly": false,
+  "unlockLevel": 2,
+  "price": 50,
+  "scientificName": "Ancistrus sp.",
+  "bytes1": 11236,
+  "eyeScale": 1.4,
+  "repaint": true
+}

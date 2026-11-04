@@ -1,0 +1,41 @@
+{
+  "v": "6459c35a",
+  "w": 512,
+  "h": 272,
+  "ar": 1.882,
+  "eye": [
+    0.873,
+    0.485
+  ],
+  "mouth": [
+    0.955,
+    0.565
+  ],
+  "tailStart": 0.273,
+  "bodyAxisY": 0.489,
+  "bend": 0.0,
+  "tailAmp": 0.12,
+  "hueBase": 48,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.273,
+    "y": 0.489
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.273
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "黃金條",
+  "family": "cyprinid",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 1,
+  "price": 20,
+  "scientificName": "Barbodes semifasciolatus",
+  "bytes1": 10518,
+  "eyeScale": 1.4,
+  "repaint": false
+}

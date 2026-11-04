@@ -1,0 +1,41 @@
+{
+  "v": "9e265d1f",
+  "w": 512,
+  "h": 236,
+  "ar": 2.169,
+  "eye": [
+    0.881,
+    0.483
+  ],
+  "mouth": [
+    0.961,
+    0.563
+  ],
+  "tailStart": 0.273,
+  "bodyAxisY": 0.477,
+  "bend": 0.0,
+  "tailAmp": 0.12,
+  "hueBase": 70,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.273,
+    "y": 0.477
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.273
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "紅鼻剪刀",
+  "family": "tetra",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 2,
+  "price": 50,
+  "scientificName": "Hemigrammus rhodostomus",
+  "bytes1": 8836,
+  "eyeScale": 1.4,
+  "repaint": false
+}

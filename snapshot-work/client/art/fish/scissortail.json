@@ -1,0 +1,41 @@
+{
+  "v": "98747628",
+  "w": 512,
+  "h": 230,
+  "ar": 2.226,
+  "eye": [
+    0.877,
+    0.435
+  ],
+  "mouth": [
+    0.945,
+    0.515
+  ],
+  "tailStart": 0.273,
+  "bodyAxisY": 0.473,
+  "bend": 0.0,
+  "tailAmp": 0.12,
+  "hueBase": 45,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.273,
+    "y": 0.473
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.273
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "剪刀波魚",
+  "family": "cyprinid",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 2,
+  "price": 35,
+  "scientificName": "Rasbora trilineata",
+  "bytes1": 8946,
+  "eyeScale": 1.4,
+  "repaint": false
+}

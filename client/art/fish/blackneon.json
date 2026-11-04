@@ -1,0 +1,41 @@
+{
+  "v": "1a7295cc",
+  "w": 512,
+  "h": 250,
+  "ar": 2.048,
+  "eye": [
+    0.771,
+    0.472
+  ],
+  "mouth": [
+    0.957,
+    0.552
+  ],
+  "tailStart": 0.262,
+  "bodyAxisY": 0.481,
+  "bend": 0.0,
+  "tailAmp": 0.12,
+  "hueBase": 140,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.262,
+    "y": 0.481
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.262
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "黑燈管",
+  "family": "tetra",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 2,
+  "price": 35,
+  "scientificName": "Hyphessobrycon herbertaxelrodi",
+  "bytes1": 8768,
+  "eyeScale": 1.4,
+  "repaint": false
+}

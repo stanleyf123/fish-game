@@ -1,0 +1,41 @@
+{
+  "v": "40169f91",
+  "w": 512,
+  "h": 382,
+  "ar": 1.34,
+  "eye": [
+    0.705,
+    0.518
+  ],
+  "mouth": [
+    0.963,
+    0.598
+  ],
+  "tailStart": 0.291,
+  "bodyAxisY": 0.533,
+  "bend": 0.0,
+  "tailAmp": 0.07,
+  "hueBase": 25,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.291,
+    "y": 0.533
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.291
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "豹紋七彩",
+  "family": "cichlid_sa",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 4,
+  "price": 350,
+  "scientificName": "Symphysodon aequifasciatus (Leopard)",
+  "bytes1": 10344,
+  "eyeScale": 1.4,
+  "repaint": true
+}

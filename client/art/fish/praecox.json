@@ -1,0 +1,41 @@
+{
+  "v": "35ba6a68",
+  "w": 512,
+  "h": 276,
+  "ar": 1.855,
+  "eye": [
+    0.885,
+    0.464
+  ],
+  "mouth": [
+    0.947,
+    0.544
+  ],
+  "tailStart": 0.271,
+  "bodyAxisY": 0.491,
+  "bend": 0.0,
+  "tailAmp": 0.12,
+  "hueBase": 210,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.271,
+    "y": 0.491
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.271
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "電光美人",
+  "family": "rainbowfish",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 2,
+  "price": 40,
+  "scientificName": "Melanotaenia praecox",
+  "bytes1": 10610,
+  "eyeScale": 1.4,
+  "repaint": false
+}

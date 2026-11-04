@@ -1,0 +1,41 @@
+{
+  "v": "a220bb32",
+  "w": 512,
+  "h": 254,
+  "ar": 2.016,
+  "eye": [
+    0.881,
+    0.512
+  ],
+  "mouth": [
+    0.963,
+    0.592
+  ],
+  "tailStart": 0.27,
+  "bodyAxisY": 0.486,
+  "bend": 0.0,
+  "tailAmp": 0.12,
+  "hueBase": 2,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.27,
+    "y": 0.486
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.27
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "小紅莓",
+  "family": "cyprinid",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 1,
+  "price": 30,
+  "scientificName": "Boraras brigittae",
+  "bytes1": 8782,
+  "eyeScale": 1.4,
+  "repaint": false
+}

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>悠游水族箱 · 英雄魚 PvP 管理</title>
+<link rel="stylesheet" href="/admin/assets/admin.css?v=41">
+<link rel="icon" href="/admin/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/admin/assets/workspace.css?v=20261024a">
+</head>
+<body>
+<div id="layout">
+  <nav id="side">
+    <div class="brand">⚔️ 英雄魚 PvP<small>悠游水族箱・管理後台</small></div>
+    <a href="/admin">← 回主後台</a>
+    <div class="navgroup">英雄魚</div>
+    <a href="#hero" data-nav="hero">📊 總覽</a>
+    <a href="#hero-rank" data-nav="hero-rank">🏆 排行榜</a>
+    <a href="#hero-heroes" data-nav="hero-heroes">🐟 英雄 / 禁賽</a>
+    <a href="#hero-battles" data-nav="hero-battles">⚔️ 戰報 / 可疑</a>
+    <a href="#hero-seasons" data-nav="hero-seasons">🗓 賽季</a>
+    <div class="navgroup">設定</div>
+    <a href="#hero-config" data-nav="hero-config">⚙️ 英雄設定</a>
+    <a href="#hero-balance" data-nav="hero-balance">⚖️ 平衡模擬</a>
+    <button id="logoutBtn" class="btn ghost small">登出</button>
+  </nav>
+  <section id="workspace">
+    <header id="workbar"><div class="work-context"><span id="workSection">營運工作台</span><small id="workHint">查看狀況，再處理日常工作</small></div>
+      <div class="work-search"><label class="sr-only" for="functionSearch">搜尋後台功能或玩家 ID</label><input id="functionSearch" type="search" placeholder="搜尋功能或輸入 #玩家ID" autocomplete="off" aria-controls="functionResults" aria-expanded="false"><div id="functionResults" class="hidden" aria-label="搜尋結果"></div></div>
+      <a class="btn ghost small work-game" href="/" target="_blank" rel="noopener">開啟遊戲 ↗</a>
+    </header>
+    <main id="main"><div class="loading">載入中…</div></main>
+  </section>
+</div>
+<div id="modal" class="modal hidden"><div class="modal-box"><button class="modal-x" data-close>×</button><div id="modalBody"></div></div></div>
+<div id="toasts"></div>
+<script src="/sdk/fishrender.js"></script>
+<script src="/sdk/hero.js"></script>
+<script src="/admin/assets/charts.js?v=41"></script>
+<script src="/admin/assets/app.js?v=20261024b"></script>
+<script src="/admin/assets/hero-admin.js?v=41"></script>
+<script src="/admin/assets/mobile-nav.js?v=20261023b"></script>
+<script src="/admin/assets/workspace.js?v=20261023b"></script>
+<script src="/admin/assets/boot.js?v=41"></script>
+</body>
+</html>

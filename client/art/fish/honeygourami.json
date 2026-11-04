@@ -1,0 +1,41 @@
+{
+  "v": "52d7aab8",
+  "w": 512,
+  "h": 380,
+  "ar": 1.347,
+  "eye": [
+    0.838,
+    0.411
+  ],
+  "mouth": [
+    0.955,
+    0.491
+  ],
+  "tailStart": 0.279,
+  "bodyAxisY": 0.416,
+  "bend": 0.0,
+  "tailAmp": 0.12,
+  "hueBase": 32,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.279,
+    "y": 0.416
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.279
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "蜂蜜麗麗",
+  "family": "anabantoid",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 2,
+  "price": 40,
+  "scientificName": "Trichogaster chuna",
+  "bytes1": 12976,
+  "eyeScale": 1.4,
+  "repaint": false
+}

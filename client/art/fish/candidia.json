@@ -1,0 +1,41 @@
+{
+  "v": "5254cbd7",
+  "w": 512,
+  "h": 238,
+  "ar": 2.151,
+  "eye": [
+    0.877,
+    0.496
+  ],
+  "mouth": [
+    0.961,
+    0.576
+  ],
+  "tailStart": 0.25,
+  "bodyAxisY": 0.5,
+  "bend": 0.0,
+  "tailAmp": 0.12,
+  "hueBase": 200,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.25,
+    "y": 0.5
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.25
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "台灣馬口魚",
+  "family": "cyprinid",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 2,
+  "price": 35,
+  "scientificName": "Candidia barbata",
+  "bytes1": 8804,
+  "eyeScale": 1.4,
+  "repaint": false
+}

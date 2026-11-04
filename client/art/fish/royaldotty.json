@@ -1,0 +1,41 @@
+{
+  "v": "eb27b2dd",
+  "w": 512,
+  "h": 284,
+  "ar": 1.803,
+  "eye": [
+    0.838,
+    0.465
+  ],
+  "mouth": [
+    0.953,
+    0.545
+  ],
+  "tailStart": 0.312,
+  "bodyAxisY": 0.509,
+  "bend": 0.0,
+  "tailAmp": 0.16,
+  "hueBase": 290,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.312,
+    "y": 0.509
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.312
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "雙色草莓",
+  "family": "marine",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 1,
+  "price": 30,
+  "scientificName": "Pictichromis paccagnellae",
+  "bytes1": 10660,
+  "eyeScale": 1.4,
+  "repaint": false
+}

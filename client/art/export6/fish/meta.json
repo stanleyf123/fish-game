@@ -1,0 +1,1232 @@
+{
+  "auratus": {
+    "v": "6b00f8da",
+    "w": 512,
+    "h": 354,
+    "ar": 1.446,
+    "eye": [
+      0.773,
+      0.395
+    ],
+    "mouth": [
+      0.928,
+      0.475
+    ],
+    "tailStart": 0.242,
+    "bodyAxisY": 0.489,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 50,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.242,
+      "y": 0.489
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.242
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "非洲鳳凰",
+    "family": "cichlid_af",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 45,
+    "scientificName": "Melanochromis auratus",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 10684
+  },
+  "bluedamsel": {
+    "v": "b9a8f22d",
+    "w": 512,
+    "h": 286,
+    "ar": 1.79,
+    "eye": [
+      0.871,
+      0.51
+    ],
+    "mouth": [
+      0.961,
+      0.59
+    ],
+    "tailStart": 0.268,
+    "bodyAxisY": 0.498,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 220,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.268,
+      "y": 0.498
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.268
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "藍魔鬼",
+    "family": "marine",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 45,
+    "scientificName": "Chrysiptera cyanea",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 9782
+  },
+  "convict": {
+    "v": "cc37dd0a",
+    "w": 512,
+    "h": 312,
+    "ar": 1.641,
+    "eye": [
+      0.855,
+      0.449
+    ],
+    "mouth": [
+      0.938,
+      0.529
+    ],
+    "tailStart": 0.25,
+    "bodyAxisY": 0.516,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 210,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.25,
+      "y": 0.516
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.25
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "九間菠蘿",
+    "family": "cichlid_sa",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 45,
+    "scientificName": "Amatitlania nigrofasciata",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 10140
+  },
+  "crucian": {
+    "v": "df245d03",
+    "w": 512,
+    "h": 368,
+    "ar": 1.391,
+    "eye": [
+      0.754,
+      0.484
+    ],
+    "mouth": [
+      0.961,
+      0.564
+    ],
+    "tailStart": 0.258,
+    "bodyAxisY": 0.488,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 70,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.258,
+      "y": 0.488
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.258
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "鯽魚",
+    "family": "goldfish",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 45,
+    "scientificName": "Carassius auratus (wild type)",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 11388
+  },
+  "domino": {
+    "v": "766d09a9",
+    "w": 512,
+    "h": 280,
+    "ar": 1.829,
+    "eye": [
+      0.863,
+      0.514
+    ],
+    "mouth": [
+      0.963,
+      0.594
+    ],
+    "tailStart": 0.262,
+    "bodyAxisY": 0.507,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 230,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.262,
+      "y": 0.507
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.262
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "三點白",
+    "family": "marine",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 45,
+    "scientificName": "Dascyllus trimaculatus",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 8322
+  },
+  "goldgourami": {
+    "v": "a400679c",
+    "w": 512,
+    "h": 390,
+    "ar": 1.313,
+    "eye": [
+      0.75,
+      0.431
+    ],
+    "mouth": [
+      0.949,
+      0.511
+    ],
+    "tailStart": 0.244,
+    "bodyAxisY": 0.459,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 45,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.244,
+      "y": 0.459
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.244
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "金曼龍",
+    "family": "anabantoid",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 45,
+    "scientificName": "Trichopodus trichopterus (Gold)",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 10972
+  },
+  "paradise": {
+    "v": "38b1b876",
+    "w": 512,
+    "h": 334,
+    "ar": 1.533,
+    "eye": [
+      0.875,
+      0.497
+    ],
+    "mouth": [
+      0.961,
+      0.577
+    ],
+    "tailStart": 0.301,
+    "bodyAxisY": 0.491,
+    "bend": 0.0,
+    "tailAmp": 0.16,
+    "hueBase": 210,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.301,
+      "y": 0.491
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.301
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "蓋斑鬥魚",
+    "family": "anabantoid",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 45,
+    "scientificName": "Macropodus opercularis",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 12066
+  },
+  "peapuffer": {
+    "v": "a773b2fe",
+    "w": 512,
+    "h": 378,
+    "ar": 1.354,
+    "eye": [
+      0.734,
+      0.392
+    ],
+    "mouth": [
+      0.924,
+      0.472
+    ],
+    "tailStart": 0.193,
+    "bodyAxisY": 0.511,
+    "bend": 0.0,
+    "tailAmp": 0.08,
+    "hueBase": 50,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.193,
+      "y": 0.511
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.193
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "金娃娃",
+    "family": "puffer",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 45,
+    "scientificName": "Carinotetraodon travancoricus",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 10178
+  },
+  "pearlgourami": {
+    "v": "ff0f38be",
+    "w": 512,
+    "h": 400,
+    "ar": 1.28,
+    "eye": [
+      0.797,
+      0.355
+    ],
+    "mouth": [
+      0.928,
+      0.435
+    ],
+    "tailStart": 0.244,
+    "bodyAxisY": 0.427,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 25,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.244,
+      "y": 0.427
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.244
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "珍珠馬甲",
+    "family": "anabantoid",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 45,
+    "scientificName": "Trichopodus leerii",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 11698
+  },
+  "whiptail": {
+    "v": "eb9f4d9b",
+    "w": 512,
+    "h": 92,
+    "ar": 5.565,
+    "eye": [
+      0.844,
+      0.348
+    ],
+    "mouth": [
+      0.951,
+      0.428
+    ],
+    "tailStart": 0.52,
+    "bodyAxisY": 0.478,
+    "bend": 0.0,
+    "tailAmp": 0.1,
+    "hueBase": 35,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.52,
+      "y": 0.478
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.52
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "蟲紋直升機",
+    "family": "pleco",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 45,
+    "scientificName": "Rineloricaria lanceolata",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 4736
+  },
+  "blackclown": {
+    "v": "931f45ce",
+    "w": 512,
+    "h": 300,
+    "ar": 1.707,
+    "eye": [
+      0.762,
+      0.473
+    ],
+    "mouth": [
+      0.961,
+      0.553
+    ],
+    "tailStart": 0.264,
+    "bodyAxisY": 0.522,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 230,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.264,
+      "y": 0.522
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.264
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "黑白小丑",
+    "family": "marine",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 50,
+    "scientificName": "Amphiprion ocellaris (Black)",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 8278
+  },
+  "cleanerwrasse": {
+    "v": "4840f7d9",
+    "w": 512,
+    "h": 92,
+    "ar": 5.565,
+    "eye": [
+      0.734,
+      0.326
+    ],
+    "mouth": [
+      0.951,
+      0.406
+    ],
+    "tailStart": 0.18,
+    "bodyAxisY": 0.473,
+    "bend": 0.0,
+    "tailAmp": 0.1,
+    "hueBase": 205,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.18,
+      "y": 0.473
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.18
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "醫生魚",
+    "family": "marine",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 50,
+    "scientificName": "Labroides dimidiatus",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 5040
+  },
+  "cory": {
+    "v": "41ef6395",
+    "w": 512,
+    "h": 360,
+    "ar": 1.422,
+    "eye": [
+      0.754,
+      0.475
+    ],
+    "mouth": [
+      0.916,
+      0.555
+    ],
+    "tailStart": 0.248,
+    "bodyAxisY": 0.536,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 35,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.248,
+      "y": 0.536
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.248
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "琴鼠魚",
+    "family": "catfish",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 50,
+    "scientificName": "Corydoras julii",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 14150
+  },
+  "estherae": {
+    "v": "1d427d3d",
+    "w": 512,
+    "h": 362,
+    "ar": 1.414,
+    "eye": [
+      0.746,
+      0.47
+    ],
+    "mouth": [
+      0.955,
+      0.55
+    ],
+    "tailStart": 0.244,
+    "bodyAxisY": 0.493,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 22,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.244,
+      "y": 0.493
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.244
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "血中紅",
+    "family": "cichlid_af",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 50,
+    "scientificName": "Maylandia estherae",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 10232
+  },
+  "kribensis": {
+    "v": "fd299a63",
+    "w": 512,
+    "h": 362,
+    "ar": 1.414,
+    "eye": [
+      0.723,
+      0.459
+    ],
+    "mouth": [
+      0.945,
+      0.539
+    ],
+    "tailStart": 0.244,
+    "bodyAxisY": 0.49,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 45,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.244,
+      "y": 0.49
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.244
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "紅肚鳳凰",
+    "family": "cichlid_af",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 50,
+    "scientificName": "Pelvicachromis pulcher",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 10024
+  },
+  "kuhli": {
+    "v": "a4b45276",
+    "w": 512,
+    "h": 96,
+    "ar": 5.333,
+    "eye": [
+      0.844,
+      0.354
+    ],
+    "mouth": [
+      0.955,
+      0.434
+    ],
+    "tailStart": 0.22,
+    "bodyAxisY": 0.484,
+    "bend": 0.0,
+    "tailAmp": 0.1,
+    "hueBase": 30,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.22,
+      "y": 0.484
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.22
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "苦力泥鰍",
+    "family": "loach",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 50,
+    "scientificName": "Pangio kuhlii",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 5376
+  },
+  "silverdollar": {
+    "v": "5da30156",
+    "w": 512,
+    "h": 414,
+    "ar": 1.237,
+    "eye": [
+      0.797,
+      0.44
+    ],
+    "mouth": [
+      0.939,
+      0.52
+    ],
+    "tailStart": 0.246,
+    "bodyAxisY": 0.495,
+    "bend": 0.0,
+    "tailAmp": 0.08,
+    "hueBase": 200,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.246,
+      "y": 0.495
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.246
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "銀板",
+    "family": "piranha",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 50,
+    "scientificName": "Metynnis argenteus",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 11484
+  },
+  "sixline": {
+    "v": "e78e0257",
+    "w": 512,
+    "h": 258,
+    "ar": 1.984,
+    "eye": [
+      0.875,
+      0.457
+    ],
+    "mouth": [
+      0.949,
+      0.537
+    ],
+    "tailStart": 0.264,
+    "bodyAxisY": 0.508,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 25,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.264,
+      "y": 0.508
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.264
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "六線狐",
+    "family": "marine",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 50,
+    "scientificName": "Pseudocheilinus hexataenia",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 10266
+  },
+  "upsidedown": {
+    "v": "53e4a7f0",
+    "w": 512,
+    "h": 254,
+    "ar": 2.016,
+    "eye": [
+      0.91,
+      0.559
+    ],
+    "mouth": [
+      0.955,
+      0.639
+    ],
+    "tailStart": 0.266,
+    "bodyAxisY": 0.516,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 35,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.266,
+      "y": 0.516
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.266
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "反游貓",
+    "family": "catfish",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 50,
+    "scientificName": "Synodontis nigriventris",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 10024
+  },
+  "blindcave": {
+    "v": "196a8a7b",
+    "w": 512,
+    "h": 282,
+    "ar": 1.816,
+    "eye": [
+      0.799,
+      0.528
+    ],
+    "mouth": [
+      0.963,
+      0.608
+    ],
+    "tailStart": 0.27,
+    "bodyAxisY": 0.496,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 350,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.27,
+      "y": 0.496
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.27
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "盲魚",
+    "family": "tetra",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 55,
+    "scientificName": "Astyanax mexicanus",
+    "eyeScale": 1.0,
+    "noEye": true,
+    "bytes1": 7868
+  },
+  "climbingperch": {
+    "v": "be08fa47",
+    "w": 512,
+    "h": 358,
+    "ar": 1.43,
+    "eye": [
+      0.75,
+      0.469
+    ],
+    "mouth": [
+      0.949,
+      0.549
+    ],
+    "tailStart": 0.24,
+    "bodyAxisY": 0.497,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 80,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.24,
+      "y": 0.497
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.24
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "攀木魚",
+    "family": "anabantoid",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 55,
+    "scientificName": "Anabas testudineus",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 10812
+  },
+  "comet": {
+    "v": "2787e207",
+    "w": 512,
+    "h": 312,
+    "ar": 1.641,
+    "eye": [
+      0.812,
+      0.455
+    ],
+    "mouth": [
+      0.951,
+      0.535
+    ],
+    "tailStart": 0.396,
+    "bodyAxisY": 0.49,
+    "bend": 0.0,
+    "tailAmp": 0.16,
+    "hueBase": 15,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.396,
+      "y": 0.49
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.396
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "彗星",
+    "family": "goldfish",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 55,
+    "scientificName": "Carassius auratus (Comet)",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 10706
+  },
+  "demasoni": {
+    "v": "a8774956",
+    "w": 512,
+    "h": 284,
+    "ar": 1.803,
+    "eye": [
+      0.871,
+      0.451
+    ],
+    "mouth": [
+      0.947,
+      0.531
+    ],
+    "tailStart": 0.266,
+    "bodyAxisY": 0.496,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 205,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.266,
+      "y": 0.496
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.266
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "特藍斑馬",
+    "family": "cichlid_af",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 55,
+    "scientificName": "Pseudotropheus demasoni",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 10386
+  },
+  "emperortetra": {
+    "v": "cd09a6b8",
+    "w": 512,
+    "h": 304,
+    "ar": 1.684,
+    "eye": [
+      0.879,
+      0.493
+    ],
+    "mouth": [
+      0.951,
+      0.573
+    ],
+    "tailStart": 0.289,
+    "bodyAxisY": 0.508,
+    "bend": 0.0,
+    "tailAmp": 0.16,
+    "hueBase": 265,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.289,
+      "y": 0.508
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.289
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "帝王燈",
+    "family": "tetra",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 55,
+    "scientificName": "Nematobrycon palmeri",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 10306
+  },
+  "firemouth": {
+    "v": "e4b0e7f3",
+    "w": 512,
+    "h": 358,
+    "ar": 1.43,
+    "eye": [
+      0.75,
+      0.464
+    ],
+    "mouth": [
+      0.949,
+      0.544
+    ],
+    "tailStart": 0.242,
+    "bodyAxisY": 0.493,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 200,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.242,
+      "y": 0.493
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.242
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "紅肚火口",
+    "family": "cichlid_sa",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 55,
+    "scientificName": "Thorichthys meeki",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 10324
+  },
+  "greenpuffer": {
+    "v": "b0b720c5",
+    "w": 512,
+    "h": 390,
+    "ar": 1.313,
+    "eye": [
+      0.746,
+      0.426
+    ],
+    "mouth": [
+      0.93,
+      0.506
+    ],
+    "tailStart": 0.207,
+    "bodyAxisY": 0.529,
+    "bend": 0.0,
+    "tailAmp": 0.08,
+    "hueBase": 85,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.207,
+      "y": 0.529
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.207
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "綠河豚",
+    "family": "puffer",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 55,
+    "scientificName": "Dichotomyctere nigroviridis",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 12172
+  },
+  "lacustris": {
+    "v": "bd520c4c",
+    "w": 512,
+    "h": 272,
+    "ar": 1.882,
+    "eye": [
+      0.879,
+      0.515
+    ],
+    "mouth": [
+      0.963,
+      0.595
+    ],
+    "tailStart": 0.266,
+    "bodyAxisY": 0.493,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 195,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.266,
+      "y": 0.493
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.266
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "藍美人",
+    "family": "rainbowfish",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 55,
+    "scientificName": "Melanotaenia lacustris",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 9608
+  },
+  "pearlscale": {
+    "v": "02d75ef5",
+    "w": 512,
+    "h": 332,
+    "ar": 1.542,
+    "eye": [
+      0.77,
+      0.428
+    ],
+    "mouth": [
+      0.938,
+      0.508
+    ],
+    "tailStart": 0.27,
+    "bodyAxisY": 0.503,
+    "bend": 0.0,
+    "tailAmp": 0.08,
+    "hueBase": 32,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.27,
+      "y": 0.503
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.27
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "珍珠鱗",
+    "family": "goldfish",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 55,
+    "scientificName": "Carassius auratus (Pearlscale)",
+    "eyeScale": 1.0,
+    "noEye": false,
+    "bytes1": 12698
+  },
+  "rainbowshark": {
+    "v": "c2b9be54",
+    "w": 512,
+    "h": 266,
+    "ar": 1.925,
+    "eye": [
+      0.809,
+      0.504
+    ],
+    "mouth": [
+      0.963,
+      0.584
+    ],
+    "tailStart": 0.271,
+    "bodyAxisY": 0.506,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 220,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.271,
+      "y": 0.506
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.271
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "彩虹鯊",
+    "family": "shark",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 55,
+    "scientificName": "Epalzeorhynchos frenatum",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 8322
+  },
+  "redtailshark": {
+    "v": "8f2ff4e3",
+    "w": 512,
+    "h": 266,
+    "ar": 1.925,
+    "eye": [
+      0.805,
+      0.526
+    ],
+    "mouth": [
+      0.963,
+      0.606
+    ],
+    "tailStart": 0.273,
+    "bodyAxisY": 0.506,
+    "bend": 0.0,
+    "tailAmp": 0.12,
+    "hueBase": 230,
+    "lenRef": 1.0,
+    "tailAxis": "x",
+    "tailPivot": {
+      "x": 0.273,
+      "y": 0.506
+    },
+    "tailRegion": {
+      "x0": 0.0,
+      "x1": 0.273
+    },
+    "headStill": true,
+    "sway": "tail-only",
+    "name": "紅尾黑鯊",
+    "family": "shark",
+    "role": "fish",
+    "breedOnly": false,
+    "unlockLevel": 2,
+    "price": 55,
+    "scientificName": "Epalzeorhynchos bicolor",
+    "eyeScale": 1.4,
+    "noEye": false,
+    "bytes1": 7512
+  }
+}

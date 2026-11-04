@@ -1,0 +1,41 @@
+{
+  "v": "d821f55d",
+  "w": 512,
+  "h": 342,
+  "ar": 1.497,
+  "eye": [
+    0.865,
+    0.52
+  ],
+  "mouth": [
+    0.959,
+    0.6
+  ],
+  "tailStart": 0.287,
+  "bodyAxisY": 0.491,
+  "bend": 0.0,
+  "tailAmp": 0.12,
+  "hueBase": 220,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.287,
+    "y": 0.491
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.287
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "黑旗",
+  "family": "tetra",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 1,
+  "price": 30,
+  "scientificName": "Hyphessobrycon megalopterus",
+  "bytes1": 10094,
+  "eyeScale": 1.4,
+  "repaint": false
+}

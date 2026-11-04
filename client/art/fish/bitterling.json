@@ -1,0 +1,41 @@
+{
+  "v": "2f0a213c",
+  "w": 512,
+  "h": 316,
+  "ar": 1.62,
+  "eye": [
+    0.912,
+    0.475
+  ],
+  "mouth": [
+    0.961,
+    0.555
+  ],
+  "tailStart": 0.281,
+  "bodyAxisY": 0.486,
+  "bend": 0.0,
+  "tailAmp": 0.12,
+  "hueBase": 200,
+  "lenRef": 1.0,
+  "tailAxis": "x",
+  "tailPivot": {
+    "x": 0.281,
+    "y": 0.486
+  },
+  "tailRegion": {
+    "x0": 0.0,
+    "x1": 0.281
+  },
+  "headStill": true,
+  "sway": "tail-only",
+  "name": "鰟鮍",
+  "family": "cyprinid",
+  "role": "fish",
+  "breedOnly": false,
+  "unlockLevel": 1,
+  "price": 25,
+  "scientificName": "Rhodeus ocellatus",
+  "bytes1": 11218,
+  "eyeScale": 1.4,
+  "repaint": false
+}

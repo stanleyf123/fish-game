@@ -198,7 +198,8 @@ function checkCos(cfg, prev, next) {
   if (Object.entries(own).some(([k, v]) => !B[k] || v !== 1)) errs.push('cos.own 含未知外觀');
   if (c.bg != null && (typeof c.bg !== 'string' || !own[c.bg])) errs.push('cos.bg 必須是已擁有的背景');
   const po = (prev && prev.cos && prev.cos.own) || {};
-  for (const k of Object.keys(own)) if (!po[k] && B[k]) suspicious.push(`背景「${B[k].name}」只能由伺服器購買或發放`);
+  const { isCoinsinkBackgroundId } = require('./coinsink-purchase');
+  for (const k of Object.keys(own)) if (!po[k] && B[k] && !isCoinsinkBackgroundId(k, cfg)) suspicious.push(`背景「${B[k].name}」只能由伺服器購買或發放`);
   return { errs, suspicious };
 }
 

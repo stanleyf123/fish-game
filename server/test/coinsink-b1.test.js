@@ -8,7 +8,9 @@ const { saleActive, shopVisible, parseWhen } = require('../src/sale-window');
 const { gateNewDecoPurchase } = require('../src/deco-purchase-gate');
 const { checkSave, maxCoinRate } = require('../src/anticheat');
 const { coinBonusSum } = require('../src/legacy-deco');
+const { loadPurchaseSets } = require('../src/coinsink-purchase');
 const { clientMultFromHtml } = require('./client-coinsoftcap-html');
+const Database = require('better-sqlite3');
 
 function merge(a, b) {
   const out = { ...a };
@@ -26,8 +28,25 @@ function loadCfg() {
   return merge(base, rest);
 }
 
+function mkPurchaseDb() {
+  const db = new Database(':memory:');
+  db.exec(`CREATE TABLE deco_inventory_ops(player_id INTEGER NOT NULL, idem_key TEXT NOT NULL, request TEXT NOT NULL, receipt TEXT NOT NULL, created_at INTEGER NOT NULL, PRIMARY KEY(player_id, idem_key))`);
+  db.exec(`CREATE TABLE coin_cosmetic_ops(player_id INTEGER NOT NULL, idem TEXT NOT NULL, cosmetic_id TEXT NOT NULL, price INTEGER NOT NULL, created_at INTEGER NOT NULL, PRIMARY KEY(player_id, idem))`);
+  return db;
+}
+
 function mkFish(sp, growth, id = 'f1') {
   return { id, sp, name: 't', growth, full: 100, health: 100, coinT: 10, size: 1 };
+}
+
+function richSave(cfg, decoIds = []) {
+  return {
+    coins: 500000,
+    fish: Array.from({ length: 80 }, (_, i) => mkFish('neon', cfg.stages[2].growth, 'n' + i)),
+    up: { cap: 12, deco: decoIds, food: 2, feeder: 2, filter: 2 },
+    water: { dirt: 10 },
+    legacyDeco: [],
+  };
 }
 
 function htmlHelpers(cfg, save) {
@@ -188,7 +207,7 @@ describe('COINSINK-B1-XMAS gating', () => {
       up: { cap: 8, deco: ['cs_b1_xmas_snowman', 'cs_b1_star_flag'], food: 0, feeder: 0, filter: 0 },
       last: beforeXmas,
     };
-    const r = checkSave(cfg, prev, prev.last, next, beforeXmas, {});
+    const r = checkSave(cfg, prev, prev.last, next, beforeXmas, { coinsinkPurchases: { decos: new Set(), backgrounds: new Set() } });
     assert.ok(r.suspicious.some((s) => s.includes('不在販售期間')));
     assert.ok(r.suspicious.some((s) => s.includes('容量 Lv12')));
   });
@@ -207,6 +226,8 @@ describe('COINSINK-B1 patch assets', () => {
 
   it('coin backgrounds have portrait + wide paths', () => {
     const bg = cfg.cosmetics.coinBackgrounds;
+    assert.equal(cfg.coinsinkEvents.xmas2026.label, '🎄 雪夜小鎮');
+    assert.equal(bg.bg_coin_xmas_town.name, '雪夜小鎮');
     assert.match(bg.bg_coin_forest_spring.image, /^coinsink\/bg_coin_forest_spring\.webp$/);
     assert.match(bg.bg_coin_forest_spring.imageWide, /^coinsink\/bg_coin_forest_spring-wide\.webp$/);
     for (const id of ['forest_spring', 'summer_cloud', 'cloud_ruins', 'star_sea', 'xmas_town']) {
@@ -253,8 +274,9 @@ describe('COINSINK-B1 deco scale', () => {
       if (!k.startsWith('cs_b1_')) continue;
       assert.ok(deco.scale >= 0.4 && deco.scale <= 2, `${k} scale ${deco.scale}`);
     }
-    assert.equal(cfg.decorations.cs_b1_garden_bridge.scale, 0.75);
-    assert.equal(cfg.decorations.cs_b1_ruins_obelisk.scale, 1.2);
+    assert.equal(cfg.decorations.cs_b1_garden_lotus.scale, 0.85);
+    assert.equal(cfg.decorations.cs_b1_ruins_windmill.scale, 1);
+    assert.equal(cfg.decorations.cs_b1_star_lighthouse.scale, 1.2);
   });
 
   it('validateConfig rejects out-of-range scale', () => {
@@ -281,5 +303,77 @@ describe('COINSINK-B1 deco scale', () => {
   it('merged patch config validates', () => {
     const errs = validateConfig(cfg);
     assert.equal(errs.length, 0, errs.join('; '));
+  });
+});
+
+describe('COINSINK-B1 purchase records on save', () => {
+  const cfg = loadCfg();
+  const PID = 42;
+  const decoId = 'cs_b1_garden_lantern';
+  const cost = cfg.decorations[decoId].cost;
+
+  it('rejects forged deco after long elapsed time without purchase record', () => {
+    const db = mkPurchaseDb();
+    const purchases = loadPurchaseSets(db, PID);
+    const t0 = Date.now() - 98000;
+    const prev = { ...richSave(cfg), coins: 50000, last: t0 };
+    const m = multForSave(cfg, prev);
+    const rate = maxCoinRate(cfg, 12, 0, 0, prev.legacyDeco) * m;
+    const gain = Math.floor(rate * 98 * 0.95);
+    const next = {
+      ...prev,
+      coins: prev.coins + gain,
+      up: { ...prev.up, deco: [decoId] },
+      last: t0 + 98000,
+    };
+    const r = checkSave(cfg, prev, t0, next, t0 + 98000, { coinRateMult: 1, coinsinkPurchases: purchases });
+    assert.ok(r.suspicious.some((s) => s.includes('商店購買')), r.suspicious.join('; '));
+    if (next.coins >= prev.coins + cost) {
+      assert.ok(!r.suspicious.some((s) => s.startsWith('金幣增加過快')), 'coin allowance alone must not legitimize unpaid deco');
+    }
+  });
+
+  it('accepts deco added after honest server buy record and coin spend', () => {
+    const db = mkPurchaseDb();
+    const receipt = JSON.stringify({ action: 'buy', id: decoId, ids: [decoId], amount: 0 });
+    db.prepare('INSERT INTO deco_inventory_ops VALUES (?,?,?,?,?)').run(PID, 'di_testbuy001', '{"action":"buy","id":"cs_b1_garden_lantern"}', receipt, Date.now());
+    const purchases = loadPurchaseSets(db, PID);
+    assert.ok(purchases.decos.has(decoId));
+    const t0 = Date.now() - 5000;
+    const prev = { ...richSave(cfg), coins: 600000, last: t0 };
+    const next = {
+      ...prev,
+      coins: prev.coins - cost,
+      up: { ...prev.up, deco: [decoId] },
+      last: t0 + 5000,
+    };
+    const r = checkSave(cfg, prev, t0, next, t0 + 5000, { coinRateMult: 1, coinsinkPurchases: purchases });
+    assert.equal(r.structural.length, 0);
+    assert.equal(r.suspicious.length, 0, r.suspicious.join('; '));
+  });
+
+  it('keeps decos already in previous save without purchase record', () => {
+    const db = mkPurchaseDb();
+    const purchases = loadPurchaseSets(db, PID);
+    const t0 = Date.now() - 60000;
+    const prev = { ...richSave(cfg, [decoId]), coins: 1000, last: t0 };
+    const next = { ...prev, coins: prev.coins + 100, last: t0 + 60000 };
+    const r = checkSave(cfg, prev, t0, next, t0 + 60000, { coinRateMult: 1, coinsinkPurchases: purchases });
+    assert.ok(!r.suspicious.some((s) => s.includes('商店購買')));
+  });
+
+  it('rejects forged coin background without coin_cosmetic_ops', () => {
+    const db = mkPurchaseDb();
+    const purchases = loadPurchaseSets(db, PID);
+    const bg = 'bg_coin_forest_spring';
+    const t0 = Date.now() - 1000;
+    const prev = { ...richSave(cfg), cos: { own: {}, bg: null }, last: t0 };
+    const next = {
+      ...prev,
+      cos: { own: { [bg]: 1 }, bg },
+      last: t0 + 1000,
+    };
+    const r = checkSave(cfg, prev, t0, next, t0 + 1000, { coinsinkPurchases: purchases });
+    assert.ok(r.suspicious.some((s) => s.includes('背景') && s.includes('商店購買')));
   });
 });

@@ -13,7 +13,7 @@
   },
   "coinsinkEvents": {
     "xmas2026": {
-      "label": "🎄 冬日小鎮",
+      "label": "🎄 雪夜小鎮",
       "availableFrom": "2026-12-01T00:00:00+08:00",
       "availableUntil": "2027-01-06T00:00:00+08:00",
       "badge": "限定"
@@ -238,7 +238,7 @@
       "desc": "睡蓮與圓石相伴。",
       "draw": "cs_b1_garden_lotus",
       "x": 0.28,
-      "scale": 1
+      "scale": 0.85
     },
     "cs_b1_garden_bridge": {
       "name": "迷你木橋",
@@ -294,7 +294,7 @@
       "desc": "爬滿藤蔓的拱門。",
       "draw": "cs_b1_ruins_arch",
       "x": 0.5,
-      "scale": 0.8
+      "scale": 0.9
     },
     "cs_b1_ruins_steps": {
       "name": "石階",
@@ -322,7 +322,7 @@
       "desc": "雲海邊的風車遺跡。",
       "draw": "cs_b1_ruins_windmill",
       "x": 0.78,
-      "scale": 0.9
+      "scale": 1
     },
     "cs_b1_ruins_gate": {
       "name": "石門框",
@@ -336,7 +336,7 @@
       "desc": "只剩框架的古門。",
       "draw": "cs_b1_ruins_gate",
       "x": 0.42,
-      "scale": 0.8
+      "scale": 0.9
     },
     "cs_b1_ruins_obelisk": {
       "name": "方尖碑",
@@ -364,7 +364,7 @@
       "desc": "指向星海的小燈塔。",
       "draw": "cs_b1_star_lighthouse",
       "x": 0.75,
-      "scale": 1.1
+      "scale": 1.2
     },
     "cs_b1_star_shell_hut": {
       "name": "貝殼小屋",
@@ -406,7 +406,7 @@
       "desc": "柔和月光的石頭。",
       "draw": "cs_b1_star_moon_stone",
       "x": 0.28,
-      "scale": 1
+      "scale": 0.85
     },
     "cs_b1_star_wreck": {
       "name": "星塵沉木",

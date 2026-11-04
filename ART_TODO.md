@@ -27,7 +27,7 @@ Each decoration sprite: **≤512px** long edge, **≤40KB**, transparent WebP. O
 | `cs_b1_garden_lantern` | `coinsink/deco/cs_b1_garden_lantern.webp` | 1 | 苔石燈籠 |
 | `cs_b1_garden_moss_rock` | `coinsink/deco/cs_b1_garden_moss_rock.webp` | 1 | 青苔岩 |
 | `cs_b1_garden_bamboo` | `coinsink/deco/cs_b1_garden_bamboo.webp` | 1.15 | 竹筧 |
-| `cs_b1_garden_lotus` | `coinsink/deco/cs_b1_garden_lotus.webp` | 1 | 睡蓮石 |
+| `cs_b1_garden_lotus` | `coinsink/deco/cs_b1_garden_lotus.webp` | 0.85 | 睡蓮石 |
 | `cs_b1_garden_bridge` | `coinsink/deco/cs_b1_garden_bridge.webp` | 0.75 | 迷你木橋 |
 | `cs_b1_garden_bench` | `coinsink/deco/cs_b1_garden_bench.webp` | 0.85 | 木製長椅 |
 

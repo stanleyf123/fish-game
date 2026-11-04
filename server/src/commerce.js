@@ -298,6 +298,7 @@ class Commerce {
       const list = (k === 'deco' ? cfg.decorations : k === 'plant' ? A.plants : A.gear) || {};
       const it = Object.prototype.hasOwnProperty.call(list, id0) ? list[id0] : null;
       if (!it || !(it.priceGems > 0) || it.disabled) throw new HttpError(404, 'item_not_for_sale', '找不到這個商品，或已下架');
+      if (k === 'deco' && require('./deco-purchase-gate').isCoinsinkDeco(it)) throw new HttpError(404, 'item_not_for_sale', '請至造景商店購買這件典藏造景');
       const idem = idempotencyKey ? clampStr(idempotencyKey, 64) : null;
       if (idem) {
         const ex = this.db.prepare('SELECT * FROM orders WHERE player_id=? AND idempotency_key=?').get(pid, idem);

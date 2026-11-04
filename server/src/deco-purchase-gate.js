@@ -11,10 +11,10 @@ function gateNewDecoPurchase(cfg, decoId, save, nowMs = Date.now()) {
   const d = cfg.decorations && cfg.decorations[decoId];
   if (!d) return 'missing';
   if (!isCoinsinkDeco(d)) return null;
-  if (d.priceGems > 0) return 'gem_only';
+  if (!saleActive(d, nowMs)) return 'sale_window';
+  if (d.priceGems > 0 && !(d.cost > 0)) return 'gem_only';
   if (!(d.cost > 0)) return 'not_for_sale';
   if ((save.up?.cap || 0) < (d.minTankLevel || 0)) return 'tank_level';
-  if (!saleActive(d, nowMs)) return 'sale_window';
   return null;
 }
 

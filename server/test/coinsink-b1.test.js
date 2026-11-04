@@ -209,7 +209,7 @@ describe('COINSINK-B1-XMAS gating', () => {
     };
     const r = checkSave(cfg, prev, prev.last, next, beforeXmas, { coinsinkPurchases: { decos: new Set(), backgrounds: new Set() } });
     assert.ok(r.suspicious.some((s) => s.includes('不在販售期間')));
-    assert.ok(r.suspicious.some((s) => s.includes('容量 Lv12')));
+    assert.ok(r.suspicious.some((s) => s.includes('魚缸容量 Lv12')));
   });
 });
 
@@ -243,25 +243,118 @@ describe('COINSINK-B1 prices (×2)', () => {
   const bg = cfg.cosmetics.coinBackgrounds;
   const d = cfg.decorations;
 
-  it('collector backgrounds', () => {
+  it('collector backgrounds coin + gem dual prices', () => {
     assert.equal(bg.bg_coin_forest_spring.priceCoins, 600000);
+    assert.equal(bg.bg_coin_forest_spring.priceGems, 500);
     assert.equal(bg.bg_coin_summer_cloud.priceCoins, 1200000);
+    assert.equal(bg.bg_coin_summer_cloud.priceGems, 650);
     assert.equal(bg.bg_coin_cloud_ruins.priceCoins, 2400000);
+    assert.equal(bg.bg_coin_cloud_ruins.priceGems, 800);
     assert.equal(bg.bg_coin_star_sea.priceCoins, 4000000);
+    assert.equal(bg.bg_coin_star_sea.priceGems, 1000);
   });
 
-  it('christmas background and decos', () => {
-    assert.equal(bg.bg_coin_xmas_town.priceCoins, 800000);
-    assert.equal(d.cs_b1_xmas_snowman.cost, 100000);
-    assert.equal(d.cs_b1_xmas_fir.cost, 160000);
-    assert.equal(d.cs_b1_xmas_sleigh.cost, 240000);
-    assert.equal(d.cs_b1_xmas_arch.cost, 400000);
+  it('christmas gems-only (no coin prices)', () => {
+    assert.equal(bg.bg_coin_xmas_town.priceGems, 500);
+    assert.equal(bg.bg_coin_xmas_town.priceCoins, undefined);
+    assert.equal(d.cs_b1_xmas_snowman.priceGems, 100);
+    assert.equal(d.cs_b1_xmas_snowman.cost, 0);
+    assert.equal(d.cs_b1_xmas_arch.priceGems, 300);
   });
 
-  it('collector deco tiers', () => {
+  it('collector deco coin + gem dual prices', () => {
     assert.equal(d.cs_b1_garden_lantern.cost, 100000);
+    assert.equal(d.cs_b1_garden_lantern.priceGems, 100);
     assert.equal(d.cs_b1_ruins_pillar.cost, 200000);
+    assert.equal(d.cs_b1_ruins_pillar.priceGems, 200);
     assert.equal(d.cs_b1_star_flag.cost, 360000);
+    assert.equal(d.cs_b1_star_flag.priceGems, 300);
+  });
+});
+
+describe('COINSINK-B1 server purchases', () => {
+  const cfg = loadCfg();
+  const { openDb } = require('../src/db');
+  const { Players } = require('../src/players');
+  const { Commerce } = require('../src/commerce');
+  const { GemShop } = require('../src/gemshop');
+  const { DecoInventory } = require('../src/deco-inventory');
+  const { loadPurchaseSets } = require('../src/coinsink-purchase');
+  const { HttpError } = require('../src/util');
+
+  function harness(gems = 500, cap = 12) {
+    const db = openDb(':memory:');
+    const configStore = { active: () => ({ config: cfg, version: 1 }) };
+    const commerceRef = { current: null };
+    const players = new Players(db, configStore, () => '2026-01-01', commerceRef);
+    const commerce = new Commerce(db, players, null, configStore, () => '2026-01-01');
+    commerceRef.current = commerce;
+    const di = new DecoInventory(db, players, commerce, configStore);
+    players.decoInventory = di;
+    const gs = new GemShop({ db, configStore, players, commerce });
+    const t = Date.parse('2026-12-15T12:00:00+08:00');
+    gs.now = () => t;
+    db.prepare('INSERT INTO players (id, device_hash, nickname, created_at, last_seen, gems) VALUES (1, ?, ?, ?, ?, ?)').run('dev1', 't', t, t, gems);
+    const save = { coins: 1e9, up: { cap, deco: [] }, fish: [], cos: { own: {}, bg: null } };
+    players.writeSaveRow(1, save, 1, t, false);
+    return { db, gs, di, commerce, players, pid: 1, t, rev: 1 };
+  }
+
+  it('buys collectible background with gems', () => {
+    const { gs, db, pid } = harness();
+    const r = gs.buyCoinCosmetic(pid, { id: 'bg_coin_forest_spring', idempotencyKey: 'coin-bg-test1', baseRev: 1, currency: 'gems' });
+    assert.ok(r.save.cos.own.bg_coin_forest_spring);
+    assert.equal(gs.commerce.balance(pid), 500 - 500);
+    assert.ok(loadPurchaseSets(db, pid).backgrounds.has('bg_coin_forest_spring'));
+  });
+
+  it('buys collectible background with coins', () => {
+    const { gs, db, pid } = harness();
+    const r = gs.buyCoinCosmetic(pid, { id: 'bg_coin_forest_spring', idempotencyKey: 'coin-bg-test2', baseRev: 1, currency: 'coins' });
+    assert.ok(r.save.cos.own.bg_coin_forest_spring);
+    assert.ok(loadPurchaseSets(db, pid).backgrounds.has('bg_coin_forest_spring'));
+  });
+
+  it('rejects gem bg buy when insufficient gems', () => {
+    const { gs, pid } = harness(100);
+    assert.throws(() => gs.buyCoinCosmetic(pid, { id: 'bg_coin_forest_spring', idempotencyKey: 'coin-bg-test3', baseRev: 1, currency: 'gems' }), (e) => e instanceof HttpError && e.code === 'insufficient_gems');
+  });
+
+  it('rejects bg buy below minTankLevel', () => {
+    const { gs, pid } = harness(500, 8);
+    assert.throws(() => gs.buyCoinCosmetic(pid, { id: 'bg_coin_forest_spring', idempotencyKey: 'coin-bg-test4', baseRev: 1, currency: 'gems' }), (e) => e instanceof HttpError && e.code === 'tank_level_required');
+  });
+
+  it('buys collectible deco with gems via deco-inventory', () => {
+    const { di, db, pid } = harness();
+    const r = di.run(pid, { action: 'buy', id: 'cs_b1_garden_lantern', rev: 1, idempotencyKey: 'di_buygemtest00000001', currency: 'gems' });
+    assert.ok(r.save.up.deco.includes('cs_b1_garden_lantern'));
+    assert.ok(loadPurchaseSets(db, pid).decos.has('cs_b1_garden_lantern'));
+  });
+
+  it('buys collectible deco with coins unchanged', () => {
+    const { di, db, pid } = harness();
+    di.run(pid, { action: 'buy', id: 'cs_b1_garden_lantern', rev: 1, idempotencyKey: 'di_buycointest0000001', currency: 'coins' });
+    assert.ok(loadPurchaseSets(db, pid).decos.has('cs_b1_garden_lantern'));
+  });
+
+  it('rejects deco gem buy when insufficient gems', () => {
+    const { di, pid } = harness(50);
+    assert.throws(() => di.run(pid, { action: 'buy', id: 'cs_b1_garden_lantern', rev: 1, idempotencyKey: 'di_buygemtest00000002', currency: 'gems' }), (e) => e instanceof HttpError && e.code === 'insufficient_gems');
+  });
+
+  it('rejects xmas deco outside sale window', () => {
+    const db = openDb(':memory:');
+    const configStore = { active: () => ({ config: cfg, version: 1 }) };
+    const commerceRef = { current: null };
+    const players = new Players(db, configStore, () => '2026-01-01', commerceRef);
+    const commerce = new Commerce(db, players, null, configStore, () => '2026-01-01');
+    commerceRef.current = commerce;
+    const di = new DecoInventory(db, players, commerce, configStore);
+    const t = parseWhen(cfg.decorations.cs_b1_xmas_snowman.availableFrom) - 86400000;
+    db.prepare('INSERT INTO players (id, device_hash, nickname, created_at, last_seen, gems) VALUES (1, ?, ?, ?, ?, 999)').run('dev1', 't', t, t);
+    players.writeSaveRow(1, { coins: 0, up: { cap: 12, deco: [] }, fish: [] }, 1, t, false);
+    assert.throws(() => di.run(1, { action: 'buy', id: 'cs_b1_xmas_snowman', rev: 1, idempotencyKey: 'di_xmasout0000000001', currency: 'gems' }), (e) => e instanceof HttpError && e.message.includes('無法購買'));
   });
 });
 

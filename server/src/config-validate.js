@@ -293,7 +293,9 @@ function validateConfig(cfg) {
     if (!KEY_RE.test(k)) err(p, '代號格式錯誤');
     if (!obj(p, d)) continue;
     optNum(`${p}.priceGems`, d.priceGems, 1, 100000, true);
-    if(d.priceGems > 0 && d.cost > 0) err(p, '寶石造景不能同時設定金幣價格');
+    const cs = String(d.shopGroup || '').startsWith('coinsink');
+    if (d.priceGems > 0 && d.cost > 0 && !cs) err(p, '寶石造景不能同時設定金幣價格');
+    if (cs && d.priceGems > 0 && !(d.cost > 0) && String(d.shopGroup) !== 'coinsink_event') err(p, '典藏造景需同時設定 cost 與 priceGems，或改為限時鑽石專售');
 
     str(`${p}.name`, d.name, 20); str(`${p}.icon`, d.icon, 8); num(`${p}.cost`, d.cost, 0, 1e12, true);
     if (d.minTankLevel != null) num(`${p}.minTankLevel`, d.minTankLevel, 0, cfg.capacity?.upgrades?.length || 12, true); // COINSINK-B1-THEME

@@ -167,10 +167,12 @@ function checkSave(cfg, prev, prevClientSavedAt, next, nowMs, opts = {}) {
   const { checkLegacyUnchanged } = require('./legacy-deco');
   if (prev && !checkLegacyUnchanged(prev, next)) structural.push('legacyDeco 只能由伺服器管理');
   if (structural.length) return { structural, suspicious, info };
-  // GEM-DECO-V1: reject client-forged premium scenery even on first upload and with anticheat disabled.
-  { const before=new Set(prev?.up?.deco||[]), after=new Set(next.up.deco);
-    for(const id of after) if(cfg.decorations[id]?.priceGems>0&&!before.has(id)) structural.push('寶石造景只能由伺服器發放');
-    for(const id of before) if(cfg.decorations[id]?.priceGems>0&&!after.has(id)) structural.push('已購買的寶石造景不能遺失');
+  // GEM-DECO-V1: reject client-forged premium scenery (legacy gem-only decos, not COINSINK dual-pay / event)
+  { const { isCoinsinkDeco } = require('./deco-purchase-gate');
+    const isLegacyGemOnlyDeco = (dec) => dec && dec.priceGems > 0 && !(dec.cost > 0) && !isCoinsinkDeco(dec);
+    const before=new Set(prev?.up?.deco||[]), after=new Set(next.up.deco);
+    for(const id of after) if(isLegacyGemOnlyDeco(cfg.decorations[id])&&!before.has(id)) structural.push('寶石造景只能由伺服器發放');
+    for(const id of before) if(isLegacyGemOnlyDeco(cfg.decorations[id])&&!after.has(id)) structural.push('已購買的寶石造景不能遺失');
     if(structural.length)return {structural,suspicious,info};
   }
   // 🎨 外觀（v4.1）：只能由伺服器發放
@@ -237,7 +239,11 @@ function checkSave(cfg, prev, prevClientSavedAt, next, nowMs, opts = {}) {
       const coinsink = isCoinsinkDeco(deco);
       const purchased = !coinsink || (purchases && purchases.decos.has(d));
       if (coinsink && !purchased) suspicious.push(`造景「${deco.name || d}」需經商店購買後才能加入魚缸`);
-      else spent += deco.cost || 0;
+      else if ((deco.cost || 0) > 0) {
+        const gemOnly = deco.priceGems > 0 && !(deco.cost > 0);
+        const paidCoins = Math.max(0, (prev.coins || 0) - (next.coins || 0));
+        if (!gemOnly && paidCoins >= (deco.cost || 0) * 0.99) spent += deco.cost || 0;
+      }
       const gate = gateNewDecoPurchase(cfg, d, next, nowMs);
       if (gate === 'tank_level') suspicious.push(`造景「${deco.name || d}」需魚缸容量 Lv${deco.minTankLevel || 0} 才能購買`);
       else if (gate === 'sale_window') suspicious.push(`造景「${deco.name || d}」不在販售期間`);

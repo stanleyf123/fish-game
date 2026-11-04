@@ -30,10 +30,37 @@ class DecoInventory{
  if(undo)save.up.moss=old.moss;const t=Date.now();save.last=t;this.players.writeSaveRow(pid,save,row.rev+1,t,true);const receipt={action:b.action,stored,kept:[...save.up.deco],...(undo?{}:{previous:old,placed,storageBefore}),undoKey:undo?null:key};this.players.logEvent(pid,'deco_'+b.action,{stored,kept:save.up.deco});this.db.prepare('INSERT INTO deco_inventory_ops VALUES(?,?,?,?,?)').run(pid,key,request,JSON.stringify(receipt),t);return{...this.state(pid),...receipt};
  })();}
 
- run(pid,body){if(['arrange','undo_arrange'].includes(body?.action))return this.arrange(pid,body);return this.db.transaction(()=>{const {action,id,rev,idempotencyKey:key}=body||{};if(!['store','place','sell','buy'].includes(action)||typeof id!=='string'||typeof key!=='string'||!/^di_[a-zA-Z0-9_-]{12,80}$/.test(key))throw new HttpError(400,'invalid_request','造景操作格式錯誤');const request=JSON.stringify({action,id}),op=this.db.prepare('SELECT request,receipt FROM deco_inventory_ops WHERE player_id=? AND idem_key=?').get(pid,key);if(op){if(op.request!==request)fail('idempotency_mismatch','請重新確認造景操作');return{...this.state(pid),...JSON.parse(op.receipt),reused:true}}
+ run(pid,body){if(['arrange','undo_arrange'].includes(body?.action))return this.arrange(pid,body);return this.db.transaction(()=>{const {action,id,rev,idempotencyKey:key}=body||{};if(!['store','place','sell','buy'].includes(action)||typeof id!=='string'||typeof key!=='string'||!/^di_[a-zA-Z0-9_-]{12,80}$/.test(key))throw new HttpError(400,'invalid_request','造景操作格式錯誤');const request=JSON.stringify(action==='buy'&&body.currency?{action,id,currency:body.currency}:{action,id}),op=this.db.prepare('SELECT request,receipt FROM deco_inventory_ops WHERE player_id=? AND idem_key=?').get(pid,key);if(op){if(op.request!==request)fail('idempotency_mismatch','請重新確認造景操作');return{...this.state(pid),...JSON.parse(op.receipt),reused:true}}
  const row=this.players.getSave(pid);if(!row.save)fail('no_save','請先同步魚缸');if(row.rev!==rev)throw new HttpError(409,'conflict','魚缸已更新，請重試',{rev:row.rev,save:row.save});const save=row.save,cfg=this.cfg.active().config,t=Date.now();if(!cfg.decorations[id])fail('item_missing','找不到這件造景');const stored=this.list(pid).find(b=>b.id===id),active=(save.up?.deco||[]).includes(id);let ids,amount=0;
  if(action==='buy'){
-  const d=cfg.decorations[id];if(active||this.has(pid,id))fail('already_owned','你已擁有這件造景，請從造景管理放回');if(d.disabled||d.priceGems>0||!(d.cost>0))fail('not_for_sale','這件造景請使用商店顯示的購買方式');if((save.up?.cap||0)<(d.minTankLevel||0))fail('tank_level_required','請先升級魚缸容量再解鎖這件造景');const {saleActive}=require('./sale-window');if(!saleActive(d,t))fail('not_for_sale','這件造景目前無法購買');if(save.coins<d.cost)throw new HttpError(402,'insufficient_coins','金幣不足');save.coins-=d.cost;ids=[id];save.up.deco.push(id);this.reactivate(pid,id);this.players.econ(t,0,d.cost,0,pid);
+  const d=cfg.decorations[id];if(active||this.has(pid,id))fail('already_owned','你已擁有這件造景，請從造景管理放回');
+  const { isCoinsinkDeco } = require('./deco-purchase-gate');
+  const { saleActive } = require('./sale-window');
+  const cs = isCoinsinkDeco(d);
+  const coinOk = d.cost > 0;
+  const gemOk = d.priceGems > 0;
+  let pay = String(body.currency || '').toLowerCase();
+  if (cs && gemOk && !coinOk) pay = 'gems';
+  else if (cs && coinOk && !gemOk) pay = 'coins';
+  else if (cs && coinOk && gemOk) {
+    if (pay !== 'gems' && pay !== 'coins') fail('currency_required', '請選擇金幣或鑽石付款');
+  } else if (d.priceGems > 0) fail('not_for_sale', '這件造景請使用商店顯示的購買方式');
+  else if (!coinOk) fail('not_for_sale', '這件造景目前無法購買');
+  else pay = 'coins';
+  if (d.disabled) fail('not_for_sale', '這件造景目前無法購買');
+  if ((save.up?.cap || 0) < (d.minTankLevel || 0)) fail('tank_level_required', '請先升級魚缸容量再解鎖這件造景');
+  if (!saleActive(d, t)) fail('not_for_sale', '這件造景目前無法購買');
+  if (pay === 'gems') {
+    if (!gemOk) fail('not_for_sale', '這件造景不支援鑽石購買');
+    const bal = this.commerce.balance(pid);
+    if (bal < d.priceGems) throw new HttpError(402, 'insufficient_gems', '寶石不足', { balance: bal, price: d.priceGems });
+    this.commerce.ledger(pid, -d.priceGems, 'spend', 'deco:' + id);
+    ids = [id]; save.up.deco.push(id); this.reactivate(pid, id);
+  } else {
+    if (!coinOk) fail('not_for_sale', '這件造景不支援金幣購買');
+    if (save.coins < d.cost) throw new HttpError(402, 'insufficient_coins', '金幣不足');
+    save.coins -= d.cost; ids = [id]; save.up.deco.push(id); this.reactivate(pid, id); this.players.econ(t, 0, d.cost, 0, pid);
+  }
  }else if(action==='place'){
   if(!stored)fail('not_stored','這件造景已不在收納庫');ids=stored.ids;if(ids.some(k=>save.up.deco.includes(k)||!cfg.decorations[k]))fail('already_active','組合物品已變更，請重新整理');save.up.deco.push(...ids);save.up.decoPos={...(save.up.decoPos||{}),...stored.decoPos};save.up.moss={...(save.up.moss||{}),...stored.moss};
   for(const k of ids){const m=save.up.moss[k];if(m?.host&&!save.up.deco.includes(m.host))save.up.moss[k]={...m,host:null,point:null,freeHost:null,fx:null,fy:null,independent:true}}

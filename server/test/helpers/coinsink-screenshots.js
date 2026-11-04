@@ -78,6 +78,17 @@ async function main() {
   await new Promise((r) => setTimeout(r, 2000));
   await page.screenshot({ path: path.join(outDir, 'coinsink-vip-unlocked-cap12.png'), fullPage: true });
 
+  await page.evaluate(() => {
+    const btn = document.querySelector('[data-g41="coinbg:bg_coin_forest_spring"]');
+    if (btn) btn.click();
+  });
+  await page.waitForSelector('#modal h2', { timeout: 5000 }).catch(() => {});
+  await new Promise((r) => setTimeout(r, 600));
+  await page.screenshot({ path: path.join(outDir, 'coinsink-dual-bg-currency-modal.png'), fullPage: false });
+
+  await page.evaluate(() => { document.querySelector('#modal button.sec2')?.click(); });
+  await new Promise((r) => setTimeout(r, 400));
+
   await setup(12, false);
   await page.evaluate(() => { ShopV2.open('hardscape'); });
   await new Promise((r) => setTimeout(r, 2000));
@@ -88,6 +99,25 @@ async function main() {
   await new Promise((r) => setTimeout(r, 2000));
   await page.screenshot({ path: path.join(outDir, 'coinsink-deco-xmas-badge.png'), fullPage: true });
 
+  await setup(12, false);
+  await page.evaluate(() => { ShopV2.open('hardscape'); });
+  await new Promise((r) => setTimeout(r, 1500));
+  await page.evaluate(() => {
+    const row = document.querySelector('[data-deco="cs_b1_garden_lantern"]');
+    if (row) row.click();
+  });
+  await page.waitForSelector('#modal h2', { timeout: 5000 }).catch(() => {});
+  await new Promise((r) => setTimeout(r, 600));
+  await page.screenshot({ path: path.join(outDir, 'coinsink-dual-deco-currency-modal.png'), fullPage: false });
+  await page.evaluate(() => { document.querySelector('#modal button.sec2')?.click(); });
+  await new Promise((r) => setTimeout(r, 400));
+
+  await setup(12, true);
+  await page.evaluate(() => { ShopV2.open('hardscape'); });
+  await new Promise((r) => setTimeout(r, 2000));
+  await page.screenshot({ path: path.join(outDir, 'coinsink-deco-xmas-gems-only.png'), fullPage: true });
+
+  await setup(12, false);
   await page.evaluate(() => {
     const S = window.__aquarium.state;
     const k = 'cs_b1_garden_lantern';

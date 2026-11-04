@@ -1,5 +1,5 @@
 {
-  "_comment": "合併至 live-config v59+。COINSINK-B1：典藏主題／造景、聖誕限時、收入軟上限（K=60000/h，exp=0.8）。2026-11 金幣價 ×2（典藏背景 60/120/240/400萬；庭園/遺跡/星海造景 10/20/36萬；聖誕背景 80萬、造景 10–40萬）。",
+  "_comment": "合併至 live-config v59+。COINSINK-B1：典藏 22 項可金幣或鑽石雙價；聖誕 7 項僅鑽石。softcap K=60000/h exp=0.8。",
   "coins": {
     "softcap": {
       "enabled": true,
@@ -25,6 +25,7 @@
         "name": "森之泉",
         "icon": "🌿",
         "priceCoins": 600000,
+        "priceGems": 500,
         "minTankLevel": 9,
         "shopGroup": "coinsink_collectible",
         "desc": "晨光穿過蕨葉，水面映著森林的寧靜。典藏水彩，只改外觀。",
@@ -45,6 +46,7 @@
         "name": "夏日雲海",
         "icon": "☁️",
         "priceCoins": 1200000,
+        "priceGems": 650,
         "minTankLevel": 10,
         "shopGroup": "coinsink_collectible",
         "desc": "積雲倒映在溫暖水面，像漂浮在天空之海。",
@@ -65,6 +67,7 @@
         "name": "雲上遺跡",
         "icon": "🏛️",
         "priceCoins": 2400000,
+        "priceGems": 800,
         "minTankLevel": 11,
         "shopGroup": "coinsink_collectible",
         "desc": "長滿青苔的石柱與光束，古老遺跡浮在雲端。",
@@ -85,6 +88,7 @@
         "name": "星之海",
         "icon": "✨",
         "priceCoins": 4000000,
+        "priceGems": 1000,
         "minTankLevel": 12,
         "shopGroup": "coinsink_collectible",
         "desc": "深藍極光與螢光浮游，最頂級的典藏水景。",
@@ -105,8 +109,7 @@
       "bg_coin_xmas_town": {
         "name": "雪夜小鎮",
         "icon": "🎄",
-        "priceCoins": 800000,
-        "minTankLevel": 8,
+        "priceGems": 500,
         "shopGroup": "coinsink_event",
         "eventKey": "xmas2026",
         "eventBadge": "限定",
@@ -196,7 +199,8 @@
       "desc": "水彩風小石燈，純裝飾。",
       "draw": "cs_b1_garden_lantern",
       "x": 0.35,
-      "scale": 1
+      "scale": 1,
+      "priceGems": 100
     },
     "cs_b1_garden_moss_rock": {
       "name": "青苔岩",
@@ -210,7 +214,8 @@
       "desc": "覆滿青苔的庭園石。",
       "draw": "cs_b1_garden_moss_rock",
       "x": 0.55,
-      "scale": 1
+      "scale": 1,
+      "priceGems": 100
     },
     "cs_b1_garden_bamboo": {
       "name": "竹筧",
@@ -224,7 +229,8 @@
       "desc": "細細的水流竹筧。",
       "draw": "cs_b1_garden_bamboo",
       "x": 0.72,
-      "scale": 1.15
+      "scale": 1.15,
+      "priceGems": 100
     },
     "cs_b1_garden_lotus": {
       "name": "睡蓮石",
@@ -238,7 +244,8 @@
       "desc": "睡蓮與圓石相伴。",
       "draw": "cs_b1_garden_lotus",
       "x": 0.28,
-      "scale": 0.85
+      "scale": 0.85,
+      "priceGems": 100
     },
     "cs_b1_garden_bridge": {
       "name": "迷你木橋",
@@ -252,7 +259,8 @@
       "desc": "庭園裡的短木橋。",
       "draw": "cs_b1_garden_bridge",
       "x": 0.48,
-      "scale": 0.75
+      "scale": 0.75,
+      "priceGems": 100
     },
     "cs_b1_garden_bench": {
       "name": "木製長椅",
@@ -266,7 +274,8 @@
       "desc": "供想像中的旅人小憩。",
       "draw": "cs_b1_garden_bench",
       "x": 0.62,
-      "scale": 0.85
+      "scale": 0.85,
+      "priceGems": 100
     },
     "cs_b1_ruins_pillar": {
       "name": "斷柱",
@@ -280,7 +289,8 @@
       "desc": "雲端遺跡的斷柱。",
       "draw": "cs_b1_ruins_pillar",
       "x": 0.32,
-      "scale": 1.1
+      "scale": 1.1,
+      "priceGems": 200
     },
     "cs_b1_ruins_arch": {
       "name": "石拱門",
@@ -294,7 +304,8 @@
       "desc": "爬滿藤蔓的拱門。",
       "draw": "cs_b1_ruins_arch",
       "x": 0.5,
-      "scale": 0.9
+      "scale": 0.9,
+      "priceGems": 200
     },
     "cs_b1_ruins_steps": {
       "name": "石階",
@@ -308,7 +319,8 @@
       "desc": "通往雲上的階梯。",
       "draw": "cs_b1_ruins_steps",
       "x": 0.68,
-      "scale": 0.75
+      "scale": 0.75,
+      "priceGems": 200
     },
     "cs_b1_ruins_windmill": {
       "name": "舊風車",
@@ -322,7 +334,8 @@
       "desc": "雲海邊的風車遺跡。",
       "draw": "cs_b1_ruins_windmill",
       "x": 0.78,
-      "scale": 1
+      "scale": 1,
+      "priceGems": 200
     },
     "cs_b1_ruins_gate": {
       "name": "石門框",
@@ -336,7 +349,8 @@
       "desc": "只剩框架的古門。",
       "draw": "cs_b1_ruins_gate",
       "x": 0.42,
-      "scale": 0.9
+      "scale": 0.9,
+      "priceGems": 200
     },
     "cs_b1_ruins_obelisk": {
       "name": "方尖碑",
@@ -350,7 +364,8 @@
       "desc": "刻痕模糊的石碑。",
       "draw": "cs_b1_ruins_obelisk",
       "x": 0.58,
-      "scale": 1.2
+      "scale": 1.2,
+      "priceGems": 200
     },
     "cs_b1_star_lighthouse": {
       "name": "星海燈塔",
@@ -364,7 +379,8 @@
       "desc": "指向星海的小燈塔。",
       "draw": "cs_b1_star_lighthouse",
       "x": 0.75,
-      "scale": 1.2
+      "scale": 1.2,
+      "priceGems": 300
     },
     "cs_b1_star_shell_hut": {
       "name": "貝殼小屋",
@@ -378,7 +394,8 @@
       "desc": "巨型貝殼改建成的小屋。",
       "draw": "cs_b1_star_shell_hut",
       "x": 0.35,
-      "scale": 0.9
+      "scale": 0.9,
+      "priceGems": 300
     },
     "cs_b1_star_sand_jar": {
       "name": "星砂瓶",
@@ -392,7 +409,8 @@
       "desc": "裝著發光星砂的玻璃瓶。",
       "draw": "cs_b1_star_sand_jar",
       "x": 0.52,
-      "scale": 1
+      "scale": 1,
+      "priceGems": 300
     },
     "cs_b1_star_moon_stone": {
       "name": "月之石",
@@ -406,7 +424,8 @@
       "desc": "柔和月光的石頭。",
       "draw": "cs_b1_star_moon_stone",
       "x": 0.28,
-      "scale": 0.85
+      "scale": 0.85,
+      "priceGems": 300
     },
     "cs_b1_star_wreck": {
       "name": "星塵沉木",
@@ -420,7 +439,8 @@
       "desc": "閃著星塵的沉木。",
       "draw": "cs_b1_star_wreck",
       "x": 0.45,
-      "scale": 0.75
+      "scale": 0.75,
+      "priceGems": 300
     },
     "cs_b1_star_flag": {
       "name": "航海旗",
@@ -434,12 +454,14 @@
       "desc": "星海探險的旗幟。",
       "draw": "cs_b1_star_flag",
       "x": 0.62,
-      "scale": 1.15
+      "scale": 1.15,
+      "priceGems": 300
     },
     "cs_b1_xmas_snowman": {
       "name": "雪人燈籠",
       "icon": "⛄",
-      "cost": 100000,
+      "priceGems": 100,
+      "cost": 0,
       "coinBonus": 0,
       "mutationBonus": 0,
       "shopGroup": "coinsink_event",
@@ -456,7 +478,8 @@
     "cs_b1_xmas_ginger": {
       "name": "薑餅小屋",
       "icon": "🏠",
-      "cost": 100000,
+      "priceGems": 100,
+      "cost": 0,
       "coinBonus": 0,
       "mutationBonus": 0,
       "shopGroup": "coinsink_event",
@@ -473,7 +496,8 @@
     "cs_b1_xmas_fir": {
       "name": "雪松",
       "icon": "🌲",
-      "cost": 160000,
+      "priceGems": 150,
+      "cost": 0,
       "coinBonus": 0,
       "mutationBonus": 0,
       "shopGroup": "coinsink_event",
@@ -490,7 +514,8 @@
     "cs_b1_xmas_gifts": {
       "name": "禮物堆",
       "icon": "🎁",
-      "cost": 160000,
+      "priceGems": 150,
+      "cost": 0,
       "coinBonus": 0,
       "mutationBonus": 0,
       "shopGroup": "coinsink_event",
@@ -507,7 +532,8 @@
     "cs_b1_xmas_sleigh": {
       "name": "馴鹿雪橇",
       "icon": "🛷",
-      "cost": 240000,
+      "priceGems": 200,
+      "cost": 0,
       "coinBonus": 0,
       "mutationBonus": 0,
       "shopGroup": "coinsink_event",
@@ -524,7 +550,8 @@
     "cs_b1_xmas_arch": {
       "name": "星光燈串拱門",
       "icon": "✨",
-      "cost": 400000,
+      "priceGems": 300,
+      "cost": 0,
       "coinBonus": 0,
       "mutationBonus": 0,
       "shopGroup": "coinsink_event",

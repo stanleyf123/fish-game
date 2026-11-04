@@ -110,6 +110,7 @@ class GemShop {
     const id0 = String((body && body.id) || ''), idem = body && body.idempotencyKey ? clampStr(body.idempotencyKey, 64) : null;
     return this.db.transaction(() => {
       const r0 = this.reused(pid, idem); if (r0) return r0;
+      if ((this.cfg().cosmetics?.coinBackgrounds || {})[id0]) throw new HttpError(404, 'item_not_for_sale', '請至主題特權商店購買這款典藏背景');
       const C = conf(this.cfg()).cosmetics, b = Object.prototype.hasOwnProperty.call(C.backgrounds, id0) ? C.backgrounds[id0] : null;
       if (C.enabled === false || !b || !(b.priceGems > 0) || b.disabled) throw new HttpError(404, 'item_not_for_sale', '找不到這個背景，或已下架');
       return this.grantCosmetic(pid, id0, b.priceGems, 'cos:' + id0, idem);
@@ -124,22 +125,47 @@ class GemShop {
         if (prior.cosmetic_id !== id) throw new HttpError(409, 'idempotency_conflict', '購買資料不一致');
         const fresh = this.players.getSave(pid); return { balance:this.commerce.balance(pid),save:fresh.save,rev:fresh.rev,reused:true };
       }
-      const C = conf(this.cfg()).cosmetics, b = ((this.cfg().cosmetics || {}).coinBackgrounds || {})[id];
-      if (C.enabled === false || !b || b.disabled || !Number.isSafeInteger(b.priceCoins) || b.priceCoins < 1) throw new HttpError(404, 'item_not_for_sale', '找不到這個金幣主題');
-      const { saleActive } = require('./sale-window'); // COINSINK-B1-XMAS
+      const coinBgs = (this.cfg().cosmetics || {}).coinBackgrounds || {};
+      const C = conf(this.cfg()).cosmetics, b = coinBgs[id];
+      if (C.enabled === false || !b || b.disabled) throw new HttpError(404, 'item_not_for_sale', '找不到這個典藏主題');
+      const { saleActive } = require('./sale-window');
       if (!saleActive(b, this.now())) throw new HttpError(403, 'sale_closed', '這款主題目前不在販售期間');
       const { row, save } = this.loadSave(pid);
       if (!Number.isInteger(body.baseRev) || body.baseRev !== row.rev) throw new HttpError(409, 'save_conflict', '魚缸有新異動，請同步後再購買');
       if ((save.up?.cap || 0) < (b.minTankLevel || 0)) throw new HttpError(403, 'tank_level_required', '請先升級魚缸，再解鎖這款典藏主題');
       const cos = save.cos && typeof save.cos === 'object' ? save.cos : { own: {} }; cos.own = cos.own || {};
       if (cos.own[id]) throw new HttpError(409, 'already_owned', '已擁有這款主題，不會重複扣款');
-      if (!Number.isFinite(save.coins) || save.coins < b.priceCoins) throw new HttpError(402, 'insufficient_coins', '金幣不足');
       const t = this.now();
+      const coinOk = Number.isSafeInteger(b.priceCoins) && b.priceCoins >= 1;
+      const gemOk = Number.isSafeInteger(b.priceGems) && b.priceGems >= 1;
+      const collect = String(b.shopGroup || '') === 'coinsink_collectible';
+      const event = String(b.shopGroup || '') === 'coinsink_event';
+      let pay = String(body.currency || '').toLowerCase();
+      if (event || (gemOk && !coinOk)) pay = 'gems';
+      else if (coinOk && !gemOk) pay = 'coins';
+      else if (collect && coinOk && gemOk) {
+        if (pay !== 'gems' && pay !== 'coins') throw new HttpError(400, 'currency_required', '請選擇金幣或鑽石付款');
+      } else if (!coinOk && !gemOk) throw new HttpError(404, 'item_not_for_sale', '找不到這個典藏主題');
+      else if (!collect && coinOk && gemOk) throw new HttpError(400, 'currency_required', '請選擇金幣或鑽石付款');
+
+      if (pay === 'gems') {
+        if (!gemOk) throw new HttpError(404, 'item_not_for_sale', '這款主題不支援鑽石購買');
+        const bal = this.commerce.balance(pid);
+        if (bal < b.priceGems) throw new HttpError(402, 'insufficient_gems', '寶石不足', { balance: bal, price: b.priceGems });
+        this.db.prepare('INSERT INTO coin_cosmetic_ops(player_id,idem,cosmetic_id,price,created_at) VALUES(?,?,?,?,?)').run(pid, idem, id, b.priceGems, t);
+        this.charge(pid, 'coin-bg-gem:' + id, '背景・' + b.name, b.priceGems, idem, {});
+        cos.own[id] = 1; cos.bg = id; save.cos = cos;
+        const rev = this.write(pid, row, save);
+        this.players.logEvent(pid, 'coin_cosmetic_buy', { id, gems: b.priceGems, currency: 'gems' });
+        return { balance: this.commerce.balance(pid), save, rev };
+      }
+      if (!coinOk) throw new HttpError(404, 'item_not_for_sale', '這款主題不支援金幣購買');
+      if (!Number.isFinite(save.coins) || save.coins < b.priceCoins) throw new HttpError(402, 'insufficient_coins', '金幣不足');
       this.db.prepare('INSERT INTO coin_cosmetic_ops(player_id,idem,cosmetic_id,price,created_at) VALUES(?,?,?,?,?)').run(pid,idem,id,b.priceCoins,t);
       save.coins -= b.priceCoins; cos.own[id] = 1; cos.bg = id; save.cos = cos;
       const rev = this.write(pid, row, save);
       this.players.econ(t, 0, b.priceCoins, 0, pid);
-      this.players.logEvent(pid, 'coin_cosmetic_buy', { id, coins: b.priceCoins });
+      this.players.logEvent(pid, 'coin_cosmetic_buy', { id, coins: b.priceCoins, currency: 'coins' });
       return { balance: this.commerce.balance(pid), save, rev };
     })();
   }
@@ -211,8 +237,19 @@ function validate(cfg, err) {
         if (!/^bg_coin_[a-z0-9_]{1,22}$/.test(k) || c.backgrounds?.[k]) err('cosmetics.coinBackgrounds.'+k,'金幣背景ID格式錯誤或重複');
         if (!b || typeof b !== 'object') { err('cosmetics.coinBackgrounds.'+k,'必須是物件'); continue; }
         if (typeof b.name !== 'string' || !b.name) err('cosmetics.coinBackgrounds.'+k+'.name','必填');
-        if (!Number.isSafeInteger(b.priceCoins) || b.priceCoins < 1 || b.priceCoins > 10000000 || b.priceGems != null) err('cosmetics.coinBackgrounds.'+k+'.priceCoins','必須是1–10000000的金幣價格，不可同時售鑽石');
-        if (!Number.isInteger(b.minTankLevel) || b.minTankLevel < 0 || b.minTankLevel > (cfg.capacity?.upgrades?.length || 12)) err('cosmetics.coinBackgrounds.'+k+'.minTankLevel','魚缸等級格式錯誤');
+        const gem = Number.isSafeInteger(b.priceGems) && b.priceGems >= 1 && b.priceGems <= 100000;
+        const coin = Number.isSafeInteger(b.priceCoins) && b.priceCoins >= 1 && b.priceCoins <= 10000000;
+        const collect = String(b.shopGroup || '') === 'coinsink_collectible';
+        const event = String(b.shopGroup || '') === 'coinsink_event';
+        if (event) {
+          if (coin) err('cosmetics.coinBackgrounds.' + k + '.priceCoins', '限時主題只售鑽石');
+          if (!gem) err('cosmetics.coinBackgrounds.' + k + '.priceGems', '限時主題需設定 priceGems');
+        } else if (collect) {
+          if (!coin) err('cosmetics.coinBackgrounds.' + k + '.priceCoins', '典藏主題需設定金幣價');
+          if (!gem) err('cosmetics.coinBackgrounds.' + k + '.priceGems', '典藏主題需設定鑽石價');
+        } else if (gem && coin) err('cosmetics.coinBackgrounds.' + k, '金幣價與鑽石價只能擇一');
+        else if (!gem && !coin) err('cosmetics.coinBackgrounds.' + k + '.priceCoins', '必須設定 priceCoins 或 priceGems');
+        if (b.minTankLevel != null && (!Number.isInteger(b.minTankLevel) || b.minTankLevel < 0 || b.minTankLevel > (cfg.capacity?.upgrades?.length || 12))) err('cosmetics.coinBackgrounds.'+k+'.minTankLevel','魚缸等級格式錯誤');
         if (b.image != null && typeof b.image !== 'string') err('cosmetics.coinBackgrounds.'+k+'.image','必須是字串路徑');
         if (b.imageWide != null && typeof b.imageWide !== 'string') err('cosmetics.coinBackgrounds.'+k+'.imageWide','必須是字串路徑');
         for (const ck of COLOR_KEYS) if (b[ck] != null && !(typeof b[ck] === 'string' && /^(#[0-9a-fA-F]{3,8}|rgba?\([0-9., ]+\)|hsla?\([0-9.,% ]+\))$/.test(b[ck]))) err('cosmetics.coinBackgrounds.'+k+'.'+ck,'顏色格式錯誤');

@@ -36,20 +36,20 @@ Each decoration sprite: **≤512px** long edge, **≤40KB**, transparent WebP. O
 | ID | File | scale | Description |
 |---|---|---:|---|
 | `cs_b1_ruins_pillar` | `coinsink/deco/cs_b1_ruins_pillar.webp` | 1.1 | 斷柱 |
-| `cs_b1_ruins_arch` | `coinsink/deco/cs_b1_ruins_arch.webp` | 0.8 | 石拱門 |
+| `cs_b1_ruins_arch` | `coinsink/deco/cs_b1_ruins_arch.webp` | 0.9 | 石拱門 |
 | `cs_b1_ruins_steps` | `coinsink/deco/cs_b1_ruins_steps.webp` | 0.75 | 石階 |
-| `cs_b1_ruins_windmill` | `coinsink/deco/cs_b1_ruins_windmill.webp` | 0.9 | 舊風車 |
-| `cs_b1_ruins_gate` | `coinsink/deco/cs_b1_ruins_gate.webp` | 0.8 | 石門框 |
+| `cs_b1_ruins_windmill` | `coinsink/deco/cs_b1_ruins_windmill.webp` | 1 | 舊風車 |
+| `cs_b1_ruins_gate` | `coinsink/deco/cs_b1_ruins_gate.webp` | 0.9 | 石門框 |
 | `cs_b1_ruins_obelisk` | `coinsink/deco/cs_b1_ruins_obelisk.webp` | 1.2 | 方尖碑 |
 
 ### 典藏・星海燈塔 (Lv12, 360,000/件)
 
 | ID | File | scale | Description |
 |---|---|---:|---|
-| `cs_b1_star_lighthouse` | `coinsink/deco/cs_b1_star_lighthouse.webp` | 1.1 | 星海燈塔 |
+| `cs_b1_star_lighthouse` | `coinsink/deco/cs_b1_star_lighthouse.webp` | 1.2 | 星海燈塔 |
 | `cs_b1_star_shell_hut` | `coinsink/deco/cs_b1_star_shell_hut.webp` | 0.9 | 貝殼小屋 |
 | `cs_b1_star_sand_jar` | `coinsink/deco/cs_b1_star_sand_jar.webp` | 1 | 星砂瓶 |
-| `cs_b1_star_moon_stone` | `coinsink/deco/cs_b1_star_moon_stone.webp` | 1 | 月之石 |
+| `cs_b1_star_moon_stone` | `coinsink/deco/cs_b1_star_moon_stone.webp` | 0.85 | 月之石 |
 | `cs_b1_star_wreck` | `coinsink/deco/cs_b1_star_wreck.webp` | 0.75 | 星塵沉木 |
 | `cs_b1_star_flag` | `coinsink/deco/cs_b1_star_flag.webp` | 1.15 | 航海旗 |
 

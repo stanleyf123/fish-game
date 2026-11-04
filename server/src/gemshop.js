@@ -212,6 +212,8 @@ function validate(cfg, err) {
         if (typeof b.name !== 'string' || !b.name) err('cosmetics.coinBackgrounds.'+k+'.name','必填');
         if (!Number.isSafeInteger(b.priceCoins) || b.priceCoins < 1 || b.priceCoins > 10000000 || b.priceGems != null) err('cosmetics.coinBackgrounds.'+k+'.priceCoins','必須是1–10000000的金幣價格，不可同時售鑽石');
         if (!Number.isInteger(b.minTankLevel) || b.minTankLevel < 0 || b.minTankLevel > (cfg.capacity?.upgrades?.length || 12)) err('cosmetics.coinBackgrounds.'+k+'.minTankLevel','魚缸等級格式錯誤');
+        if (b.image != null && typeof b.image !== 'string') err('cosmetics.coinBackgrounds.'+k+'.image','必須是字串路徑');
+        if (b.imageWide != null && typeof b.imageWide !== 'string') err('cosmetics.coinBackgrounds.'+k+'.imageWide','必須是字串路徑');
         for (const ck of COLOR_KEYS) if (b[ck] != null && !(typeof b[ck] === 'string' && /^(#[0-9a-fA-F]{3,8}|rgba?\([0-9., ]+\)|hsla?\([0-9.,% ]+\))$/.test(b[ck]))) err('cosmetics.coinBackgrounds.'+k+'.'+ck,'顏色格式錯誤');
       }
     }

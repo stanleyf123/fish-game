@@ -38,7 +38,8 @@
         "fog": "rgba(210,248,220,.32)",
         "sandTop": "#e8dcc0",
         "sandBot": "#a89670",
-        "sparkle": "rgba(232,255,219,.75)"
+        "sparkle": "rgba(232,255,219,.75)",
+        "imageWide": "coinsink/bg_coin_forest_spring-wide.webp"
       },
       "bg_coin_summer_cloud": {
         "name": "夏日雲海",
@@ -57,7 +58,8 @@
         "fog": "rgba(255,255,255,.28)",
         "sandTop": "#f0e4c8",
         "sandBot": "#c4a878",
-        "sparkle": "rgba(255,250,220,.85)"
+        "sparkle": "rgba(255,250,220,.85)",
+        "imageWide": "coinsink/bg_coin_summer_cloud-wide.webp"
       },
       "bg_coin_cloud_ruins": {
         "name": "雲上遺跡",
@@ -76,7 +78,8 @@
         "fog": "rgba(200,220,240,.25)",
         "sandTop": "#c8beb0",
         "sandBot": "#7a7068",
-        "sparkle": "rgba(220,240,255,.8)"
+        "sparkle": "rgba(220,240,255,.8)",
+        "imageWide": "coinsink/bg_coin_cloud_ruins-wide.webp"
       },
       "bg_coin_star_sea": {
         "name": "星之海",
@@ -96,7 +99,8 @@
         "sandTop": "#9098b8",
         "sandBot": "#505870",
         "sparkle": "rgba(180,230,255,.95)",
-        "stars": 1
+        "stars": 1,
+        "imageWide": "coinsink/bg_coin_star_sea-wide.webp"
       },
       "bg_coin_xmas_town": {
         "name": "雪夜小鎮",
@@ -120,7 +124,8 @@
         "sandTop": "#e8e4dc",
         "sandBot": "#989088",
         "sparkle": "rgba(255,220,140,.9)",
-        "stars": 1
+        "stars": 1,
+        "imageWide": "coinsink/bg_coin_xmas_town-wide.webp"
       }
     }
   },
@@ -190,7 +195,8 @@
       "series": "cs_b1_garden",
       "desc": "水彩風小石燈，純裝飾。",
       "draw": "cs_b1_garden_lantern",
-      "x": 0.35
+      "x": 0.35,
+      "scale": 1
     },
     "cs_b1_garden_moss_rock": {
       "name": "青苔岩",
@@ -203,7 +209,8 @@
       "series": "cs_b1_garden",
       "desc": "覆滿青苔的庭園石。",
       "draw": "cs_b1_garden_moss_rock",
-      "x": 0.55
+      "x": 0.55,
+      "scale": 1
     },
     "cs_b1_garden_bamboo": {
       "name": "竹筧",
@@ -216,7 +223,8 @@
       "series": "cs_b1_garden",
       "desc": "細細的水流竹筧。",
       "draw": "cs_b1_garden_bamboo",
-      "x": 0.72
+      "x": 0.72,
+      "scale": 1.15
     },
     "cs_b1_garden_lotus": {
       "name": "睡蓮石",
@@ -229,7 +237,8 @@
       "series": "cs_b1_garden",
       "desc": "睡蓮與圓石相伴。",
       "draw": "cs_b1_garden_lotus",
-      "x": 0.28
+      "x": 0.28,
+      "scale": 1
     },
     "cs_b1_garden_bridge": {
       "name": "迷你木橋",
@@ -242,7 +251,8 @@
       "series": "cs_b1_garden",
       "desc": "庭園裡的短木橋。",
       "draw": "cs_b1_garden_bridge",
-      "x": 0.48
+      "x": 0.48,
+      "scale": 0.75
     },
     "cs_b1_garden_bench": {
       "name": "木製長椅",
@@ -255,7 +265,8 @@
       "series": "cs_b1_garden",
       "desc": "供想像中的旅人小憩。",
       "draw": "cs_b1_garden_bench",
-      "x": 0.62
+      "x": 0.62,
+      "scale": 0.85
     },
     "cs_b1_ruins_pillar": {
       "name": "斷柱",
@@ -268,7 +279,8 @@
       "series": "cs_b1_ruins",
       "desc": "雲端遺跡的斷柱。",
       "draw": "cs_b1_ruins_pillar",
-      "x": 0.32
+      "x": 0.32,
+      "scale": 1.1
     },
     "cs_b1_ruins_arch": {
       "name": "石拱門",
@@ -281,7 +293,8 @@
       "series": "cs_b1_ruins",
       "desc": "爬滿藤蔓的拱門。",
       "draw": "cs_b1_ruins_arch",
-      "x": 0.5
+      "x": 0.5,
+      "scale": 0.8
     },
     "cs_b1_ruins_steps": {
       "name": "石階",
@@ -294,7 +307,8 @@
       "series": "cs_b1_ruins",
       "desc": "通往雲上的階梯。",
       "draw": "cs_b1_ruins_steps",
-      "x": 0.68
+      "x": 0.68,
+      "scale": 0.75
     },
     "cs_b1_ruins_windmill": {
       "name": "舊風車",
@@ -307,7 +321,8 @@
       "series": "cs_b1_ruins",
       "desc": "雲海邊的風車遺跡。",
       "draw": "cs_b1_ruins_windmill",
-      "x": 0.78
+      "x": 0.78,
+      "scale": 0.9
     },
     "cs_b1_ruins_gate": {
       "name": "石門框",
@@ -320,7 +335,8 @@
       "series": "cs_b1_ruins",
       "desc": "只剩框架的古門。",
       "draw": "cs_b1_ruins_gate",
-      "x": 0.42
+      "x": 0.42,
+      "scale": 0.8
     },
     "cs_b1_ruins_obelisk": {
       "name": "方尖碑",
@@ -333,7 +349,8 @@
       "series": "cs_b1_ruins",
       "desc": "刻痕模糊的石碑。",
       "draw": "cs_b1_ruins_obelisk",
-      "x": 0.58
+      "x": 0.58,
+      "scale": 1.2
     },
     "cs_b1_star_lighthouse": {
       "name": "星海燈塔",
@@ -346,7 +363,8 @@
       "series": "cs_b1_star",
       "desc": "指向星海的小燈塔。",
       "draw": "cs_b1_star_lighthouse",
-      "x": 0.75
+      "x": 0.75,
+      "scale": 1.1
     },
     "cs_b1_star_shell_hut": {
       "name": "貝殼小屋",
@@ -359,7 +377,8 @@
       "series": "cs_b1_star",
       "desc": "巨型貝殼改建成的小屋。",
       "draw": "cs_b1_star_shell_hut",
-      "x": 0.35
+      "x": 0.35,
+      "scale": 0.9
     },
     "cs_b1_star_sand_jar": {
       "name": "星砂瓶",
@@ -372,7 +391,8 @@
       "series": "cs_b1_star",
       "desc": "裝著發光星砂的玻璃瓶。",
       "draw": "cs_b1_star_sand_jar",
-      "x": 0.52
+      "x": 0.52,
+      "scale": 1
     },
     "cs_b1_star_moon_stone": {
       "name": "月之石",
@@ -385,7 +405,8 @@
       "series": "cs_b1_star",
       "desc": "柔和月光的石頭。",
       "draw": "cs_b1_star_moon_stone",
-      "x": 0.28
+      "x": 0.28,
+      "scale": 1
     },
     "cs_b1_star_wreck": {
       "name": "星塵沉木",
@@ -398,7 +419,8 @@
       "series": "cs_b1_star",
       "desc": "閃著星塵的沉木。",
       "draw": "cs_b1_star_wreck",
-      "x": 0.45
+      "x": 0.45,
+      "scale": 0.75
     },
     "cs_b1_star_flag": {
       "name": "航海旗",
@@ -411,7 +433,8 @@
       "series": "cs_b1_star",
       "desc": "星海探險的旗幟。",
       "draw": "cs_b1_star_flag",
-      "x": 0.62
+      "x": 0.62,
+      "scale": 1.15
     },
     "cs_b1_xmas_snowman": {
       "name": "雪人燈籠",
@@ -427,7 +450,8 @@
       "availableUntil": "2027-01-06T00:00:00+08:00",
       "desc": "暖光雪人裝飾。",
       "draw": "cs_b1_xmas_snowman",
-      "x": 0.3
+      "x": 0.3,
+      "scale": 1
     },
     "cs_b1_xmas_ginger": {
       "name": "薑餅小屋",
@@ -443,7 +467,8 @@
       "availableUntil": "2027-01-06T00:00:00+08:00",
       "desc": "糖霜屋頂的小屋。",
       "draw": "cs_b1_xmas_ginger",
-      "x": 0.55
+      "x": 0.55,
+      "scale": 0.85
     },
     "cs_b1_xmas_fir": {
       "name": "雪松",
@@ -459,7 +484,8 @@
       "availableUntil": "2027-01-06T00:00:00+08:00",
       "desc": "掛著小燈的雪松。",
       "draw": "cs_b1_xmas_fir",
-      "x": 0.72
+      "x": 0.72,
+      "scale": 1.2
     },
     "cs_b1_xmas_gifts": {
       "name": "禮物堆",
@@ -475,7 +501,8 @@
       "availableUntil": "2027-01-06T00:00:00+08:00",
       "desc": "繽紛禮盒堆。",
       "draw": "cs_b1_xmas_gifts",
-      "x": 0.4
+      "x": 0.4,
+      "scale": 0.9
     },
     "cs_b1_xmas_sleigh": {
       "name": "馴鹿雪橇",
@@ -491,7 +518,8 @@
       "availableUntil": "2027-01-06T00:00:00+08:00",
       "desc": "馴鹿拉的雪橇。",
       "draw": "cs_b1_xmas_sleigh",
-      "x": 0.62
+      "x": 0.62,
+      "scale": 0.75
     },
     "cs_b1_xmas_arch": {
       "name": "星光燈串拱門",
@@ -507,7 +535,8 @@
       "availableUntil": "2027-01-06T00:00:00+08:00",
       "desc": "燈串織成的拱門。",
       "draw": "cs_b1_xmas_arch",
-      "x": 0.48
+      "x": 0.48,
+      "scale": 0.8
     }
   }
 }

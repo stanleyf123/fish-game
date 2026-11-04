@@ -204,6 +204,17 @@ describe('COINSINK-B1 patch assets', () => {
       assert.match(String(th.image), /^coinsink\//);
     }
   });
+
+  it('coin backgrounds have portrait + wide paths', () => {
+    const bg = cfg.cosmetics.coinBackgrounds;
+    assert.match(bg.bg_coin_forest_spring.image, /^coinsink\/bg_coin_forest_spring\.webp$/);
+    assert.match(bg.bg_coin_forest_spring.imageWide, /^coinsink\/bg_coin_forest_spring-wide\.webp$/);
+    for (const id of ['forest_spring', 'summer_cloud', 'cloud_ruins', 'star_sea', 'xmas_town']) {
+      const b = bg['bg_coin_' + id];
+      assert.equal(b.image, `coinsink/bg_coin_${id}.webp`);
+      assert.equal(b.imageWide, `coinsink/bg_coin_${id}-wide.webp`);
+    }
+  });
 });
 
 describe('COINSINK-B1 prices (×2)', () => {
@@ -230,5 +241,45 @@ describe('COINSINK-B1 prices (×2)', () => {
     assert.equal(d.cs_b1_garden_lantern.cost, 100000);
     assert.equal(d.cs_b1_ruins_pillar.cost, 200000);
     assert.equal(d.cs_b1_star_flag.cost, 360000);
+  });
+});
+
+describe('COINSINK-B1 deco scale', () => {
+  const { validateConfig } = require('../src/config-validate');
+  const cfg = loadCfg();
+
+  it('cs_b1 items have balanced scale in 0.4–2.0', () => {
+    for (const [k, deco] of Object.entries(cfg.decorations)) {
+      if (!k.startsWith('cs_b1_')) continue;
+      assert.ok(deco.scale >= 0.4 && deco.scale <= 2, `${k} scale ${deco.scale}`);
+    }
+    assert.equal(cfg.decorations.cs_b1_garden_bridge.scale, 0.75);
+    assert.equal(cfg.decorations.cs_b1_ruins_obelisk.scale, 1.2);
+  });
+
+  it('validateConfig rejects out-of-range scale', () => {
+    const bad = merge(cfg, {
+      decorations: {
+        cs_b1_garden_lantern: { ...cfg.decorations.cs_b1_garden_lantern, scale: 2.5 },
+      },
+    });
+    const errs = validateConfig(bad);
+    assert.ok(errs.some((e) => e.includes('decorations.cs_b1_garden_lantern.scale')));
+  });
+
+  it('legacy decoration without scale still validates', () => {
+    const base = JSON.parse(fs.readFileSync(path.join(__dirname, '../../config/live-config-v59.json'), 'utf8'));
+    const sampleKey = Object.keys(base.decorations || {}).find((k) => base.decorations[k].cost > 0 && !k.startsWith('cs_b1_'));
+    assert.ok(sampleKey, 'need a legacy deco key');
+    const deco = { ...base.decorations[sampleKey] };
+    delete deco.scale;
+    const mini = merge(base, { decorations: { [sampleKey]: deco } });
+    const errs = validateConfig(mini).filter((e) => e.includes('.scale'));
+    assert.equal(errs.length, 0);
+  });
+
+  it('merged patch config validates', () => {
+    const errs = validateConfig(cfg);
+    assert.equal(errs.length, 0, errs.join('; '));
   });
 });

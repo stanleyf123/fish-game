@@ -301,6 +301,7 @@ function validateConfig(cfg) {
     if (d.availableUntil != null && typeof d.availableUntil !== 'string' && typeof d.availableUntil !== 'number') err(`${p}.availableUntil`, '格式錯誤');
     num(`${p}.coinBonus`, d.coinBonus, 0, 10); num(`${p}.mutationBonus`, d.mutationBonus, 0, 1); str(`${p}.desc`, d.desc, 60, true);
     if (d.draw != null) str(`${p}.draw`, d.draw, 40); optNum(`${p}.x`, d.x, 0, 1);
+    optNum(`${p}.scale`, d.scale, 0.4, 2, false); // COINSINK-B1 造景視覺縮放（預設 1，可小數）
     if (d.series != null) str(`${p}.series`, d.series, 24);
   }
   if (cfg.decoSeries != null && obj('decoSeries', cfg.decoSeries)) {

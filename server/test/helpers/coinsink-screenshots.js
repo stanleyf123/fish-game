@@ -117,29 +117,28 @@ async function main() {
   await new Promise((r) => setTimeout(r, 2000));
   await page.screenshot({ path: path.join(outDir, 'coinsink-deco-xmas-gems-only.png'), fullPage: true });
 
-  await setup(12, false);
-  await page.evaluate(() => {
-    const S = window.__aquarium.state;
-    const k = 'cs_b1_garden_lantern';
-    if (!S.up.deco.includes(k)) S.up.deco.push(k);
-    S.up.decoPos = S.up.decoPos || {};
-    S.up.decoPos[k] = 0.5;
-    window.__aquarium.render?.();
-  });
-  await new Promise((r) => setTimeout(r, 1500));
-  const loopOk = await page.evaluate(async () => {
-    const errs = [];
-    const prev = window.onerror;
-    window.onerror = (m) => { errs.push(String(m)); };
-    for (let i = 0; i < 30; i++) {
-      try { window.__aquarium.update?.(1 / 30); window.__aquarium.render?.(); } catch (e) { errs.push(String(e)); }
-      await new Promise((r) => requestAnimationFrame(r));
+  const decoSets = {
+    garden: ['cs_b1_garden_lantern', 'cs_b1_garden_moss_rock', 'cs_b1_garden_bamboo', 'cs_b1_garden_lotus', 'cs_b1_garden_bridge', 'cs_b1_garden_bench'],
+    ruins: ['cs_b1_ruins_pillar', 'cs_b1_ruins_arch', 'cs_b1_ruins_steps', 'cs_b1_ruins_windmill', 'cs_b1_ruins_gate', 'cs_b1_ruins_obelisk'],
+    star: ['cs_b1_star_lighthouse', 'cs_b1_star_shell_hut', 'cs_b1_star_sand_jar', 'cs_b1_star_moon_stone', 'cs_b1_star_wreck', 'cs_b1_star_flag'],
+    xmas: ['cs_b1_xmas_snowman', 'cs_b1_xmas_ginger', 'cs_b1_xmas_fir', 'cs_b1_xmas_gifts', 'cs_b1_xmas_sleigh', 'cs_b1_xmas_arch'],
+  };
+
+  for (const [setName, keys] of Object.entries(decoSets)) {
+    await setup(12, setName === 'xmas');
+    await page.evaluate((ids) => {
+      const S = window.__aquarium.state;
+      S.up.deco = [...ids];
+      delete S.up.decoPos;
+      window.__aquarium.render?.();
+    }, keys);
+    await new Promise((r) => setTimeout(r, 2000));
+    for (let i = 0; i < 20; i++) {
+      await page.evaluate(() => { window.__aquarium.update?.(1 / 30); window.__aquarium.render?.(); });
+      await new Promise((r) => setTimeout(r, 50));
     }
-    window.onerror = prev;
-    return errs;
-  });
-  await page.screenshot({ path: path.join(outDir, 'coinsink-tank-coin-deco-placed.png'), fullPage: false });
-  if (loopOk.length) errors.push(...loopOk);
+    await page.screenshot({ path: path.join(outDir, `coinsink-tank-6deco-${setName}-390.png`), fullPage: false });
+  }
 
   await browser.close();
   const shots = fs.readdirSync(outDir).filter((f) => f.startsWith('coinsink-'));

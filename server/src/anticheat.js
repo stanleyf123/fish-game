@@ -239,11 +239,7 @@ function checkSave(cfg, prev, prevClientSavedAt, next, nowMs, opts = {}) {
       const coinsink = isCoinsinkDeco(deco);
       const purchased = !coinsink || (purchases && purchases.decos.has(d));
       if (coinsink && !purchased) suspicious.push(`造景「${deco.name || d}」需經商店購買後才能加入魚缸`);
-      else if ((deco.cost || 0) > 0) {
-        const gemOnly = deco.priceGems > 0 && !(deco.cost > 0);
-        const paidCoins = Math.max(0, (prev.coins || 0) - (next.coins || 0));
-        if (!gemOnly && paidCoins >= (deco.cost || 0) * 0.99) spent += deco.cost || 0;
-      }
+      else if (!coinsink && (deco.cost || 0) > 0) spent += deco.cost || 0;
       const gate = gateNewDecoPurchase(cfg, d, next, nowMs);
       if (gate === 'tank_level') suspicious.push(`造景「${deco.name || d}」需魚缸容量 Lv${deco.minTankLevel || 0} 才能購買`);
       else if (gate === 'sale_window') suspicious.push(`造景「${deco.name || d}」不在販售期間`);

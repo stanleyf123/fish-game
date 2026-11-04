@@ -39,6 +39,13 @@ function weekOf(now) {
   return { week: new Date(mon).toISOString().slice(0, 10), startsAt: mon - H8, endsAt: mon - H8 + 7 * DAY };
 }
 const hashRank = (week, id) => crypto.createHash('sha256').update(week + '|' + id).digest().readUInt32BE(0);
+function isWeeklyShopBg(id, cfg, bgs) {
+  const b = bgs[id];
+  if (!b || !(b.priceGems > 0) || b.disabled) return false;
+  const { isCoinsinkBackgroundId } = require('./coinsink-purchase');
+  if (isCoinsinkBackgroundId(id, cfg)) return false;
+  return true;
+}
 
 class GemShop {
   constructor(ctx) { this.ctx = ctx; this.db = ctx.db; this.commerce = ctx.commerce; this.players = ctx.players; this.now = () => Date.now(); this.db.exec(`CREATE TABLE IF NOT EXISTS coin_cosmetic_ops (player_id INTEGER NOT NULL REFERENCES players(id) ON DELETE CASCADE, idem TEXT NOT NULL, cosmetic_id TEXT NOT NULL, price INTEGER NOT NULL, created_at INTEGER NOT NULL, PRIMARY KEY(player_id,idem))`); this.lim = new RateLimiter({ windowMs: 60e3, max: 30 }); }
@@ -51,10 +58,10 @@ class GemShop {
     let fish, cos;
     if (Array.isArray(ov) && ov.length) {
       fish = ov.filter((id) => cfg.species[id] && cfg.species[id].priceGems > 0 && !cfg.species[id].disabled);
-      cos = ov.filter((id) => bgs[id] && bgs[id].priceGems > 0 && !bgs[id].disabled);
+      cos = ov.filter((id) => isWeeklyShopBg(id, cfg, bgs));
     } else {
       fish = this.premiumIds(cfg).sort((a, b) => hashRank(wk.week, a) - hashRank(wk.week, b)).slice(0, Math.max(0, C.fishSlots | 0));
-      cos = Object.keys(bgs).filter((k) => bgs[k].priceGems > 0 && !bgs[k].disabled).sort((a, b) => hashRank(wk.week, a) - hashRank(wk.week, b)).slice(0, Math.max(0, C.cosmeticSlots | 0));
+      cos = Object.keys(bgs).filter((k) => isWeeklyShopBg(k, cfg, bgs)).sort((a, b) => hashRank(wk.week, a) - hashRank(wk.week, b)).slice(0, Math.max(0, C.cosmeticSlots | 0));
     }
     const pct = Math.min(90, Math.max(0, Number(C.discountPct) || 0)), dp = (p) => Math.max(1, Math.round(p * (100 - pct) / 100));
     return { ...wk, enabled: C.enabled !== false, discountPct: pct, perPlayerLimit: Math.max(1, C.perPlayerLimit | 0),
@@ -103,6 +110,8 @@ class GemShop {
       if (this.boughtThisWeek(pid, w.week, id0) >= w.perPlayerLimit) throw new HttpError(409, 'weekly_limit', `本週已購買過「${it.name}」，下週再來看看！`);
       const sku = `weekly:${w.week}:${id0}`;
       if (it.kind === 'fish') return this.commerce.buySpecies(pid, id0, idem, { price: it.price, sku, label: '本週限定・' });
+      const { isCoinsinkBackgroundId } = require('./coinsink-purchase');
+      if (isCoinsinkBackgroundId(id0, cfg)) throw new HttpError(404, 'item_not_for_sale', '請至主題特權商店購買這款典藏背景');
       return this.grantCosmetic(pid, id0, it.price, sku, idem);
     })();
   }
@@ -170,7 +179,10 @@ class GemShop {
     })();
   }
   grantCosmetic(pid, id0, price, sku, idem) {
-    const C = conf(this.cfg()).cosmetics, b = C.backgrounds[id0];
+    const cfg = this.cfg();
+    const { isCoinsinkBackgroundId } = require('./coinsink-purchase');
+    if (isCoinsinkBackgroundId(id0, cfg)) throw new HttpError(404, 'item_not_for_sale', '請至主題特權商店購買這款典藏背景');
+    const C = conf(cfg).cosmetics, b = C.backgrounds[id0];
     const { row, save } = this.loadSave(pid);
     const cos = save.cos && typeof save.cos === 'object' ? save.cos : {}; cos.own = cos.own && typeof cos.own === 'object' ? cos.own : {};
     if (cos.own[id0]) throw new HttpError(409, 'already_owned', `已經擁有「${b.name}」`);
@@ -289,4 +301,4 @@ function mountGemShop(app, ctx) {
   app.use('/api/gemshop', r);
   return gs;
 }
-module.exports = { mountGemShop, GemShop, checkCos, validate, conf, weekOf, DEFAULTS, DEFAULT_BACKGROUNDS };
+module.exports = { mountGemShop, GemShop, checkCos, validate, conf, weekOf, DEFAULTS, DEFAULT_BACKGROUNDS, isWeeklyShopBg };

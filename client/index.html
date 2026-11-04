@@ -4453,7 +4453,7 @@ function decoScaleBump(k,delta){decoScaleSet(k,decoUserScale(k)+delta)}
 function decoScaleReset(k){if(!k)return;decoScaleSet(k,1)}
 function aqPinchTrack(type,e){if(!aqEdit||!aqDeco||isEpiphyte(aqDeco)||S.up.moss?.[aqDeco]?.host)return;const id=e.pointerId;if(type==='down'||type==='move')aqPointers.set(id,{x:e.clientX,y:e.clientY});else aqPointers.delete(id);if(aqPointers.size===2){const pts=[...aqPointers.values()],d=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);if(d>8){if(!aqPinch)aqPinch={d0:d,s0:decoUserScale(aqDeco),dirty:false};else{const n=Math.round(clamp(aqPinch.s0*(d/aqPinch.d0),DECO_S_MIN,DECO_S_MAX)*100)/100;if(Math.abs(n-decoUserScale(aqDeco))>.004){decoScaleSet(aqDeco,n,{noSave:true});aqPinch.dirty=true}}}return}if(type!=='move'&&aqPinch&&aqPinch.dirty){save();try{Sound.play('click')}catch(_){}}aqPinch=null}
 function decoMobileReserve(k){if(Number.isFinite(S.up?.decoPos?.[k]))return 0;return(W<=480&&matchMedia('(max-width:700px),(pointer:coarse) and (max-height:520px)').matches)?64:0}
-function decoPx(k,x01){const b=decoScaleBox(k),sc=sceneryScale(),reserve=decoMobileReserve(k),lo=-b[0]*sc+8,hi=(sceneryLayout().width||W)-b[1]*sc-8-reserve,x=x01==null?(sceneryLayout().positions[k]??W*decoX(k)):W*x01;return lo<hi?clamp(x,lo,hi):W/2}
+function decoPx(k,x01){const b=decoScaleBox(k),sc=sceneryScale(),layoutW=sceneryLayout().width||W,reserve=decoMobileReserve(k),lo=-b[0]*sc+8,hi=layoutW-b[1]*sc-8-reserve,x=x01==null?(sceneryLayout().positions[k]??W*decoX(k)):W*x01;if(reserve>0&&hi>lo)return lo+(x/W)*(hi-lo);return lo<hi?clamp(x,lo,hi):W/2}
 /* AQUASCAPE-ART-V4: visible pixels select the frontmost decoration, not an invisible bounding rectangle. */
 const decoAlphaMasks=new WeakMap();
 function decoPixelHit(k,px,py){
@@ -6778,7 +6778,7 @@ let remT=0,hudT=-Infinity,updCost=0,simPending176=0;function loop(now){if(docume
 // 後端 API：同網域 /api（可用 window.AQUARIUM_API_BASE 指定；網址加 ?api=off 可強制單機）。
 // 伺服器無法連線時遊戲照常運作（單機模式），恢復連線後自動同步。
 // =====================================================================
-const GAME_BUILD='4.2.191';/*V406-CLIENT*/
+const GAME_BUILD='4.2.192';/*V406-CLIENT*/
 const VIP={coinBonus:0,offlineCapBonusSec:0};
 const Cloud=(()=>{
   const C={sdk:null,online:false,player:null,ent:null,gems:0,products:[],providers:[],mail:[],anns:[],status:'off',lastSync:0,lastPush:0,pending:null,busy:false,timer:0,started:Date.now(),nudged:false,banned:null,retryT:0};
@@ -7572,7 +7572,7 @@ window.G41=(()=>{
   function coinBuy(id){const b=coinBG()[id];if(!b||coinBusy)return;if(!on())return toast('請連線後再購買','bad');
     const dual=CS_PAY.dualBg(b),gemOnly=CS_PAY.gemOnlyBg(b);
     const exec=async(currency)=>{if(coinBusy)return;coinBusy=true;const c=C(),actor=localStorage.getItem('fishsdk.token');let locked=false;
-      try{const sync=await Cloud.pushNow();if(actor!==localStorage.getItem('fishsdk.token'))throw Error('帳號已變更');if(!['ok','idle'].includes(sync))throw Error('魚缸尚未同步，請稍後再試（未扣款）');c.busy=true;locked=true;const r=await coinBgBuyApi(id,currency);if(actor!==localStorage.getItem('fishsdk.token'))throw Error('帳號已變更');c.pending=null;clearTimeout(c.timer);c.timer=0;c.gems=r.balance??c.gems;Cloud.adopt(r.save,null);BGS&&(BGS.key='');const spent=currency==='gems'?b.priceGems:b.priceCoins;window.FFGA&&FFGA.ev('spend_virtual_currency',{virtual_currency_name:currency==='gems'?'gems':'coins',value:spent,item_name:id});Sound.play('buy');toast('已解鎖並套用「'+b.name+'」','gold');rer()}
+      try{const sync=await Cloud.pushNow();if(actor!==localStorage.getItem('fishsdk.token'))throw Error('帳號已變更');if(!['ok','idle'].includes(sync))throw Error('魚缸尚未同步，請稍後再試（未扣款）');c.busy=true;locked=true;const r=await coinBgBuyApi(id,currency);if(actor!==localStorage.getItem('fishsdk.token'))throw Error('帳號已變更');const fresh=await c.sdk.loadSave();if(actor!==localStorage.getItem('fishsdk.token'))throw Error('帳號已變更');c.pending=null;clearTimeout(c.timer);c.timer=0;c.gems=r.balance??c.gems;Cloud.adopt(fresh.save||r.save,null);BGS&&(BGS.key='');const spent=currency==='gems'?b.priceGems:b.priceCoins;window.FFGA&&FFGA.ev('spend_virtual_currency',{virtual_currency_name:currency==='gems'?'gems':'coins',value:spent,item_name:id});Sound.play('buy');toast('已解鎖並套用「'+b.name+'」','gold');rer()}
       catch(e){toast(e.message||'解鎖失敗，請稍後再試','bad')}finally{if(locked)c.busy=false;coinBusy=false}};
     const art=`<div class="bg41-sw big" style="${sw(b)}">${coinBgThumb(b)||esc(b.icon)}</div><p>永久解鎖「${esc(b.name)}」？買過可隨時切換；只改外觀。</p>`;
     if(dual)return showModal('<h2>解鎖典藏主題</h2>'+art+'<p class="note">請選擇付款方式（擇一）：</p>',[['🪙 金幣 '+fmt(b.priceCoins),()=>exec('coins')],['💎 鑽石 '+fmt(b.priceGems),()=>exec('gems'),'gem'],['取消',null,'sec2']]);

@@ -41,11 +41,4 @@ function verifyNewCoinsinkInSave(cfg, prev, next, purchases) {
   return suspicious;
 }
 
-function recordDecoBuyReceipt(db, playerId, decoId, idemKey, t = Date.now()) {
-  if (!db || playerId == null || !decoId || !idemKey) return;
-  const request = JSON.stringify({ action: 'buy', id: decoId });
-  const receipt = JSON.stringify({ action: 'buy', id: decoId, ids: [decoId], amount: 0 });
-  db.prepare('INSERT OR IGNORE INTO deco_inventory_ops(player_id,idem_key,request,receipt,created_at) VALUES(?,?,?,?,?)').run(playerId, idemKey, request, receipt, t);
-}
-
-module.exports = { isCoinsinkBackgroundId, loadPurchaseSets, verifyNewCoinsinkInSave, recordDecoBuyReceipt };
+module.exports = { isCoinsinkBackgroundId, loadPurchaseSets, verifyNewCoinsinkInSave };

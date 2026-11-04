@@ -470,3 +470,123 @@ describe('COINSINK-B1 purchase records on save', () => {
     assert.ok(r.suspicious.some((s) => s.includes('背景') && s.includes('商店購買')));
   });
 });
+
+describe('COINSINK-B1 weekly shop guard', () => {
+  const cfg = loadCfg();
+  const { GemShop, weekOf } = require('../src/gemshop');
+  const { openDb } = require('../src/db');
+  const { Players } = require('../src/players');
+  const { Commerce } = require('../src/commerce');
+  const { HttpError } = require('../src/util');
+
+  const nov24 = Date.parse('2025-11-24T12:00:00+08:00');
+
+  function gsAt(t) {
+    const db = openDb(':memory:');
+    const configStore = { active: () => ({ config: cfg, version: 1 }) };
+    const commerceRef = { current: null };
+    const players = new Players(db, configStore, () => '2026-01-01', commerceRef);
+    const commerce = new Commerce(db, players, null, configStore, () => '2026-01-01');
+    commerceRef.current = commerce;
+    const gs = new GemShop({ db, configStore, players, commerce });
+    gs.now = () => t;
+    db.prepare('INSERT INTO players (id, device_hash, nickname, created_at, last_seen, gems) VALUES (1, ?, ?, ?, ?, ?)').run('dev1', 't', t, t, 99999);
+    players.writeSaveRow(1, { coins: 0, up: { cap: 0, deco: [] }, fish: [], cos: { own: {}, bg: null } }, 1, t, false);
+    return { gs, db, pid: 1 };
+  }
+
+  it('excludes coin-sink backgrounds from weekly rotation at 2025-11-24', () => {
+    const { gs } = gsAt(nov24);
+    const w = gs.weekly(cfg, nov24);
+    const bgIds = w.items.filter((it) => it.kind === 'bg').map((it) => it.id);
+    assert.ok(!bgIds.some((id) => id.startsWith('bg_coin_')));
+    assert.ok(!bgIds.includes('bg_coin_summer_cloud'));
+  });
+
+  it('rejects weekly buy of coin background even when forced in override', () => {
+    const t = nov24;
+    const wk = weekOf(t).week;
+    const patched = merge(cfg, { weeklyShop: { override: { [wk]: ['bg_coin_summer_cloud'] } } });
+    const db = openDb(':memory:');
+    const configStore = { active: () => ({ config: patched, version: 1 }) };
+    const commerceRef = { current: null };
+    const players = new Players(db, configStore, () => '2026-01-01', commerceRef);
+    const commerce = new Commerce(db, players, null, configStore, () => '2026-01-01');
+    commerceRef.current = commerce;
+    const gs = new GemShop({ db, configStore, players, commerce });
+    gs.now = () => t;
+    db.prepare('INSERT INTO players (id, device_hash, nickname, created_at, last_seen, gems) VALUES (1, ?, ?, ?, ?, ?)').run('dev1', 't', t, t, 99999);
+    players.writeSaveRow(1, { coins: 0, up: { cap: 0, deco: [] }, fish: [], cos: { own: {}, bg: null } }, 1, t, false);
+    const items = gs.weekly(patched, t).items.filter((it) => it.kind === 'bg');
+    assert.equal(items.length, 0);
+    assert.throws(
+      () => gs.buyWeekly(1, { id: 'bg_coin_summer_cloud', idempotencyKey: 'wk-coin-bg-test001' }),
+      (e) => e instanceof HttpError && e.code === 'not_in_weekly',
+    );
+  });
+});
+
+describe('COINSINK-B1 deco sell price', () => {
+  const cfg = loadCfg();
+  const { openDb } = require('../src/db');
+  const { Players } = require('../src/players');
+  const { Commerce } = require('../src/commerce');
+  const { DecoInventory } = require('../src/deco-inventory');
+
+  it('dual-priced collectible resells at half coin cost not gem*10', () => {
+    const db = openDb(':memory:');
+    const configStore = { active: () => ({ config: cfg, version: 1 }) };
+    const commerceRef = { current: null };
+    const players = new Players(db, configStore, () => '2026-01-01', commerceRef);
+    const commerce = new Commerce(db, players, null, configStore, () => '2026-01-01');
+    commerceRef.current = commerce;
+    const di = new DecoInventory(db, players, commerce, configStore);
+    const cost = cfg.decorations.cs_b1_garden_lantern.cost;
+    assert.equal(di.price('cs_b1_garden_lantern'), Math.floor(cost * 0.5));
+  });
+});
+
+describe('COINSINK-B1 currency validation', () => {
+  const cfg = loadCfg();
+  const { openDb } = require('../src/db');
+  const { Players } = require('../src/players');
+  const { Commerce } = require('../src/commerce');
+  const { DecoInventory } = require('../src/deco-inventory');
+  const { GemShop } = require('../src/gemshop');
+  const { HttpError } = require('../src/util');
+
+  it('returns 400 when dual deco buy omits currency', () => {
+    const db = openDb(':memory:');
+    const configStore = { active: () => ({ config: cfg, version: 1 }) };
+    const commerceRef = { current: null };
+    const players = new Players(db, configStore, () => '2026-01-01', commerceRef);
+    const commerce = new Commerce(db, players, null, configStore, () => '2026-01-01');
+    commerceRef.current = commerce;
+    const di = new DecoInventory(db, players, commerce, configStore);
+    const t = Date.parse('2026-12-15T12:00:00+08:00');
+    db.prepare('INSERT INTO players (id, device_hash, nickname, created_at, last_seen, gems) VALUES (1, ?, ?, ?, ?, ?)').run('dev1', 't', t, t, 500);
+    players.writeSaveRow(1, { coins: 1e9, up: { cap: 12, deco: [] }, fish: [] }, 1, t, false);
+    assert.throws(
+      () => di.run(1, { action: 'buy', id: 'cs_b1_garden_lantern', rev: 1, idempotencyKey: 'di_nocur00000000001' }),
+      (e) => e instanceof HttpError && e.status === 400 && e.code === 'currency_required',
+    );
+  });
+
+  it('returns 400 when dual background buy omits currency', () => {
+    const db = openDb(':memory:');
+    const configStore = { active: () => ({ config: cfg, version: 1 }) };
+    const commerceRef = { current: null };
+    const players = new Players(db, configStore, () => '2026-01-01', commerceRef);
+    const commerce = new Commerce(db, players, null, configStore, () => '2026-01-01');
+    commerceRef.current = commerce;
+    const gs = new GemShop({ db, configStore, players, commerce });
+    const t = Date.parse('2026-12-15T12:00:00+08:00');
+    gs.now = () => t;
+    db.prepare('INSERT INTO players (id, device_hash, nickname, created_at, last_seen, gems) VALUES (1, ?, ?, ?, ?, ?)').run('dev1', 't', t, t, 500);
+    players.writeSaveRow(1, { coins: 1e9, up: { cap: 12, deco: [] }, fish: [], cos: { own: {}, bg: null } }, 1, t, false);
+    assert.throws(
+      () => gs.buyCoinCosmetic(1, { id: 'bg_coin_forest_spring', idempotencyKey: 'coin-bg-nocur00001', baseRev: 1 }),
+      (e) => e instanceof HttpError && e.status === 400 && e.code === 'currency_required',
+    );
+  });
+});

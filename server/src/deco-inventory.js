@@ -9,7 +9,7 @@ class DecoInventory{
  reactivate(pid,k){this.db.prepare('DELETE FROM deco_sold WHERE player_id=? AND deco_id=?').run(pid,k)}
  guard(pid,save){if((save?.up?.deco||[]).some(k=>this.db.prepare('SELECT 1 FROM deco_sold WHERE player_id=? AND deco_id=?').get(pid,k)))fail('deco_sold','造景已出售，請從商店重新購買並載入最新魚缸');if((save?.up?.deco||[]).some(k=>this.has(pid,k)))fail('deco_stored','造景已收起，請載入最新魚缸；放回需從造景管理操作')}
  group(save,k){return [k,...(save.up?.deco||[]).filter(id=>id!==k&&save.up?.moss?.[id]?.host===k)]}
- price(k){const d=this.cfg.active().config.decorations[k];return d?Math.max(0,Math.floor(d.sellCoins??(d.priceGems>0?d.priceGems*10:(d.cost||0)*.5))):0}
+ price(k){const d=this.cfg.active().config.decorations[k];return d?Math.max(0,Math.floor(d.sellCoins??((d.cost||0)>0?d.cost*.5:d.priceGems>0?d.priceGems*10:0))):0}
  state(pid){return{...this.players.getSave(pid),balance:this.commerce.balance(pid),storedDeco:this.list(pid).map(b=>({...b,sellCoins:b.ids.reduce((n,k)=>n+this.price(k),0)})),decoSellPrices:Object.fromEntries(Object.keys(this.cfg.active().config.decorations||{}).map(k=>[k,this.price(k)]))}}
  arrange(pid,b){return this.db.transaction(()=>{
  const key=b.idempotencyKey;if(typeof key!=='string'||!/^di_[a-zA-Z0-9_-]{12,60}$/.test(key))throw new HttpError(400,'invalid_request','請重新產生佈置');
@@ -43,7 +43,7 @@ class DecoInventory{
   if (cs && gemOk && !coinOk) pay = 'gems';
   else if (cs && coinOk && !gemOk) pay = 'coins';
   else if (cs && coinOk && gemOk) {
-    if (pay !== 'gems' && pay !== 'coins') fail('currency_required', '請選擇金幣或鑽石付款');
+    if (pay !== 'gems' && pay !== 'coins') throw new HttpError(400, 'currency_required', '請選擇金幣或鑽石付款');
   } else if (d.priceGems > 0) fail('not_for_sale', '這件造景請使用商店顯示的購買方式');
   else if (!coinOk) fail('not_for_sale', '這件造景目前無法購買');
   else pay = 'coins';
@@ -54,7 +54,11 @@ class DecoInventory{
     if (!gemOk) fail('not_for_sale', '這件造景不支援鑽石購買');
     const bal = this.commerce.balance(pid);
     if (bal < d.priceGems) throw new HttpError(402, 'insufficient_gems', '寶石不足', { balance: bal, price: d.priceGems });
-    this.commerce.ledger(pid, -d.priceGems, 'spend', 'deco:' + id);
+    const orderId = require('./commerce').newOrderId();
+    const sku = cs ? 'coin-deco-gem:' + id : 'deco-gem:' + id;
+    this.db.prepare(`INSERT INTO orders (id, player_id, product_id, sku, product_name, amount, currency, status, provider, idempotency_key, grants, created_at, updated_at, paid_at)
+      VALUES (?,?,NULL,?,?,?,'GEM','paid','gems',?,?,?,?,?)`).run(orderId, pid, sku, '造景・' + (d.name || id), d.priceGems, key, '{}', t, t, t);
+    this.commerce.ledger(pid, -d.priceGems, 'spend', 'order:' + orderId);
     ids = [id]; save.up.deco.push(id); this.reactivate(pid, id);
   } else {
     if (!coinOk) fail('not_for_sale', '這件造景不支援金幣購買');

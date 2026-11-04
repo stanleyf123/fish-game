@@ -1,9 +1,9 @@
 {
-  "_comment": "合併至 live-config v59+。COINSINK-B1：典藏主題／造景、聖誕限時、收入軟上限。",
+  "_comment": "合併至 live-config v59+。COINSINK-B1：典藏主題／造景、聖誕限時、收入軟上限（K=60000/h，exp=0.8，較溫和曲線）。",
   "coins": {
     "softcap": {
       "enabled": true,
-      "kneePerHour": 50000,
+      "kneePerHour": 60000,
       "exp": 0.8
     }
   },

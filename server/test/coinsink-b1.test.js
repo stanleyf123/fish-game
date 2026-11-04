@@ -3,7 +3,7 @@ const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
-const { softcapMult, theoreticalRatePerHour, multForSave } = require('../src/coin-softcap');
+const { softcapMult, theoreticalRatePerHour, multForSave, softcapCfg } = require('../src/coin-softcap');
 const { saleActive, shopVisible, parseWhen } = require('../src/sale-window');
 const { checkSave, maxCoinRate } = require('../src/anticheat');
 
@@ -43,7 +43,7 @@ function clientSoftMult(cfg, save) {
     r += drop / ((iv[0] + iv[1]) / 2) * (cfg.care?.timeScale || 1);
   }
   const R = r * 3600;
-  const K = sc.kneePerHour ?? 50000;
+  const K = sc.kneePerHour ?? 60000;
   const exp = sc.exp ?? 0.8;
   return R <= K ? 1 : Math.pow(K / R, 1 - exp);
 }
@@ -51,16 +51,27 @@ function clientSoftMult(cfg, save) {
 describe('COINSINK-B1-CURVE', () => {
   const cfg = loadCfg();
 
+  it('patch config uses K=60000/h', () => {
+    assert.equal(cfg.coins.softcap.kneePerHour, 60000);
+    assert.equal(cfg.coins.softcap.exp, 0.8);
+  });
+
+  it('default knee is 60000 when unset', () => {
+    const sc = softcapCfg({ coins: { softcap: { enabled: true, exp: 0.8 } } });
+    assert.equal(sc.kneePerHour, 60000);
+  });
+
   it('softcap off keeps m=1', () => {
-    const c = merge(cfg, { coins: { softcap: { enabled: false, kneePerHour: 50000, exp: 0.8 } } });
+    const c = merge(cfg, { coins: { softcap: { enabled: false, kneePerHour: 60000, exp: 0.8 } } });
     assert.equal(softcapMult(c, 200000), 1);
   });
 
   it('Lv9-scale R below knee unchanged (m=1)', () => {
     const save = { fish: [mkFish('neon', cfg.stages[2].growth)], up: { cap: 9, deco: [], food: 0, feeder: 0, filter: 0 }, water: { cycle: 100 }, legacyDeco: [] };
     const R = theoreticalRatePerHour(cfg, save);
-    assert.ok(R < 50000, `expected R<50k got ${R}`);
+    assert.ok(R < 60000, `expected R<60k got ${R}`);
     assert.equal(multForSave(cfg, save), 1);
+    assert.equal(softcapMult(cfg, 24000), 1);
   });
 
   it('client and server mult match within rounding', () => {
@@ -94,9 +105,13 @@ describe('COINSINK-B1-CURVE', () => {
     assert.equal(r.suspicious.length, 0);
   });
 
-  it('PLAN Lv12 reference R≈14.1萬/h yields m≈0.81 (−19~24%)', () => {
-    const m = softcapMult(cfg, 141000);
-    assert.ok(m >= 0.79 && m <= 0.83, `expected m ~0.81 at R=141k/h, got ${m}`);
+  it('K=60000 impact at plan reference R (Lv10/Lv11/Lv12)', () => {
+    const drop = (R) => (1 - softcapMult(cfg, R)) * 100;
+    assert.equal(softcapMult(cfg, 48000), 1);
+    assert.ok(Math.abs(drop(73586) - 4) < 0.15, `Lv10 ~4% got ${drop(73586).toFixed(2)}%`);
+    assert.ok(Math.abs(drop(85000) - 6.73) < 0.2, `Lv11 ~7% got ${drop(85000).toFixed(2)}%`);
+    assert.ok(Math.abs(drop(141000) - 15.71) < 0.2, `Lv12 ~16% got ${drop(141000).toFixed(2)}%`);
+    assert.ok(Math.abs(softcapMult(cfg, 141000) - 0.8429201340427603) < 1e-12);
   });
 
   it('high-R save mult matches softcap on theoretical R', () => {
@@ -113,7 +128,7 @@ describe('COINSINK-B1-CURVE', () => {
     const mSave = multForSave(cfg, save);
     const mDirect = softcapMult(cfg, R);
     assert.ok(Math.abs(mSave - mDirect) < 1e-9);
-    if (R > 50000) assert.ok(mSave < 1 && mSave > 0.2);
+    if (R > 60000) assert.ok(mSave < 1 && mSave > 0.2);
   });
 });
 

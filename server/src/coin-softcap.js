@@ -14,7 +14,7 @@ function softcapCfg(cfg) {
   const s = (cfg && cfg.coins && cfg.coins.softcap) || {};
   return {
     enabled: s.enabled !== false,
-    kneePerHour: Number.isFinite(s.kneePerHour) ? Math.max(1, s.kneePerHour) : 50000,
+    kneePerHour: Number.isFinite(s.kneePerHour) ? Math.max(1, s.kneePerHour) : 60000,
     exp: Number.isFinite(s.exp) ? Math.min(1, Math.max(0, s.exp)) : 0.8,
   };
 }

@@ -205,3 +205,30 @@ describe('COINSINK-B1 patch assets', () => {
     }
   });
 });
+
+describe('COINSINK-B1 prices (×2)', () => {
+  const cfg = loadCfg();
+  const bg = cfg.cosmetics.coinBackgrounds;
+  const d = cfg.decorations;
+
+  it('collector backgrounds', () => {
+    assert.equal(bg.bg_coin_forest_spring.priceCoins, 600000);
+    assert.equal(bg.bg_coin_summer_cloud.priceCoins, 1200000);
+    assert.equal(bg.bg_coin_cloud_ruins.priceCoins, 2400000);
+    assert.equal(bg.bg_coin_star_sea.priceCoins, 4000000);
+  });
+
+  it('christmas background and decos', () => {
+    assert.equal(bg.bg_coin_xmas_town.priceCoins, 800000);
+    assert.equal(d.cs_b1_xmas_snowman.cost, 100000);
+    assert.equal(d.cs_b1_xmas_fir.cost, 160000);
+    assert.equal(d.cs_b1_xmas_sleigh.cost, 240000);
+    assert.equal(d.cs_b1_xmas_arch.cost, 400000);
+  });
+
+  it('collector deco tiers', () => {
+    assert.equal(d.cs_b1_garden_lantern.cost, 100000);
+    assert.equal(d.cs_b1_ruins_pillar.cost, 200000);
+    assert.equal(d.cs_b1_star_flag.cost, 360000);
+  });
+});

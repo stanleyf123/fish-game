@@ -126,6 +126,8 @@ class GemShop {
       }
       const C = conf(this.cfg()).cosmetics, b = ((this.cfg().cosmetics || {}).coinBackgrounds || {})[id];
       if (C.enabled === false || !b || b.disabled || !Number.isSafeInteger(b.priceCoins) || b.priceCoins < 1) throw new HttpError(404, 'item_not_for_sale', '找不到這個金幣主題');
+      const { saleActive } = require('./sale-window'); // COINSINK-B1-XMAS
+      if (!saleActive(b, this.now())) throw new HttpError(403, 'sale_closed', '這款主題目前不在販售期間');
       const { row, save } = this.loadSave(pid);
       if (!Number.isInteger(body.baseRev) || body.baseRev !== row.rev) throw new HttpError(409, 'save_conflict', '魚缸有新異動，請同步後再購買');
       if ((save.up?.cap || 0) < (b.minTankLevel || 0)) throw new HttpError(403, 'tank_level_required', '請先升級魚缸，再解鎖這款典藏主題');

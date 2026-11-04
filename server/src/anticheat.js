@@ -201,7 +201,8 @@ function checkSave(cfg, prev, prevClientSavedAt, next, nowMs, opts = {}) {
   for (const k of ['cap', 'food', 'feeder', 'filter']) if ((next.up[k] || 0) < (prev.up?.[k] || 0)) suspicious.push(`升級 ${k} 等級倒退`);
   // 金幣增量
   const elapsed = Math.max(0, (nowMs - (prevClientSavedAt || nowMs)) / 1000);
-  const rate = maxCoinRate(cfg, Math.max(capLv, prev.up?.cap || 0), opts.vipCoinBonus || 0, Math.max(extraSpaceOf(cfg, next), extraSpaceOf(cfg, prev)), prev?.legacyDeco) * Math.max(1, Math.min(20, opts.coinRateMult || 1));   // v4.1.3：新手前 15 分鐘加速
+  const { multForSave } = require('./coin-softcap'); // COINSINK-B1-CURVE
+  const rate = maxCoinRate(cfg, Math.max(capLv, prev.up?.cap || 0), opts.vipCoinBonus || 0, Math.max(extraSpaceOf(cfg, next), extraSpaceOf(cfg, prev)), prev?.legacyDeco) * multForSave(cfg, prev, { vipCoinBonus: opts.vipCoinBonus || 0, nowMs }) * Math.max(1, Math.min(20, opts.coinRateMult || 1));   // v4.1.3：新手前 15 分鐘加速
   let spent = 0, sold = 0;
   // 舊存檔（沒有 capV）第一次以空間制上傳：遊戲會免費升級到「裝得下原本所有魚」的等級，這幾級不算花費
   const freeCapTo = !prev.capV && next.capV ? fitTier(cfg, prev.fish) : 0;

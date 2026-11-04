@@ -250,6 +250,15 @@ function validateConfig(cfg) {
     }
     num('coins.hungryMultiplier', c.hungryMultiplier, 0, 10); num('coins.maxOnFloor', c.maxOnFloor, 1, 500, true);
     num('coins.autoCollectSec', c.autoCollectSec, 1, 3600); num('coins.gemThreshold', c.gemThreshold, 1, 1e6);
+    if (c.softcap != null) {
+      const sc = c.softcap;
+      if (typeof sc !== 'object' || Array.isArray(sc)) err('coins.softcap', '必須是物件');
+      else {
+        if (sc.enabled != null && typeof sc.enabled !== 'boolean') err('coins.softcap.enabled', '必須是布林');
+        num('coins.softcap.kneePerHour', sc.kneePerHour, 1000, 1e7, true);
+        num('coins.softcap.exp', sc.exp, 0, 1);
+      }
+    }
   }
   if (optObj('input', cfg.input) && cfg.input) optNum('input.longPressMs', cfg.input.longPressMs, 100, 3000);
   if (optObj('audio', cfg.audio) && cfg.audio) nums('audio', Object.assign({ volume: 0, ambientVolume: 0, bubbleVolume: 0 }, cfg.audio), ['volume', 'ambientVolume', 'bubbleVolume'], 0, 1);
@@ -287,6 +296,9 @@ function validateConfig(cfg) {
     if(d.priceGems > 0 && d.cost > 0) err(p, '寶石造景不能同時設定金幣價格');
 
     str(`${p}.name`, d.name, 20); str(`${p}.icon`, d.icon, 8); num(`${p}.cost`, d.cost, 0, 1e12, true);
+    if (d.minTankLevel != null) num(`${p}.minTankLevel`, d.minTankLevel, 0, cfg.capacity?.upgrades?.length || 12, true); // COINSINK-B1-THEME
+    if (d.availableFrom != null && typeof d.availableFrom !== 'string' && typeof d.availableFrom !== 'number') err(`${p}.availableFrom`, '格式錯誤');
+    if (d.availableUntil != null && typeof d.availableUntil !== 'string' && typeof d.availableUntil !== 'number') err(`${p}.availableUntil`, '格式錯誤');
     num(`${p}.coinBonus`, d.coinBonus, 0, 10); num(`${p}.mutationBonus`, d.mutationBonus, 0, 1); str(`${p}.desc`, d.desc, 60, true);
     if (d.draw != null) str(`${p}.draw`, d.draw, 40); optNum(`${p}.x`, d.x, 0, 1);
     if (d.series != null) str(`${p}.series`, d.series, 24);

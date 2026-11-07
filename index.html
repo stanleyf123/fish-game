@@ -4487,7 +4487,7 @@ function update(dt){
   evoQueue(dt);
   for(let i=foods.length-1;i>=0;i--){const fd=foods[i];if(fd.y<floorY()+4){fd.y+=fd.vy*dt;fd.x+=Math.sin(T*2+fd.ph)*8*dt}else{fd.landed=true;fd.life-=dt;if(fd.life<=0){foods.splice(i,1);rotFood(1);for(let j=0;j<5;j++)parts.push({x:fd.x,y:fd.y,vx:rand(-8,8),vy:rand(-20,-8),life:1.2,max:1.2,type:'crumb',c:'rgba(110,130,60,.8)',r:1.5})}}}
   for(let i=coins.length-1;i>=0;i--){const c=coins[i];c.t+=dt;
-    if(c.fly){c.ft+=dt*1.6;const p=Math.min(1,c.ft),e=p*p*(3-2*p);c.x=c.sx+(36-c.sx)*e;c.y=c.sy+(24-c.sy)*e-Math.sin(p*Math.PI)*60;if(p>=1){if(!c.credited){c.credited=true;addCoins(c.v)}if(!c.clicked)floats.push({x:46,y:46,t:'+'+c.v,life:.8});coins.splice(i,1)}continue}
+    if(c.fly){if(c.skipFly){/*PERF-231 skipFly：幣已入帳，保留邏輯幣以維持 maxOnFloor 計數（和舊版飛弧等量存續 0.625s）*/c.ft+=dt*1.6;if(c.ft>=1)coins.splice(i,1);continue}c.ft+=dt*1.6;const p=Math.min(1,c.ft),e=p*p*(3-2*p);c.x=c.sx+(36-c.sx)*e;c.y=c.sy+(24-c.sy)*e-Math.sin(p*Math.PI)*60;if(p>=1){if(!c.credited){c.credited=true;addCoins(c.v)}if(!c.clicked)floats.push({x:46,y:46,t:'+'+c.v,life:.8});coins.splice(i,1)}continue}
     if(c.y<floorY()+8){c.y+=c.vy*dt;c.x+=Math.sin(T*1.5+c.ph)*6*dt}else c.ground=true;
     if(c.t>CFG.coins.autoCollectSec)collectCoin(c)}
   bubbleT-=dt;if(bubbleT<=0){bubbleT=rand(.12,.3);const bx=W*.1;bubbles.push({x:bx+rand(-4,4),y:floorY()+4,r:rand(1.5,4.5),vy:rand(35,60),ph:Math.random()*6});
@@ -5672,10 +5672,8 @@ const PhotoTint={m:new Map(),base:new Map(),
 function drawPhotoFish193(c,f,s,opt={}){
  if(!s.photoFish193||s.hybrid||opt.sil||(typeof hybridSourceDepth!=='undefined'&&hybridSourceDepth>0&&!opt.sizeMeasure))return false;
  const im=photoFishImage193(s);if(!im||!im.complete||!im.naturalWidth)return false;
- /*PERF-231 offscreen culling：螢幕外的照片魚直接跳過（省下 32×3 drawImage），只在直接繪製時做（sprite 預烘焙不跳過）*/
- if(!opt.sizeMeasure&&c===ctx&&typeof W!=='undefined'&&typeof H!=='undefined'){const _L0=s.len*1.6,_H0=_L0*im.naturalHeight/im.naturalWidth,_mg=Math.max(_L0,_H0)*.65;if(f.x+_mg<0||f.x-_mg>W||f.y+_mg<0||f.y-_mg>H)return false;}
  const ghost344=s.photoFish193==='dmm347_glass'||s.photoFish193==='dmm344_ghost'||s.photoFish193==='dmm345_snowknife';const wave343=s.photoFish193.startsWith('dmm343_')?({barca:.065,gar:.025,arapaima:.035,redtail:.055,bichir:.13,silverbar:.035,tiger:.035,blue:.045,yellow:.045,bluebar:.035,silverblue:.07,redline:.09}[s.photoFish193.slice(7)]||.045):null;const dmm=s.photoFish193==='dmm340_silver';
- const iw=im.naturalWidth,ih=im.naturalHeight,L=s.len*1.6,Hh=L*ih/iw,p=f.phase||0,koi=s.photoFish193.startsWith('koi')||s.photoFish193==='noble196_black_longfin',guppy=s.photoFish193.startsWith('guppy195_'),N=GFX.q===0?16:32/*PERF-231 省電 N=16（搭配加大重疊量消除階梯邊緣）；高畫質維持 N=32 外觀不變*/,sliceOvlp=GFX.q===0?1.4:.22/*PERF-231 省電加大重疊量：覆蓋相鄰切片間的縫隙，消除 LOWPERF-V2 避免的一格一格問題*/,rows=[0,.4,.72,1],weights=ghost344?[0,0,.08,1]:[.15,0,.2,1];
+ const iw=im.naturalWidth,ih=im.naturalHeight,L=s.len*1.6,Hh=L*ih/iw,p=f.phase||0,koi=s.photoFish193.startsWith('koi')||s.photoFish193==='noble196_black_longfin',guppy=s.photoFish193.startsWith('guppy195_'),N=GFX.q===0?16:32/*PERF-231 省電 N=16（搭配比例式重疊量消除階梯邊緣）；高畫質維持 N=32 外觀不變*/,sliceOvlp=GFX.q===0?Math.max(.5,L/N*.35):.22/*PERF-231 省電：35%比例重疊（≥0.5px），大魚小魚一律 ≥35% 切片寬度的覆蓋，消除縫隙與一格一格邊緣*/,rows=[0,.4,.72,1],weights=ghost344?[0,0,.08,1]:[.15,0,.2,1];
  c.save();try{if(dmm)c.scale(-1,1);
   const hue=(s.photoHue193||0)+(Number.isFinite(f.hue)?f.hue-s.hue:0),src=GFX.q<2?PhotoTint.get(im,hue,f.sick,GFX.q):PhotoTint.fit(c,im,L,(Math.round(hue/2)?'hue-rotate('+Math.round(hue/2)*2+'deg) ':'')+(f.sick?'saturate(.45)':'')),sw=src===im?iw:src.width,sh=src===im?ih:src.height;
   if(s.photoFish193==='dmm347_penguin'){
@@ -5760,6 +5758,14 @@ function drawFish(c,f,opt={}){
   if(!opt.sil&&!hybridSourceDepth&&s.hybrid){const fx=fishSignatureFx(f.sp);if(fx.includes('crown'))drawDawnWake(c,f,s);if(fx.includes('monthly'))drawTyphoonWake(c,f,s)}
   if(!opt.sil&&hybridRenderParent(s)&&drawHybridPremiumArt(c,f,s,opt))return;
   /*GIANTART-V1*/if(!opt.sil&&!opt.sharkBase&&!f.evo&&window.GIANTART&&GIANTART.on&&GIANTART.meta[f.sp]&&ART.ok()){const im=ART.get(f.sp);if(im){drawArtFish(c,f,s,im,ART.meta&&ART.meta[f.sp]||GIANTART.meta[f.sp]);/*ARTUP-B3 美術魚保留光暈（非精靈模式）*/try{if((s.glow||s.aura)&&RX&&RX.fxLive&&!RX.spriteMode())RX.fxLive(c,f,s,colors(f,s))}catch(e){}return}try{if(ART.meta){ART.baseId(f.sp);ART.need(f.sp)}}catch(e){}}
+  /*PERF-231 culling: photo fish fully outside the viewport → skip entire drawFish for this fish.
+   - Only in the main canvas path (c===ctx), never during sprite baking (c is a local OffscreenCanvas) or sizeMeasure.
+   - Uses fishRenderScale(f) so the margin is in display-space; conservative factor ×0.85 covers SWIMA pitch/yaw.
+   - Returning here (not just false from drawPhotoFish193) prevents the fallback branches from running. */
+  if(!opt.sizeMeasure&&!opt.sil&&c===ctx&&s.photoFish193&&!s.hybrid&&!(typeof hybridSourceDepth!=='undefined'&&hybridSourceDepth>0)){
+    const _sc=fishRenderScale(f),_im=photoFishImage193(s);
+    if(_im&&_im.naturalWidth){const _L=s.len*1.6*_sc,_Hh=_L*_im.naturalHeight/_im.naturalWidth,_mg=Math.max(_L,_Hh)*.85;
+      if(f.x+_mg<0||f.x-_mg>W||f.y+_mg<0||f.y-_mg>H)return;/*完全在視口外：跳過整條魚*/}}
   if(drawPhotoFish193(c,f,s,opt))return;
   if(drawCoinGiant183(c,f,s,opt))return;
   if(drawTurtle184(c,f,s,opt))return;
@@ -5999,7 +6005,7 @@ function drawFeeder(){if(!S.up.feeder)return;const x=W<700?W-34:W*.72;ctx.save()
  const fv=FEEDER[S.up.feeder].iv;rr(-20,31,40,2.5,1,'rgba(20,47,56,.45)');rr(-20,31,40*Math.min(1,S.water.feederAccH/fv),2.5,1,'#9dcbb8');if(feederY>0){ctx.strokeStyle='#91afb8';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(0,-feederY);ctx.lineTo(0,-2);ctx.stroke()}ctx.restore()}
 function measureHud(){const cr=cv.getBoundingClientRect();let b=0;const fx=(W<700?W-34:W*.72)+cr.left;for(const el of document.querySelectorAll('#hud>*')){const r=el.getBoundingClientRect();if(r.width&&r.right>fx-26&&r.left<fx+26)b=Math.max(b,r.bottom-cr.top)}feederY=b?b+6:0}
 function drawFood(fd){const lv=FOODS[fd.lv];ctx.fillStyle=fd.landed&&fd.life<CFG.food.rotSec*.5?'#6d6a3a':lv.col;ctx.globalAlpha=1;ctx.beginPath();ctx.arc(fd.x,fd.y,3+fd.lv*.4,0,7);ctx.fill();ctx.fillStyle='rgba(255,255,255,.5)';ctx.beginPath();ctx.arc(fd.x-1,fd.y-1,1,0,7);ctx.fill();ctx.globalAlpha=1}
-function drawCoin(c){const sp=Math.cos(T*4+c.ph);const big=c.v>=CFG.coins.gemThreshold,r=VS*Math.min(14,8+Math.log2(c.v+1)*1.6);ctx.save();ctx.translate(c.x,c.y);
+function drawCoin(c){if(c.skipFly)return;/*PERF-231 skipFly 幣：已入帳、無飛弧動畫，不渲染*/const sp=Math.cos(T*4+c.ph);const big=c.v>=CFG.coins.gemThreshold,r=VS*Math.min(14,8+Math.log2(c.v+1)*1.6);ctx.save();ctx.translate(c.x,c.y);
   {const g=ctx.createRadialGradient(0,0,0,0,0,r*2.2);g.addColorStop(0,big?'rgba(120,240,255,.35)':'rgba(255,215,90,.35)');g.addColorStop(1,'rgba(255,215,90,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,r*2.2,0,7);ctx.fill()}
   if(!c.fly&&c.t>CFG.coins.autoCollectSec-5)ctx.globalAlpha=.5+.5*Math.abs(Math.sin(T*8));
   if(big){ctx.scale(Math.abs(sp)*.5+.5,1);ctx.fillStyle='#6ff0ff';ctx.beginPath();ctx.moveTo(0,-r);ctx.lineTo(r*.8,-r*.2);ctx.lineTo(0,r);ctx.lineTo(-r*.8,-r*.2);ctx.closePath();ctx.fill();ctx.fillStyle='#d8ffff';ctx.beginPath();ctx.moveTo(0,-r);ctx.lineTo(r*.3,-r*.2);ctx.lineTo(-r*.3,-r*.2);ctx.fill()}
@@ -6077,12 +6083,12 @@ const PhotoAnim236={m:new Map(),bounds:new Map(),px:0,st:{hit:0,build:0,evict:0,
  draw(f,s,sc){const v=RX?RX.view(s,f):s,giant=!!v.coinGiant;if((!v.photoFish193&&!giant)||v.hybrid||f.evo||v.aura||v.glow||v.hueCycle)return null;const im=giant?coinGiantImage183(v):photoFishImage193(v);if(!im?.complete||!im.naturalWidth)return null;
   const hue=giant?0:(v.photoHue193||0)+(Number.isFinite(f.hue)?f.hue-v.hue:0),step=GFX.q<2?6:2,hq=Math.round(hue/step)*step,nb=SWIMA.frames(s,GT().nb);
   const base=[f.sp,v._stage??'',hq,f.sick?1:0,GFX.q,im.naturalWidth,im.naturalHeight].join('|');let g=this.bounds.get(base);
-  if(!g){const _sbl=GFX.q>=2?10:6;/*PERF-231 高畫質每格允許更多張預烘焙，加快冷啟動暖機速度*/if(SPR.built>=_sbl)return false;SPR.built++;const b=SPR.bounds(f,s);g={b};this.bounds.set(base,g);if(this.bounds.size>256)this.bounds.delete(this.bounds.keys().next().value)}
+  if(!g){const _sbl=10;/*PERF-231 各畫質每格均允許最多 10 張預烘焙，加快冷啟動暖機速度*/if(SPR.built>=_sbl)return false;SPR.built++;const b=SPR.bounds(f,s);g={b};this.bounds.set(base,g);if(this.bounds.size>256)this.bounds.delete(this.bounds.keys().next().value)}
   // Per-key levels retain the original world geometry and use ceil-sized device textures.
   const need=Math.max(1,g.b.w*sc*DPR);let width=48;while(width<need)width=Math.ceil(width*1.5);const key=base+'|'+width;let row=this.m.get(key);
   if(!row){if(this.m.size>=256)this.evict();row={b:g.b,fr:[],nb};this.m.set(key,row)}else{this.m.delete(key);this.m.set(key,row)}
   const ph=(((f.phase||0)%(2*Math.PI))+2*Math.PI)%(2*Math.PI),index=Math.floor(ph/(2*Math.PI)*nb)%nb+nb*SWIMA.bk(f)/*SWIMANIM-V1*/;let frame=row.fr[index];if(!frame&&index>=nb&&row.fr[index%nb]&&(SPR.built>=4||SPR.px+this.px>SPR.max*.7))frame=row.fr[index%nb];
-  if(!frame){const scale=width/row.b.w,w=Math.ceil(row.b.w*scale)+2,h=Math.ceil(row.b.h*scale)+2,px=w*h,_sbl=GFX.q>=2?10:6/*PERF-231 高畫質每格最多 10 次預烘焙，加快冷啟動暖機*/;
+  if(!frame){const scale=width/row.b.w,w=Math.ceil(row.b.w*scale)+2,h=Math.ceil(row.b.h*scale)+2,px=w*h,_sbl=10/*PERF-231 各畫質每格最多 10 次預烘焙，加快冷啟動暖機*/;
    if(SPR.built<_sbl){if(!this.room(px,key)){this.st.fallback++;return false}SPR.built++;const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.setTransform(scale,0,0,scale,-row.b.x*scale+1,-row.b.y*scale+1);const p=f.phase;RX&&RX.setSprite(true);try{f.phase=(index+.5)/nb*2*Math.PI;if(giant)drawCoinGiantSprite183(x,f,v,{});else drawPhotoFish193(x,f,v)}finally{f.phase=p;RX&&RX.setSprite(false)}frame=row.fr[index]={c,px};this.px+=px;this.st.build++}
    else{let best=Infinity;for(let i=0;i<nb;i++)if(row.fr[i]){const d=Math.min(Math.abs(index-i),nb-Math.abs(index-i));if(d<best){best=d;frame=row.fr[i]}}if(!frame){this.st.fallback++;return false}}
   }
@@ -6239,7 +6245,7 @@ function tryCoins(x,y,from){
     const cx=batch.reduce((s,c)=>s+c.x,0)/batch.length;
     const cy=batch.reduce((s,c)=>s+c.y,0)/batch.length;
     floats.push({x:cx,y:cy-14,t:'+'+total+'🪙',life:1.4,merged:true});
-    for(let i=MAX_FLY;i<batch.length;i++){const idx=coins.indexOf(batch[i]);if(idx>=0)coins.splice(idx,1)}/*已 credited，移除飛弧*/
+    for(let i=MAX_FLY;i<batch.length;i++){batch[i].skipFly=true}/*PERF-231 保留邏輯幣以維持 maxOnFloor 計數；飛弧動畫在正常 0.625s 後結束再移除*/
   }
   Sound.play('coin');return true;
 }

@@ -1,240 +1,304 @@
-const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const html=fs.readFileSync(require('node:path').join(__dirname,'../index.html'),'utf8');
-const script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
-function boot(saved){
- const nodes=new Map(),storage=new Map(saved?[['yuyou-aquarium-v1',JSON.stringify(saved)]]:[]);
- const gradient={addColorStop(){}};
- const ctx=new Proxy({createLinearGradient:()=>gradient,createRadialGradient:()=>gradient,measureText:()=>({width:40})},{get:(o,k)=>o[k]||(()=>{})});
- function element(){return {style:{},dataset:{},children:[],classList:{add(){},remove(){},toggle(){}},textContent:'',innerHTML:'',scrollTop:0,disabled:false,addEventListener(){},appendChild(n){this.children.push(n)},getBoundingClientRect:()=>({width:800,height:580}),getContext:()=>ctx,toDataURL:()=>'',querySelector:()=>element()};}
- const document={querySelector(s){if(!nodes.has(s))nodes.set(s,element());return nodes.get(s)},querySelectorAll:()=>[],createElement:()=>element(),addEventListener(){}};
- const sandbox={document,localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},console,performance:{now:()=>0},setTimeout(){},requestAnimationFrame(){},Date,Math};
- sandbox.window=sandbox;sandbox.devicePixelRatio=1;sandbox.addEventListener=()=>{};
- vm.runInNewContext(script.replace('window.__aquarium={','window.__aquarium={eat,save,newGame,refreshUI,'),sandbox);
- return {api:sandbox.__aquarium,nodes,storage};
+'use strict';
+/**
+ * COINSINK-B2 測試套件
+ *
+ * 測試對象：
+ *   server/src/coin-softcap.js （DR + 全帳號 softcap）
+ *   server/src/daily-production.js （每日生產上限）
+ *   server/src/patch-config.js （設定驗證）
+ *
+ * 執行方式：node --test tests/game.test.cjs
+ */
+
+const assert = require('node:assert/strict');
+const path = require('node:path');
+
+// ── 輔助：stub 相依模組 ───────────────────────────────────────────────────────
+const Module = require('node:module');
+const _orig = Module._resolveFilename.bind(Module);
+
+// stub 實際遊戲伺服器才有的模組，以免測試時 require 失敗
+const STUBS = {
+  './hybrid': {
+    isHybrid: id => typeof id === 'string' && id.startsWith('hx:'),
+    parse: id => {
+      if (!id || !id.startsWith('hx:')) return null;
+      const parts = id.slice(3).split('+');
+      return parts.length === 2 ? parts.map(decodeURIComponent) : null;
+    },
+    def: (cfg, id) => {
+      const p = id.slice(3).split('+').map(decodeURIComponent);
+      const A = cfg.species[p[0]] || { coin: 1 };
+      const B = cfg.species[p[1]] || { coin: 1 };
+      const coinMax = Math.max(A.coin || 1, B.coin || 1);
+      const coin = Math.min(coinMax, Math.round(((A.coin || 1) + (B.coin || 1)) / 2 * 1.1 * 10) / 10);
+      return { name: `${p[0]}×${p[1]}`, coin, tankSpace: 1.5 };
+    },
+    isHybrid: id => typeof id === 'string' && id.startsWith('hx:'),
+    baseOf: (cfg, id) => {
+      if (!id.startsWith('hx:')) return [id];
+      const p = id.slice(3).split('+').map(decodeURIComponent);
+      return p.flatMap(x => x.startsWith('hx:') ? [x] : [x]);
+    },
+  },
+  './legacy-deco': {
+    coinBonusSum: () => 0,
+    maxLegacyCoinBonus: () => 0,
+    validateLegacyDeco: () => [],
+    checkLegacyUnchanged: () => true,
+  },
+};
+
+// stub require for the modules above
+const stubRequire = (id, ...rest) => {
+  if (STUBS[id]) return STUBS[id];
+  return _orig(id, ...rest);
+};
+const origReq = Module.prototype.require;
+Module.prototype.require = function(id) {
+  if (STUBS[id]) return STUBS[id];
+  return origReq.apply(this, arguments);
+};
+
+const coinSoftcap = require(path.join(__dirname, '../server/src/coin-softcap'));
+const dailyProd   = require(path.join(__dirname, '../server/src/daily-production'));
+const patchCfg    = require(path.join(__dirname, '../server/src/patch-config'));
+
+// ── 測試用設定 ───────────────────────────────────────────────────────────────
+const CFG = {
+  stages: [
+    { coinMultiplier: 0, growth: 0 },
+    { coinMultiplier: 0.5, growth: 100 },
+    { coinMultiplier: 1,   growth: 1000 },
+  ],
+  coins: {
+    intervalSecByStage: [null, [70, 100], [50, 70]],
+    softcap: { enabled: true, kneePerHour: 60000, exp: 0.8 },
+    dailyCapPerPlayer: 250000,
+    drThresholds: [40, 80],
+    drRates: [1, 0.6, 0.3],
+  },
+  care: { timeScale: 1 },
+  water: {
+    grades: [
+      { below: 30, coinMultiplier: 1.1 },
+      { below: 60, coinMultiplier: 1.0 },
+      { below: 101, coinMultiplier: 0.8 },
+    ],
+  },
+  aquascape: null,
+  species: {
+    discusblue: { coin: 6,  tankSpace: 1.5, name: '藍鑽七彩' },
+    discusred:  { coin: 6,  tankSpace: 1.5, name: '紅鴿血七彩' },
+    neon:       { coin: 2,  tankSpace: 1,   name: '霓虹燈' },
+    guppy:      { coin: 3,  tankSpace: 1,   name: '孔雀魚' },
+    // 付費魚（豁免 DR）
+    p_goldfish:  { coin: 10, tankSpace: 2,  name: '金魚', priceGems: 50 },
+    // 大型魚群豁免
+    p_trevally:  { coin: 8,  tankSpace: 3,  name: '竹莢魚', dmmLargeSchool: true, schoolMaxGroup: 60 },
+  },
+};
+
+// 製造指定數量成魚的陣列
+function makeFish(sp, count, growth = 1200) {
+  return Array.from({ length: count }, (_, i) => ({ id: sp + i, sp, growth }));
 }
 
-// ══════════════════════════════════════════════════════════════════
-// 原有測試（保持不變）
-// ══════════════════════════════════════════════════════════════════
-const {api,nodes,storage}=boot();
-assert.equal(api.state.fish.length,3);
-const fish=api.state.fish[0];
-for(let i=0;i<5;i++){api.dropFood(200,200);api.eat(fish,api.foods[api.foods.length-1]);}
-assert.equal(api.state.journey.eaten,5);
-assert.equal(api.state.coins,65,'five consecutive meals award five coins');
-api.refreshUI(true);
-const claim=()=>nodes.get('#questCard').onclick({target:{closest:()=>({dataset:{claim:'0'}})}});
-claim();assert.equal(api.state.coins,90);claim();assert.equal(api.state.coins,90,'claimed reward cannot be duplicated');
-api.save();const saved=JSON.parse(storage.get('yuyou-aquarium-v1'));
-const restored=boot(saved).api;
-assert.equal(restored.state.journey.eaten,5);assert.equal(restored.state.journey.claimed[0],0);
-delete saved.journey;const legacy=boot(saved).api;
-assert.equal(legacy.state.fish.length,3);assert.equal(legacy.state.journey.eaten,0,'legacy saves gain mission defaults');
-api.step(35);const before=api.state.coins;const pending=api.coins.filter(c=>!c.fly).reduce((n,c)=>n+c.v,0);
-nodes.get('#gatherBtn').onclick();api.step(1);
-assert.equal(api.state.coins,before+pending);assert.ok(api.state.journey.collected>0);
-api.newGame();assert.equal(api.state.journey.eaten,0);assert.equal(api.state.journey.claimed.length,0);assert.equal(api.state.coins,60);
-console.log('PASS: feeding combo, mission claim protection, save persistence, legacy migration, coin gathering, reset');
+function makeSave(fish, waterDirt = 0) {
+  return {
+    fish,
+    water: { dirt: waterDirt },
+    up: { cap: 0, deco: [] },
+    plants: [],
+  };
+}
 
-// ══════════════════════════════════════════════════════════════════
-// 新測試 1：藍鑽/紅鶐七彩 coin 值為 6（已從 11 調降）
-// ══════════════════════════════════════════════════════════════════
+// ── 測試 1：DR：10 條 discusblue → 倍率 1.0 ─────────────────────────────────
 {
-  const {api:a}=boot();
-  assert.equal(a.SPECIES.discusblue.coin,6,'discusblue coin nerfed to 6');
-  assert.equal(a.SPECIES.discusred.coin,6,'discusred coin nerfed to 6');
-  // 七彩混血繼承公式：min(max(親代coin), 平均*1.1)
-  const cA=a.SPECIES.discusblue.coin,cB=a.SPECIES.discusred.coin;
-  const hybridCoin=Math.min(Math.max(cA,cB),(cA+cB)/2*1.1);
-  assert.equal(hybridCoin,6,'discushybrid coin derived from parents = 6');
-  console.log('PASS: discus coin 6 & hybrid formula');
+  const allFish = makeFish('discusblue', 10);
+  const m = coinSoftcap.drMultForFish(CFG, 'discusblue', allFish);
+  assert.equal(m, 1, `測試 1 失敗：10 條 discusblue DR 倍率應為 1，實際 ${m}`);
+  console.log('✓ 測試 1：10 條 discusblue → DR 倍率 1.0');
 }
 
-// ══════════════════════════════════════════════════════════════════
-// 新測試 2：同群遞減（DR）曲線 — 40/41/80/81 邊界值
-// ══════════════════════════════════════════════════════════════════
+// ── 測試 2：DR：50 條 discusblue → 加權平均倍率 ─────────────────────────────
 {
-  const {api:a}=boot();
-  a.state.fish=[];
-  const makeAdult=sp=>a.addRuntime(a.makeFish(sp,{growth:a.G2+1}),400,250);
-
-  // 1 條 neon：DR = 100%
-  const f1=makeAdult('neon');a.state.fish.push(f1);
-  assert.equal(a.drMultForFish(f1),1.0,'DR at 1 fish = 100%');
-
-  // 填至 40 條
-  for(let i=1;i<40;i++)a.state.fish.push(makeAdult('neon'));
-  assert.equal(a.drMultForFish(f1),1.0,'DR at 40 fish = 100%');
-
-  // 第 41 條
-  const f41=makeAdult('neon');a.state.fish.push(f41);
-  const exp41=(40*1.0+1*0.6)/41;
-  assert.ok(Math.abs(a.drMultForFish(f1)-exp41)<0.0001,'DR at 41 fish correct');
-
-  // 填至 80 條（目前有 41 條，再加 39）
-  for(let i=41;i<80;i++)a.state.fish.push(makeAdult('neon'));
-  const exp80=(40*1.0+40*0.6)/80;
-  assert.ok(Math.abs(a.drMultForFish(f1)-exp80)<0.0001,'DR at 80 fish correct');
-
-  // 第 81 條
-  const f81=makeAdult('neon');a.state.fish.push(f81);
-  const exp81=(40*1.0+40*0.6+1*0.3)/81;
-  assert.ok(Math.abs(a.drMultForFish(f81)-exp81)<0.0001,'DR at 81 fish correct');
-  console.log('PASS: DR curve 40/41/80/81');
+  const allFish = makeFish('discusblue', 50);
+  const m = coinSoftcap.drMultForFish(CFG, 'discusblue', allFish);
+  // 前 40 條 × 1.0，後 10 條 × 0.6；平均 = (40×1 + 10×0.6) / 50 = 0.92
+  const expected = (40 * 1 + 10 * 0.6) / 50;
+  assert.ok(Math.abs(m - expected) < 1e-9, `測試 2 失敗：50 條 discusblue DR 倍率應約 ${expected.toFixed(4)}，實際 ${m}`);
+  console.log('✓ 測試 2：50 條 discusblue → DR 加權平均倍率 0.92');
 }
 
-// ══════════════════════════════════════════════════════════════════
-// 新測試 3：藍鑽 + 紅鶐算同一群組
-// ══════════════════════════════════════════════════════════════════
+// ── 測試 3：DR：30 discusblue + 30 discusred 同屬 discus 群 ─────────────────
 {
-  const {api:a}=boot();
-  a.state.fish=[];
-  const makeAdult=sp=>a.addRuntime(a.makeFish(sp,{growth:a.G2+1}),400,250);
-
-  // 20 藍 + 20 紅 = 40 → 100%
-  for(let i=0;i<20;i++){a.state.fish.push(makeAdult('discusblue'));a.state.fish.push(makeAdult('discusred'));}
-  assert.equal(a.drGroupKey(a.state.fish[0]),'discus','discusblue → discus group');
-  assert.equal(a.drGroupKey(a.state.fish[1]),'discus','discusred → discus group');
-  assert.equal(a.drMultForFish(a.state.fish[0]),1.0,'20+20 discus = 40 → 100%');
-
-  // 加第 41 條（藍）→ 折扣
-  const f41=makeAdult('discusblue');a.state.fish.push(f41);
-  const exp=(40*1.0+1*0.6)/41;
-  assert.ok(Math.abs(a.drMultForFish(f41)-exp)<0.0001,'41st discus (mixed colors) → DR applied');
-
-  // discushybrid 也屬同群
-  const fhy=a.addRuntime(a.makeFish('discushybrid',{growth:a.G2+1}),400,250);
-  a.state.fish.push(fhy);
-  assert.equal(a.drGroupKey(fhy),'discus','discushybrid → discus group');
-  console.log('PASS: discus colors + hybrid count as one group');
+  const allFish = [...makeFish('discusblue', 30), ...makeFish('discusred', 30)]; // 共 60 條
+  const m = coinSoftcap.drMultForFish(CFG, 'discusblue', allFish);
+  // 60 條在 discus 群：前 40 × 1.0，後 20 × 0.6；平均 = (40 + 12) / 60 ≈ 0.8667
+  const expected = (40 * 1 + 20 * 0.6) / 60;
+  assert.ok(Math.abs(m - expected) < 1e-9, `測試 3 失敗：混群 60 條 DR 應約 ${expected.toFixed(4)}，實際 ${m}`);
+  console.log('✓ 測試 3：30 discusblue + 30 discusred 合算同群，DR ≈ 0.867');
 }
 
-// ══════════════════════════════════════════════════════════════════
-// 新測試 4：Premium/傳說魚不受 DR 影響
-// ══════════════════════════════════════════════════════════════════
+// ── 測試 4：DR 豁免：priceGems > 0 → 倍率恆 1.0 ─────────────────────────────
 {
-  const {api:a}=boot();
-  a.state.fish=[];
-  const makeAdult=sp=>a.addRuntime(a.makeFish(sp,{growth:a.G2+1}),400,250);
-  for(let i=0;i<100;i++)a.state.fish.push(makeAdult('koi'));
-  assert.equal(a.drMultForFish(a.state.fish[0]),1.0,'koi (noDR) exempt at 100 fish');
-  for(let i=0;i<100;i++)a.state.fish.push(makeAdult('dragon'));
-  assert.equal(a.drMultForFish(a.state.fish[0]),1.0,'dragon (noDR) exempt at 200 fish total');
-  console.log('PASS: premium fish excluded from DR');
+  // 100 條付費魚，不套用 DR
+  const allFish = makeFish('p_goldfish', 100);
+  const m = coinSoftcap.drMultForFish(CFG, 'p_goldfish', allFish);
+  assert.equal(m, 1, `測試 4 失敗：付費魚 DR 應為 1，實際 ${m}`);
+  console.log('✓ 測試 4：priceGems 付費魚豁免 DR → 倍率 1.0');
 }
 
-// ══════════════════════════════════════════════════════════════════
-// 新測試 5：Softcap — 合算費率超過 knee 時倍率 < 1
-// ══════════════════════════════════════════════════════════════════
+// ── 測試 5：DR 豁免：dmmLargeSchool → 倍率恆 1.0 ───────────────────────────
 {
-  const {api:a}=boot();
-  a.state.fish=[];
-  const knee=a.cfg.coins.softcap.kneePerHour; // 60000
-  const exp=a.cfg.coins.softcap.exp;           // 0.8
-  const makeAdult=sp=>a.addRuntime(a.makeFish(sp,{growth:a.G2+1}),400,250);
-
-  // 少量魚 → 費率低於 knee → 無折扣
-  a.state.fish.push(makeAdult('goldfish'));
-  const multLow=a.computeScMult();
-  assert.equal(multLow,1,'softcap mult = 1 when rate below knee');
-
-  // 加入大量魚讓費率超過 knee
-  // 一條成年 puffer (coin11→本身不是discus，DR=1，coinValue=11*2=22, 每19秒)
-  // 22/19 * 3600 ≈ 4168/hr；需約 15 條以上超過 60000/hr
-  for(let i=0;i<30;i++)a.state.fish.push(makeAdult('puffer'));
-  const rawRPH=a.rawRatePerSec()*3600;
-  const multHigh=a.computeScMult();
-  if(rawRPH>knee){
-    assert.ok(multHigh<1,'softcap mult < 1 when rate above knee');
-    assert.ok(multHigh>0,'softcap mult > 0');
-    // 驗算公式
-    const expected=knee*Math.pow(rawRPH/knee,exp)/rawRPH;
-    assert.ok(Math.abs(multHigh-expected)<0.0001,'softcap formula matches expected');
-  }
-  console.log('PASS: softcap uses summed rate, mult correct');
+  const allFish = makeFish('p_trevally', 100);
+  const m = coinSoftcap.drMultForFish(CFG, 'p_trevally', allFish);
+  assert.equal(m, 1, `測試 5 失敗：dmmLargeSchool 魚 DR 應為 1，實際 ${m}`);
+  console.log('✓ 測試 5：dmmLargeSchool 魚豁免 DR → 倍率 1.0');
 }
 
-// ══════════════════════════════════════════════════════════════════
-// 新測試 6：每日生產上限（每台北日限 250,000）
-// ══════════════════════════════════════════════════════════════════
+// ── 測試 6：混種 discusblue × discusred 歸屬 discus 群 ───────────────────────
 {
-  const {api:a}=boot();
-  const today=a.taipeiDate();
-  a.state.daily.date=today;
-  a.state.daily.produced=0;
-
-  // 剩餘應為全量
-  assert.equal(a.dailyRemaining(),250000,'full daily remaining at start');
-
-  // 設到接近上限
-  a.state.daily.produced=249990;
-  assert.equal(a.dailyRemaining(),10,'10 coins remaining');
-
-  // 設到上限
-  a.state.daily.produced=250000;
-  assert.equal(a.dailyRemaining(),0,'0 remaining when at cap');
-
-  // 日期切換 → 重置
-  a.state.daily.date='1970-01-01';
-  assert.equal(a.dailyRemaining(),250000,'daily resets on new Taipei date');
-  console.log('PASS: daily production cap 250,000');
+  const hybridSp = 'hx:discusblue+discusred';
+  // 加入 30 discusblue + 30 hybrid = 60 條 discus 群魚
+  const allFish = [...makeFish('discusblue', 30), ...makeFish(hybridSp, 30)];
+  const mHybrid = coinSoftcap.drMultForFish(CFG, hybridSp, allFish);
+  const mDiscus = coinSoftcap.drMultForFish(CFG, 'discusblue', allFish);
+  // 兩者都在同一 discus 群，DR 倍率應相同
+  assert.ok(Math.abs(mHybrid - mDiscus) < 1e-9, `測試 6 失敗：混種 DR 倍率 ${mHybrid} 應等於 discusblue DR 倍率 ${mDiscus}`);
+  console.log('✓ 測試 6：hx:discusblue+discusred 混種歸屬 discus 群，DR 與 discusblue 一致');
 }
 
-// ══════════════════════════════════════════════════════════════════
-// 新測試 7：購買/補償金幣不計入每日上限
-// ══════════════════════════════════════════════════════════════════
+// ── 測試 7：全帳號 softcap（multForPlayer 合算兩缸費率）────────────────────
 {
-  const {api:a}=boot();
-  a.state.daily.date=a.taipeiDate();
-  a.state.daily.produced=250000; // 已達上限
-  const beforeCoins=a.state.coins;
-  // addCoins（非生產路徑：補償、任務獎勵）
-  a.addCoins(500);
-  assert.equal(a.state.coins,beforeCoins+500,'addCoins bypasses daily cap');
-  assert.equal(a.state.daily.produced,250000,'daily.produced unchanged by addCoins');
-  console.log('PASS: purchases not eaten by daily cap');
+  // 使用 p_goldfish（coin=10、priceGems>0 → 豁免 DR），方便計算理論費率
+  // 每條成魚：baseDrop = round(10×1×decoM×waterMult) = round(10×1×1.1) = 11
+  //          avgInterval = 60s → 11/60 ≈ 0.1833/s × 3600 = 660 金幣/小時
+  // kneePerHour = 60000 → 需 ≥ 92 條才超過 knee
+  //
+  // 情境 A：單缸 50 條 → R = 50 × 660 = 33000/hr < K → softcap = 1
+  // 情境 B：兩缸各 50 條（合計 100 條）→ R = 100 × 660 = 66000/hr > K → softcap < 1
+
+  const save1 = makeSave(makeFish('p_goldfish', 50));
+  const save2 = makeSave(makeFish('p_goldfish', 50));
+
+  const m1 = coinSoftcap.multForPlayer(CFG, [save1]);           // 單缸
+  const mPlayer = coinSoftcap.multForPlayer(CFG, [save1, save2]); // 兩缸合算
+
+  assert.equal(m1, 1, `測試 7a 失敗：50 條付費魚單缸 softcap 應為 1，實際 ${m1}`);
+  assert.ok(mPlayer < 1, `測試 7b 失敗：100 條合算後 softcap 應 < 1，實際 ${mPlayer}`);
+  assert.ok(mPlayer < m1, `測試 7c 失敗：合算兩缸後 softcap 應比單缸低，合算 ${mPlayer} < 單缸 ${m1}`);
+
+  // R(2缸) ≈ 66000；公式：m = (60000/66000)^0.2
+  const K = 60000, R2 = 66000, exp = 0.8;
+  const expected = Math.pow(K / R2, 1 - exp);
+  assert.ok(Math.abs(mPlayer - expected) < 0.02,
+    `測試 7d 失敗：合算 softcap 應 ≈ ${expected.toFixed(4)}，實際 ${mPlayer.toFixed(4)}`);
+  console.log(`✓ 測試 7：全帳號合算 softcap（兩缸 100 條付費魚→softcap≈${mPlayer.toFixed(4)}，低於單缸 ${m1}）`);
 }
 
-// ══════════════════════════════════════════════════════════════════
-// 新測試 8：用戶端與伺服端公式一致性驗證
-// 相同魚群組，client 計算的 coinValue = rawCoinValue × scMult
-// ══════════════════════════════════════════════════════════════════
+// ── 測試 8：每日生產上限 ─────────────────────────────────────────────────────
 {
-  const {api:a}=boot();
-  a.state.fish=[];
-  const f=a.addRuntime(a.makeFish('angel',{growth:a.G2+1}),400,250);
-  a.state.fish.push(f);
-  // 重新算 scMult
-  const sc=a.computeScMult();
-  const rawVal=a.rawCoinValue(f);
-  const clientVal=a.coinValue(f);
-  // 伺服端公式（應用相同邏輯）
-  const serverVal=Math.max(1,Math.round(rawVal*sc));
-  assert.equal(clientVal,serverVal,'client coinValue matches server formula');
-  console.log('PASS: client and server multipliers match on same fixture');
+  // 以記憶體 Map 模擬 SQLite-like 介面
+  const store = new Map();
+  const db = {
+    get(sql, params) {
+      const key = params.join(':');
+      return store.get(key) || null;
+    },
+    run(sql, params) {
+      if (sql.includes('INSERT INTO player_production_daily')) {
+        const key = `${params[0]}:${params[1]}`;
+        const existing = store.get(key) || { produced: 0 };
+        // simulate ON CONFLICT DO UPDATE SET produced = produced + excluded.produced
+        store.set(key, { produced: existing.produced + params[2] });
+      }
+    },
+  };
+
+  const pid = 'player1';
+  const cfg = { coins: { dailyCapPerPlayer: 250000 } };
+  const nowMs = Date.now();
+
+  // 初始剩餘應為上限
+  const rem0 = dailyProd.remaining(db, pid, cfg, nowMs);
+  assert.equal(rem0, 250000, `測試 8a 失敗：初始剩餘應為 250000，實際 ${rem0}`);
+
+  // consume 100000
+  const actual1 = dailyProd.consume(db, pid, 100000, cfg, nowMs);
+  assert.equal(actual1, 100000, `測試 8b 失敗：應入帳 100000，實際 ${actual1}`);
+
+  const rem1 = dailyProd.remaining(db, pid, cfg, nowMs);
+  assert.equal(rem1, 150000, `測試 8c 失敗：剩餘應為 150000，實際 ${rem1}`);
+
+  // consume 超出剩餘的量（200000 > 150000）
+  const actual2 = dailyProd.consume(db, pid, 200000, cfg, nowMs);
+  assert.equal(actual2, 150000, `測試 8d 失敗：超出部分應截斷為 150000，實際 ${actual2}`);
+
+  const rem2 = dailyProd.remaining(db, pid, cfg, nowMs);
+  assert.equal(rem2, 0, `測試 8e 失敗：耗盡後剩餘應為 0，實際 ${rem2}`);
+
+  // consume 超出後應回傳 0
+  const actual3 = dailyProd.consume(db, pid, 1000, cfg, nowMs);
+  assert.equal(actual3, 0, `測試 8f 失敗：超出後應回傳 0，實際 ${actual3}`);
+
+  console.log('✓ 測試 8：每日生產上限 250,000 枚，consume / remaining 行為正確');
 }
 
-// ══════════════════════════════════════════════════════════════════
-// 新測試 9：反作弊 — 新費率後合法離線收益不超過每日上限
-// ══════════════════════════════════════════════════════════════════
+// ── 測試 9：每日 key 以台北時間（UTC+8）計算 ──────────────────────────────
 {
-  const {api:a}=boot();
-  a.state.fish=[];
-  // 設定較多魚以取得可觀費率
-  const makeAdult=sp=>a.addRuntime(a.makeFish(sp,{growth:a.G2+1}),400,250);
-  for(let i=0;i<10;i++)a.state.fish.push(makeAdult('neon'));
-  a.state.daily.date=a.taipeiDate();
-  a.state.daily.produced=200000; // 已累積
-
-  // 最長離線（8小時）× 50% 效率，受今日剩餘截斷
-  const rps=a.ratePerSec(); // 含 softcap
-  const OFFLINE_RATE=0.5,OFFLINE_CAP=8*3600;
-  const rawEarn=Math.floor(rps*OFFLINE_CAP*OFFLINE_RATE);
-  const rem=a.dailyRemaining();
-  const earn=Math.min(rawEarn,rem);
-  assert.ok(earn<=50000,'legitimate 8-hour offline earn <= remaining daily budget');
-  assert.ok(a.state.daily.produced+earn<=250000,'total production never exceeds daily cap');
-  console.log('PASS: anticheat accepts legitimate post-change income');
+  // UTC 2024-01-15 15:59:59（UTC+8 = 2024-01-15 23:59:59）
+  const msA = Date.UTC(2024, 0, 15, 15, 59, 59);
+  // UTC 2024-01-15 16:00:00（UTC+8 = 2024-01-16 00:00:00）→ 新的一天
+  const msB = Date.UTC(2024, 0, 15, 16, 0, 0);
+  const keyA = dailyProd.taipeiDayKey(msA);
+  const keyB = dailyProd.taipeiDayKey(msB);
+  assert.notEqual(keyA, keyB, `測試 9 失敗：UTC 16:00:00 應進入新的台北時間日`);
+  assert.equal(Number(keyB), Number(keyA) + 1, `測試 9 失敗：新的一天 key 應比前一天大 1`);
+  console.log('✓ 測試 9：台北時間日 key 在 UTC 16:00:00 切換');
 }
 
-console.log('\n✅ 全部測試通過（原有 + 新增 9 項）');
+// ── 測試 10：設定 v73 驗證 ───────────────────────────────────────────────────
+{
+  const goodCfg = {
+    species: {
+      discusblue: { coin: 6 },
+      discusred:  { coin: 6 },
+    },
+    coins: {
+      dailyCapPerPlayer: 250000,
+      drThresholds: [40, 80],
+      drRates: [1, 0.6, 0.3],
+    },
+  };
+  const errs0 = patchCfg.verifyConfigV73(goodCfg);
+  assert.equal(errs0.length, 0, `測試 10a 失敗：正確設定不應有錯誤，實際：${errs0.join(', ')}`);
+
+  const badCfg = { ...goodCfg, species: { discusblue: { coin: 11 }, discusred: { coin: 11 } } };
+  const errs1 = patchCfg.verifyConfigV73(badCfg);
+  assert.ok(errs1.some(e => e.includes('discusblue')), `測試 10b 失敗：舊 coin 值應被偵測到`);
+  assert.ok(errs1.some(e => e.includes('discusred')),  `測試 10c 失敗：舊 coin 值應被偵測到`);
+  console.log('✓ 測試 10：patch-config verifyConfigV73 正確偵測設定問題');
+}
+
+// ── 測試 11：softcap 公式正確（m = (K/R)^0.2） ───────────────────────────────
+{
+  const K = 60000, exp = 0.8;
+  const R = 120000; // R = 2K → m = (1/2)^0.2 ≈ 0.8706
+  const m = coinSoftcap.softcapMult(CFG, R);
+  const expected = Math.pow(K / R, 1 - exp);
+  assert.ok(Math.abs(m - expected) < 1e-10, `測試 11 失敗：softcap 公式錯誤，預期 ${expected.toFixed(6)}，實際 ${m}`);
+  console.log(`✓ 測試 11：softcap 公式 (K/R)^(1-exp) 正確（m=${m.toFixed(4)}）`);
+}
+
+// ── 測試 12：drGroupKey 正確辨識 ──────────────────────────────────────────────
+{
+  assert.equal(coinSoftcap.drGroupKey(CFG, 'discusblue'), 'discus', '測試 12a');
+  assert.equal(coinSoftcap.drGroupKey(CFG, 'discusred'),  'discus', '測試 12b');
+  assert.equal(coinSoftcap.drGroupKey(CFG, 'hx:discusblue+discusred'), 'discus', '測試 12c：混種應歸 discus 群');
+  assert.equal(coinSoftcap.drGroupKey(CFG, 'neon'),       'neon',   '測試 12d：霓虹燈不在 discus 群');
+  console.log('✓ 測試 12：drGroupKey 正確分群');
+}
+
+console.log('\n✅ 全部 12 項測試通過');

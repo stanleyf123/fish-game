@@ -97,6 +97,7 @@ body{background:radial-gradient(ellipse at 20% 0,#1b4850,#071f29 70%)}
       <div class="chip" id="coinChip">🪙 <b id="coinTxt">0</b></div>
       <div class="chip">🐟 <span id="fishTxt">0/6</span></div>
       <div class="chip" title="預估每分鐘收益">⏱ ≈<span id="rateTxt">0</span>/分</div>
+      <div class="chip" id="dailyChip" title="今日金幣生產剩餘額度（每台北時間日重置）">🌅 <span id="dailyTxt">250,000</span></div>
       <div class="spacer"></div>
       <button class="hbtn" id="breedBtn">💕 繁殖</button>
     </div>
@@ -114,6 +115,16 @@ body{background:radial-gradient(ellipse at 20% 0,#1b4850,#071f29 70%)}
 <script>
 (()=>{
 'use strict';
+// ---------- 版本與全域設定 ----------
+const GAME_BUILD=2;
+const cfg={
+  coins:{
+    dailyCapPerPlayer:250000,   // 每台北曆日最多可生產金幣數
+    drThresholds:[40,80],        // 同群遞減門檻
+    drRates:[1.0,0.6,0.3],      // 各段產率
+    softcap:{enabled:true,kneePerHour:60000,exp:0.8} // 合計費率折扣曲線
+  }
+};
 // ---------- 工具 ----------
 const $=s=>document.querySelector(s);
 const rand=(a,b)=>a+Math.random()*(b-a);
@@ -132,12 +143,18 @@ const SPECIES={
  tang:{name:'藍倒吊',r:0,price:100,coin:4,shape:'tang',tail:'fork',len:34,ht:24,hue:215,sat:85,lit:50,speed:48,tailColor:'hsl(50,100%,55%)',desc:'寶藍色身體配上黃色尾巴。'},
  angel:{name:'神仙魚',r:1,price:220,coin:8,shape:'angel',tail:'fan',len:28,ht:30,hue:48,sat:55,lit:80,speed:30,desc:'優雅的長鰭，宛如水中仙子。'},
  puffer:{name:'河豚',r:1,price:350,coin:11,shape:'puffer',tail:'small',len:28,ht:24,hue:52,sat:70,lit:64,speed:26,desc:'吃東西時會鼓起來，超級可愛。'},
- betta:{name:'鬥魚',r:1,price:0,sell:200,coin:14,shape:'betta',tail:'flow',len:28,ht:16,hue:340,sat:85,lit:50,speed:34,breedOnly:1,desc:'華麗飄逸的大尾鰭。繁殖時有機會突變出現。'},
- koi:{name:'錦鯉',r:2,price:0,sell:600,coin:22,shape:'koi',tail:'fan',len:42,ht:20,hue:10,sat:10,lit:95,speed:32,breedOnly:1,desc:'象徵好運的紅白錦鯉。只能透過繁殖突變獲得。'},
- dragon:{name:'金龍魚',r:2,price:0,sell:900,coin:30,shape:'arowana',tail:'fan',len:48,ht:16,hue:44,sat:90,lit:55,speed:38,breedOnly:1,desc:'金光閃閃的鱗片，帶來財運。只能透過繁殖突變獲得。'},
- rainbow:{name:'彩虹仙子',r:2,price:0,sell:1200,coin:40,shape:'rainbow',tail:'flow',len:30,ht:18,hue:0,sat:90,lit:62,speed:44,breedOnly:1,desc:'身上流轉七彩光芒的夢幻魚種。只能透過繁殖突變獲得。'},
+ betta:{name:'鬥魚',r:1,price:0,sell:200,coin:14,shape:'betta',tail:'flow',len:28,ht:16,hue:340,sat:85,lit:50,speed:34,breedOnly:1,noDR:1,desc:'華麗飄逸的大尾鰭。繁殖時有機會突變出現。'},
+ koi:{name:'錦鯉',r:2,price:0,sell:600,coin:22,shape:'koi',tail:'fan',len:42,ht:20,hue:10,sat:10,lit:95,speed:32,breedOnly:1,noDR:1,desc:'象徵好運的紅白錦鯉。只能透過繁殖突變獲得。'},
+ dragon:{name:'金龍魚',r:2,price:0,sell:900,coin:30,shape:'arowana',tail:'fan',len:48,ht:16,hue:44,sat:90,lit:55,speed:38,breedOnly:1,noDR:1,desc:'金光閃閃的鱗片，帶來財運。只能透過繁殖突變獲得。'},
+ rainbow:{name:'彩虹仙子',r:2,price:0,sell:1200,coin:40,shape:'rainbow',tail:'flow',len:30,ht:18,hue:0,sat:90,lit:62,speed:44,breedOnly:1,noDR:1,desc:'身上流轉七彩光芒的夢幻魚種。只能透過繁殖突變獲得。'},
+ // ── 七彩系（2026 平衡補丁）──
+ discusblue:{name:'藍鑽七彩',r:1,price:480,coin:6,shape:'std',tail:'fan',len:36,ht:28,hue:220,sat:80,lit:55,speed:28,desc:'深邃藍圓盤魚，高密度群養時收益遞減。'},
+ discusred:{name:'紅鶐血七彩',r:1,price:480,coin:6,shape:'std',tail:'fan',len:36,ht:28,hue:0,sat:85,lit:48,speed:28,desc:'艷紅圓盤魚，高密度群養時收益遞減。'},
+ discushybrid:{name:'七彩混血',r:1,price:0,sell:300,coin:6,shape:'std',tail:'fan',len:36,ht:28,hue:285,sat:65,lit:55,speed:28,breedOnly:1,desc:'藍鑽與紅鶐的後代，繼承雙親血脈。只能透過繁殖獲得。'},
 };
 const SP_KEYS=Object.keys(SPECIES);
+// 七彩群判斷（用於同群遞減）
+const DISCUS_TYPES=new Set(['discusblue','discusred','discushybrid']);
 const NAMES=['小花','阿福','泡泡','豆豆','咕嚕','小金','球球','米米','胖胖','波波','皮皮','糖糖','布丁','奶茶','麻糬','湯圓','珍珠','小橘','阿寶','嘟嘟','芝麻','可可','小星','雪球','旺財','圓圓','小雨','毛毛','樂樂','QQ'];
 const STAGES=['幼魚','成魚','大魚'];
 const G1=60,G2=160; // 成長門檻
@@ -157,20 +174,61 @@ const HUNGER_RATE=.55;
 
 // ---------- 狀態 ----------
 let S;
-function freshState(){return{coins:60,fish:[],up:{cap:0,food:0,feeder:0,deco:[]},found:{},last:Date.now(),tut:0,journey:{eaten:0,collected:0,bred:0,claimed:[]}}}
+function freshState(){return{coins:60,fish:[],up:{cap:0,food:0,feeder:0,deco:[]},found:{},last:Date.now(),tut:0,journey:{eaten:0,collected:0,bred:0,claimed:[]},daily:{date:'',produced:0,capToasted:false}}}
 function load(){
-  try{const raw=localStorage.getItem(SAVE_KEY);if(raw){const d=JSON.parse(raw);if(d&&Array.isArray(d.fish))return Object.assign(freshState(),d)}}catch(e){}
+  try{const raw=localStorage.getItem(SAVE_KEY);if(raw){const d=JSON.parse(raw);if(d&&Array.isArray(d.fish)){const s=Object.assign(freshState(),d);if(!s.daily||typeof s.daily.produced!=='number')s.daily={date:'',produced:0,capToasted:false};return s}}}catch(e){}
   return null;
 }
-function save(){S.last=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify({coins:S.coins,fish:S.fish.map(serial),up:S.up,found:S.found,last:S.last,tut:S.tut,journey:S.journey}))}catch(e){}}
-const KEEP=['id','sp','name','hue','size','growth','full','starve','sick','cd','coinT','seed'];
+function save(){S.last=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify({coins:S.coins,fish:S.fish.map(serial),up:S.up,found:S.found,last:S.last,tut:S.tut,journey:S.journey,daily:S.daily}))}catch(e){}}
+const KEEP=['id','sp','name','hue','size','growth','full','starve','sick','cd','coinT','seed','coinOverride','parentSps'];
 function serial(f){const o={};for(const k of KEEP)o[k]=f[k];return o}
 const capacity=()=>6+S.up.cap*3;
 const decoMult=()=>1+S.up.deco.reduce((a,k)=>a+(DECOS[k].bonus||0),0);
 const stage=f=>f.growth>=G2?2:f.growth>=G1?1:0;
 const fishScale=f=>1.8*(0.5+0.5*Math.min(1,f.growth/G2))*f.size;
-const coinValue=f=>Math.max(1,Math.round(SPECIES[f.sp].coin*(stage(f)===2?2:1)*decoMult()));
-function ratePerSec(){let r=0;for(const f of S.fish){const st=stage(f);if(st>0&&!f.sick)r+=coinValue(f)/(st===2?19:28)}return r}
+
+// ── 台北日期（UTC+8）──
+function taipeiDate(){const d=new Date(Date.now()+8*3600*1000);return d.toISOString().slice(0,10)}
+function checkDailyReset(){const t=taipeiDate();if(S.daily.date!==t){S.daily.date=t;S.daily.produced=0;S.daily.capToasted=false}}
+function dailyRemaining(){if(!S)return cfg.coins.dailyCapPerPlayer;checkDailyReset();return cfg.coins.dailyCapPerPlayer-S.daily.produced}
+
+// ── 同群遞減（DR） ──
+// 判斷魚所屬的 DR 群組 key
+function drGroupKey(f){return DISCUS_TYPES.has(f.sp)?'discus':f.sp}
+// 計算該魚在其群組中的平均倍率（次成魚+成魚才計入）
+function drMultForFish(f){
+  if(SPECIES[f.sp].noDR)return 1;
+  const key=drGroupKey(f);
+  const count=S.fish.filter(x=>!SPECIES[x.sp].noDR&&drGroupKey(x)===key&&stage(x)>=1).length;
+  const[t1,t2]=cfg.coins.drThresholds,[r1,r2,r3]=cfg.coins.drRates;
+  if(count<=0)return r1;
+  if(count<=t1)return r1;
+  if(count<=t2)return(t1*r1+(count-t1)*r2)/count;
+  return(t1*r1+(t2-t1)*r2+(count-t2)*r3)/count;
+}
+
+// ── Softcap（全帳號合算費率折扣） ──
+// 計算未折扣的每秒產率（已含 DR，不含 softcap）
+function rawCoinValue(f){
+  const base=(f.coinOverride??SPECIES[f.sp].coin)*(stage(f)===2?2:1)*decoMult();
+  return base*drMultForFish(f);
+}
+function rawRatePerSec(){let r=0;for(const f of S.fish){const st=stage(f);if(st>0&&!f.sick)r+=rawCoinValue(f)/(st===2?19:28)}return r}
+
+// softcap 倍率（快取，每 5 秒更新一次）
+let _scMult=1;
+function computeScMult(){
+  if(!cfg.coins.softcap.enabled)return 1;
+  const rph=rawRatePerSec()*3600,knee=cfg.coins.softcap.kneePerHour;
+  if(rph<=knee||rph<=0)return 1;
+  // 折扣公式：softcappedRPH = knee * (rph/knee)^exp
+  return knee*Math.pow(rph/knee,cfg.coins.softcap.exp)/rph;
+}
+
+// ── 對外暴露的 coinValue / ratePerSec（含全部修正） ──
+// 運算順序：物種幣值 → 成長/裝飾/水質 → DR → softcap（最後每日上限在掉落處截斷）
+function coinValue(f){return Math.max(1,Math.round(rawCoinValue(f)*_scMult))}
+function ratePerSec(){return rawRatePerSec()*_scMult}
 
 function makeFish(sp,o={}){const s=SPECIES[sp];return Object.assign({id:uid(),sp,name:pick(NAMES),hue:(s.hue+rand(-8,8)+360)%360,size:rand(.92,1.08),growth:0,full:75,starve:0,sick:false,cd:0,coinT:rand(8,16),seed:Math.floor(Math.random()*1e5)},o)}
 function addRuntime(f,x,y){f.x=x??rand(60,Math.max(80,W-60));f.y=y??rand(70,Math.max(90,floorY()-40));f.vx=rand(-10,10);f.vy=0;f.dir=Math.random()<.5?1:-1;f.face=f.dir;f.tx=f.x;f.ty=f.y;f.wT=0;f.phase=Math.random()*6;f.puff=0;f.chomp=0;return f}
@@ -200,7 +258,8 @@ let selected=null,hover=null,breedMode=false,breedSel=[];
 
 function dropFood(x,y,n){const lv=FOODS[S.up.food];n=n??lv.cnt;for(let i=0;i<n;i++){if(foods.length>=45)foods.shift();foods.push({x:clamp(x+rand(-14,14)*(n>1),10,W-10),y:Math.max(30,y+rand(-6,6)),vy:rand(18,26),life:25,lv:S.up.food,ph:Math.random()*6})}
   for(let i=0;i<3;i++)parts.push({x,y,vx:rand(-20,20),vy:rand(-30,-5),life:.6,max:.6,type:'ring',r:rand(2,4)})}
-function dropCoin(x,y,v){coins.push({x,y,vy:12,v,t:0,ground:false,fly:0,ph:Math.random()*6})}
+// prod=true 表示生產幣（受每日上限管控）；false 表示非生產幣（購買/補償等）
+function dropCoin(x,y,v,prod){coins.push({x,y,vy:12,v,t:0,ground:false,fly:0,ph:Math.random()*6,prod:!!prod})}
 function collectCoin(c){if(c.fly)return;c.fly=1;c.sx=c.x;c.sy=c.y;c.ft=0}
 function addCoins(v){S.coins+=v;const el=$('#coinChip');el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')}
 
@@ -213,7 +272,12 @@ function updateFish(f,dt){
   f.cd=Math.max(0,f.cd-dt);
   if(stage(f)!==st0)grewUp(f);
   const st=stage(f);
-  if(st>0&&!f.sick){f.coinT-=dt;if(f.coinT<=0){f.coinT=st===2?rand(16,22):rand(24,32);dropCoin(f.x,f.y+6,coinValue(f))}}
+  if(st>0&&!f.sick){f.coinT-=dt;if(f.coinT<=0){f.coinT=st===2?rand(16,22):rand(24,32);
+    // 每日上限檢查：只在還有剩餘額度時才掉落生產幣
+    checkDailyReset();
+    if(S.daily.produced<cfg.coins.dailyCapPerPlayer){dropCoin(f.x,f.y+6,coinValue(f),true)}
+    else if(!S.daily.capToasted){S.daily.capToasted=true;toast('🌅 今日金幣產量已達上限（250,000），明天繼續加油！','gold')}
+  }}
   // 目標
   let speed=s.speed*(f.sick?.45:1)*(.8+.2*f.size),tx,ty,seek=null;
   if(f.full<80&&foods.length){let bd=1e9;for(const fd of foods){const d=Math.hypot(fd.x-f.x,fd.y-f.y);if(d<bd&&d<(f.full<40?2000:320)){bd=d;seek=fd}}}
@@ -250,7 +314,17 @@ function update(dt){
   for(const f of S.fish.slice())updateFish(f,dt);
   for(let i=foods.length-1;i>=0;i--){const fd=foods[i];if(fd.y<floorY()+4){fd.y+=fd.vy*dt;fd.x+=Math.sin(T*2+fd.ph)*8*dt}else{fd.life-=dt;if(fd.life<=0)foods.splice(i,1)}}
   for(let i=coins.length-1;i>=0;i--){const c=coins[i];c.t+=dt;
-    if(c.fly){c.ft+=dt*1.6;const p=Math.min(1,c.ft),e=p*p*(3-2*p);c.x=c.sx+(36-c.sx)*e;c.y=c.sy+(24-c.sy)*e-Math.sin(p*Math.PI)*60;if(p>=1){addCoins(c.v);S.journey.collected+=c.v;coins.splice(i,1)}continue}
+    if(c.fly){c.ft+=dt*1.6;const p=Math.min(1,c.ft),e=p*p*(3-2*p);c.x=c.sx+(36-c.sx)*e;c.y=c.sy+(24-c.sy)*e-Math.sin(p*Math.PI)*60;
+      if(p>=1){
+        if(c.prod){
+          // 生產幣：再做一次每日上限截斷（防止飛行中的幣超過上限）
+          checkDailyReset();
+          const rem=cfg.coins.dailyCapPerPlayer-S.daily.produced;
+          if(rem>0){const a=Math.min(c.v,rem);S.daily.produced+=a;addCoins(a)}
+          if(S.daily.produced>=cfg.coins.dailyCapPerPlayer&&!S.daily.capToasted){S.daily.capToasted=true;toast('🌅 今日金幣產量已達上限（250,000），明天繼續加油！','gold')}
+        }else{addCoins(c.v)}
+        S.journey.collected+=c.v;coins.splice(i,1)
+      }continue}
     if(c.y<floorY()+8){c.y+=c.vy*dt;c.x+=Math.sin(T*1.5+c.ph)*6*dt}else c.ground=true;
     if(c.t>30)collectCoin(c)}
   bubbleT-=dt;if(bubbleT<=0){bubbleT=rand(.12,.3);const bx=W*.1+(S.up.deco.includes('chest')?0:0);bubbles.push({x:bx+rand(-4,4),y:floorY()+4,r:rand(1.5,4.5),vy:rand(35,60),ph:Math.random()*6});
@@ -261,7 +335,7 @@ function update(dt){
   for(let i=floats.length-1;i>=0;i--){const p=floats[i];p.life-=dt;p.y-=25*dt;if(p.life<=0)floats.splice(i,1)}
   // 自動餵食器
   const fv=FEEDER[S.up.feeder].iv;if(fv){feederT+=dt;if(feederT>=fv){feederT=0;const hungry=S.fish.filter(f=>f.full<55).sort((a,b)=>a.full-b.full);if(hungry.length){const t=hungry[0];dropFood(clamp(t.x,20,W-20),46,Math.min(3,1+Math.floor(hungry.length/3)))}}}
-  saveT+=dt;if(saveT>5){saveT=0;save()}
+  saveT+=dt;if(saveT>5){saveT=0;save();_scMult=computeScMult()}
 }
 
 // ---------- 繪製：魚 ----------
@@ -454,10 +528,26 @@ function breed(a,b){
   if(S.fish.length>=capacity()){toast('魚缸滿了！先擴建魚缸或出售魚兒','bad');return}
   const ra=SPECIES[a.sp].r,rb=SPECIES[b.sp].r,maxR=Math.max(ra,rb);
   const mut=.1+maxR*.05+S.up.deco.reduce((s,k)=>s+(DECOS[k].mut||0),0);
-  let sp,hue,mutated=false;
-  if(Math.random()<mut){mutated=true;if(Math.random()<.25+maxR*.12)sp=pick(['koi','dragon','rainbow']);else sp='betta';hue=(SPECIES[sp].hue+rand(-12,12)+360)%360}
-  else{sp=Math.random()<.5?a.sp:b.sp;hue=(mixHue(a.hue,b.hue,rand(.3,.7))+rand(-14,14)+360)%360}
-  const child=makeFish(sp,{hue,size:clamp((a.size+b.size)/2+rand(-.07,.07),.8,1.25),full:85});
+  let sp,hue,mutated=false,coinOverride=undefined,parentSps=undefined;
+  if(Math.random()<mut){
+    mutated=true;
+    if(Math.random()<.25+maxR*.12)sp=pick(['koi','dragon','rainbow']);else sp='betta';
+    hue=(SPECIES[sp].hue+rand(-12,12)+360)%360;
+  } else if(DISCUS_TYPES.has(a.sp)&&DISCUS_TYPES.has(b.sp)){
+    // 七彩 × 七彩 → 七彩混血，幣值繼承公式：min(較高親代, 平均*1.1)
+    sp='discushybrid';
+    const cA=a.coinOverride??SPECIES[a.sp].coin,cB=b.coinOverride??SPECIES[b.sp].coin;
+    coinOverride=Math.min(Math.max(cA,cB),(cA+cB)/2*1.1);
+    hue=(mixHue(a.hue,b.hue,rand(.3,.7))+rand(-14,14)+360)%360;
+    parentSps=[a.sp,b.sp];
+  } else {
+    sp=Math.random()<.5?a.sp:b.sp;
+    hue=(mixHue(a.hue,b.hue,rand(.3,.7))+rand(-14,14)+360)%360;
+  }
+  const extra={};
+  if(coinOverride!==undefined)extra.coinOverride=coinOverride;
+  if(parentSps)extra.parentSps=parentSps;
+  const child=makeFish(sp,{hue,size:clamp((a.size+b.size)/2+rand(-.07,.07),.8,1.25),full:85,...extra});
   addRuntime(child,(a.x+b.x)/2,(a.y+b.y)/2);S.fish.push(child);S.journey.bred++;a.cd=b.cd=BREED_CD;
   for(let i=0;i<16;i++)parts.push({x:child.x,y:child.y,vx:rand(-50,50),vy:rand(-60,0),life:1.4,max:1.4,type:'heart',r:rand(2,4)});
   const isNew=discover(sp);const s=SPECIES[sp];
@@ -492,6 +582,10 @@ function refreshJourney(){
  const pending=coins.filter(c=>!c.fly).reduce((n,c)=>n+c.v,0);$('#pendingTxt').textContent=pending;$('#gatherBtn').disabled=!pending;
  const hungry=S.fish.filter(f=>f.full<30).length;$('#wellness').textContent=hungry?`🍽 ${hungry} 條魚等你開飯`:`♡ ${S.fish.length} 位小夥伴，悠游自在`;
  $('#combo').textContent=T<comboUntil&&comboCount>1?`✦ ${comboCount} 連續餵食${comboCount<5?' · 5 連擊獲得獎勵':' · 繼續餵食累積獎勵'}`:'';
+ // 今日生產上限 chip
+ const rem=dailyRemaining();
+ const dailyEl=$('#dailyTxt');if(dailyEl)dailyEl.textContent=rem<=0?'今日已滿':fmt(rem);
+ const dailyChip=$('#dailyChip');if(dailyChip)dailyChip.style.borderColor=rem<=0?'var(--accent)':'';
 }
 $('#questCard').onclick=e=>{const b=e.target.closest('[data-claim]');if(!b)return;const i=Number(b.dataset.claim),q=QUESTS[i];if(!q||S.journey.claimed.includes(i)||q.value()<q.target)return;S.journey.claimed.push(i);addCoins(q.reward);toast(`✦ ${q.title} 完成！獲得 ${q.reward} 金幣`,'gold');save();refreshUI(true)};
 $('#gatherBtn').onclick=()=>{const available=coins.filter(c=>!c.fly);available.forEach(collectCoin);if(available.length)toast('✦ 金幣正在游向你的口袋！')};
@@ -537,9 +631,29 @@ function confirmModal(title,msg,fn){showModal(`<h2>${title}</h2><p>${msg}</p>`,[
 $('#resetBtn').onclick=()=>confirmModal('重置進度','所有魚兒、金幣、升級與圖鑑都會清除，確定要重新開始嗎？',()=>{localStorage.removeItem(SAVE_KEY);newGame();toast('🔄 已重新開始')});
 
 // ---------- 離線收益 ----------
-function offline(sec){if(sec<60)return;const el=Math.min(sec,OFFLINE_CAP);const earn=Math.floor(ratePerSec()*el*OFFLINE_RATE);if(earn<=0)return;
-  const hh=Math.floor(el/3600),mm=Math.floor(el%3600/60);S.coins+=earn;
-  showModal(`<h2>🌙 歡迎回來！</h2><p>你離開了 ${hh?hh+' 小時 ':''}${mm} 分鐘${sec>OFFLINE_CAP?'（上限 8 小時）':''}</p><p>魚兒們悠游自在，幫你存下了</p><p style="font-size:28px;font-weight:800;color:#ffd166">🪙 ${fmt(earn)}</p>`,[['收下']]);refreshUI(true)}
+function offline(sec){
+  if(sec<60)return;
+  // 更新 softcap 倍率（離線後重算）
+  _scMult=computeScMult();
+  checkDailyReset();
+  const rem=dailyRemaining();
+  const el=Math.min(sec,OFFLINE_CAP);
+  const hh=Math.floor(el/3600),mm=Math.floor(el%3600/60);
+  const timeStr=`${hh?hh+' 小時 ':''}${mm} 分鐘${sec>OFFLINE_CAP?'（上限 8 小時）':''}`;
+  if(rem<=0){
+    showModal(`<h2>🌙 歡迎回來！</h2><p>你離開了 ${timeStr}</p><p>今日金幣產量已達上限，魚兒們在陪你靜靜等待新的一天 🌅</p>`,[['收下']]);
+    refreshUI(true);return;
+  }
+  // 離線收益：softcap 後費率 × 50% 效率，再截斷今日上限
+  const rawEarn=Math.floor(ratePerSec()*el*OFFLINE_RATE);
+  const earn=Math.min(rawEarn,rem);
+  if(earn<=0)return;
+  S.daily.produced+=earn;
+  addCoins(earn);
+  const capNote=rawEarn>rem?`<p style="font-size:12px;color:#ffd166">（今日生產剩餘額度 ${fmt(rem)} 枚，超出部分無法入帳）</p>`:'';
+  showModal(`<h2>🌙 歡迎回來！</h2><p>你離開了 ${timeStr}</p><p>魚兒們悠游自在，幫你存下了</p><p style="font-size:28px;font-weight:800;color:#ffd166">🪙 ${fmt(earn)}</p>${capNote}`,[['收下']]);
+  refreshUI(true);
+}
 let hiddenAt=0;
 document.addEventListener('visibilitychange',()=>{if(document.hidden){hiddenAt=Date.now();save()}else if(hiddenAt){const s=(Date.now()-hiddenAt)/1000;hiddenAt=0;last=performance.now();offline(s)}});
 window.addEventListener('pagehide',save);
@@ -551,13 +665,23 @@ function newGame(){S=freshState();foods=[];coins=[];parts=[];floats=[];comboCoun
   setTimeout(()=>showModal('<h2>🐠 悠游水族箱</h2><p>點擊水中投放飼料，餵飽魚兒讓牠們長大。</p><p>成魚會掉落金幣 🪙，點擊收集或等牠自動入帳。</p><p>用金幣買新魚、升級魚缸，再選兩條成魚 💕 繁殖，收集稀有與傳說魚種吧！</p>',[['開始養魚']]),50)}
 resize();
 const saved=load();
-if(saved){S=saved;S.journey=Object.assign({eaten:0,collected:0,bred:0,claimed:[]},S.journey);S.fish.forEach(f=>{addRuntime(f);f.size=f.size||1});refreshUI(true);offline((Date.now()-(S.last||Date.now()))/1000)}else newGame();
+if(saved){S=saved;S.journey=Object.assign({eaten:0,collected:0,bred:0,claimed:[]},S.journey);S.fish.forEach(f=>{addRuntime(f);f.size=f.size||1});_scMult=computeScMult();refreshUI(true);offline((Date.now()-(S.last||Date.now()))/1000)}else newGame();
 window.addEventListener('resize',resize);
 let last=performance.now(),speed=1;
 function loop(now){const dt=Math.min(.05,(now-last)/1000)*speed;last=now;update(dt);render();uiT+=dt;if(uiT>.25){uiT=0;refreshUI();updateInfo()}requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 // 測試用介面
-window.__aquarium={get state(){return S},get foods(){return foods},get coins(){return coins},step(sec){for(let t=0;t<sec;t+=.05)update(.05);render();refreshUI(true)},dropFood,setSpeed(v){speed=v},breed,SPECIES};
+window.__aquarium={
+  get state(){return S},get foods(){return foods},get coins(){return coins},
+  step(sec){for(let t=0;t<sec;t+=.05)update(.05);render();refreshUI(true)},
+  dropFood,setSpeed(v){speed=v},breed,SPECIES,DISCUS_TYPES,cfg,
+  GAME_BUILD,
+  drMultForFish,rawCoinValue,computeScMult,get scMult(){return _scMult},
+  coinValue,ratePerSec,rawRatePerSec,
+  taipeiDate,checkDailyReset,dailyRemaining,
+  drGroupKey,
+  makeFish,addRuntime,addCoins,stage,G1,G2
+};
 })();
 </script>
 </body>

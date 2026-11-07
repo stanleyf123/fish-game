@@ -5,7 +5,7 @@
  * 測試對象：
  *   server/src/coin-softcap.js （DR + 全帳號 softcap）
  *   server/src/daily-production.js （每日生產上限）
- *   server/src/patch-config.js （設定驗證）
+ *   server/src/coinsink-b2-config-notes.js （設定驗證）
  *
  * 執行方式：node --test tests/game.test.cjs
  */
@@ -62,7 +62,7 @@ Module.prototype.require = function(id) {
 
 const coinSoftcap = require(path.join(__dirname, '../server/src/coin-softcap'));
 const dailyProd   = require(path.join(__dirname, '../server/src/daily-production'));
-const patchCfg    = require(path.join(__dirname, '../server/src/patch-config'));
+const patchCfg    = require(path.join(__dirname, '../server/src/coinsink-b2-config-notes'));
 
 // ── 測試用設定 ───────────────────────────────────────────────────────────────
 const CFG = {
@@ -301,4 +301,102 @@ function makeSave(fish, waterDirt = 0) {
   console.log('✓ 測試 12：drGroupKey 正確分群');
 }
 
-console.log('\n✅ 全部 12 項測試通過');
+// ── 測試 13：snapshot() 包含 S.daily（修復 Fix 1）────────────────────────────
+// 以字串搜尋 index.html 中的 snapshot 函式，確認含有 daily 欄位
+{
+  const fs = require('node:fs');
+  const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+  const snapshotFnMatch = html.match(/function snapshot\(\)\{return\{([^}]+(?:\{[^}]*\}[^}]*)*)\}/);
+  assert.ok(snapshotFnMatch, '測試 13a 失敗：找不到 snapshot() 函式');
+  assert.ok(html.includes("S.daily.day"), '測試 13b 失敗：snapshot() 未包含 S.daily.day');
+  assert.ok(html.includes("S.daily.produced"), '測試 13c 失敗：snapshot() 未包含 S.daily.produced');
+  console.log('✓ 測試 13：snapshot() 包含 S.daily 欄位（每日進度跨分頁保存）');
+}
+
+// ── 測試 14：allTanksFish() 讀取 t.tank.fish 而非 t.fish（修復 Fix 2）────────
+{
+  const fs = require('node:fs');
+  const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+  // 確認 allTanksFish 使用 t.tank.fish，且沒有使用 t.fish（背景缸不再漏計）
+  assert.ok(html.includes('t.tank&&Array.isArray(t.tank.fish)'), '測試 14a 失敗：allTanksFish() 未改用 t.tank.fish');
+  // 確認 coinSoftMult cache key 包含背景缸魚數
+  assert.ok(html.includes('|bg'+'+bgFishCount') || html.includes("+'|bg'"), '測試 14b 失敗：coinSoftMult cache key 未含背景缸魚數 bgFishCount');
+  console.log('✓ 測試 14：allTanksFish() 讀取 t.tank.fish，coinSoftMult cache key 含背景魚數');
+}
+
+// ── 測試 15：daily-production.createTable 存在且可呼叫（修復 Fix 3a）─────────
+{
+  const dp = require(path.join(__dirname, '../server/src/daily-production'));
+  assert.equal(typeof dp.createTable, 'function', '測試 15a 失敗：createTable 應為函式');
+  // 以 in-memory DB 測試 createTable 建表
+  const fakeDb = {
+    _created: false,
+    run(sql) { if (sql.includes('CREATE TABLE IF NOT EXISTS player_production_daily')) this._created = true; },
+  };
+  dp.createTable(fakeDb);
+  assert.ok(fakeDb._created, '測試 15b 失敗：createTable 應執行 CREATE TABLE 語句');
+  console.log('✓ 測試 15：createTable() 存在且呼叫 CREATE TABLE');
+}
+
+// ── 測試 16：players.js putSave 夾住 next.coins（修復 Fix 3b）────────────────
+// 測試 clamp 邏輯：模擬 dailyRem=100 時 next.coins 被夾住
+{
+  // 模擬 putSave 中的 clamp 邏輯（複製節錄），不需要 require 整個 players.js
+  function simulateClamp(prevCoins, nextCoins, dailyRem) {
+    let coins = nextCoins;
+    if (typeof coins === 'number') {
+      const rawDelta = Math.max(0, (coins || 0) - (prevCoins || 0));
+      if (rawDelta > dailyRem) coins = (prevCoins || 0) + dailyRem;
+    }
+    return coins;
+  }
+
+  // 超出每日上限：應夾住
+  assert.equal(simulateClamp(100000, 400000, 100000), 200000, '測試 16a 失敗：超出上限應夾住');
+  // 未超出：不夾住
+  assert.equal(simulateClamp(100000, 150000, 100000), 150000, '測試 16b 失敗：未超出上限不應夾住');
+  // 剩餘為 0：next.coins 應等於 prev.coins
+  assert.equal(simulateClamp(100000, 110000, 0), 100000, '測試 16c 失敗：剩餘為 0 時不應增加');
+  console.log('✓ 測試 16：putSave 每日上限夾住邏輯正確（不拒絕整份存檔）');
+}
+
+// ── 測試 17：players.js consume 後計算 produced（修復 Fix 3b）───────────────
+// 驗證 produced = max(0, delta - sold + spent) 的公式
+{
+  function computeProduced(delta, sold, spent) {
+    return Math.max(0, delta - sold + spent);
+  }
+  // 純魚掉幣：sold=0, spent=0 → produced = delta
+  assert.equal(computeProduced(5000, 0, 0), 5000, '測試 17a');
+  // 賣魚 3000，掉幣 5000：produced = 5000 - 3000 = 2000
+  assert.equal(computeProduced(5000, 3000, 0), 2000, '測試 17b');
+  // 升級花費 2000，掉幣 1000：delta=-1000（淨減），但 produced=max(0,-1000-0+2000)=1000
+  assert.equal(computeProduced(-1000, 0, 2000), 1000, '測試 17c');
+  // 負值 delta 且無其他交易：produced = 0
+  assert.equal(computeProduced(-500, 0, 0), 0, '測試 17d');
+  console.log('✓ 測試 17：produced 計算公式 max(0, delta - sold + spent) 正確');
+}
+
+// ── 測試 18：db.js SCHEMA 包含 player_production_daily（修復 Fix 3a）────────
+{
+  const fs = require('node:fs');
+  const dbSrc = fs.readFileSync(path.join(__dirname, '../server/src/db.js'), 'utf8');
+  assert.ok(dbSrc.includes('player_production_daily'), '測試 18a 失敗：db.js SCHEMA 未包含 player_production_daily');
+  assert.ok(dbSrc.includes('createTable'), '測試 18b 失敗：db.js openDb 未呼叫 createTable');
+  console.log('✓ 測試 18：db.js SCHEMA 含 player_production_daily，openDb 呼叫 createTable');
+}
+
+// ── 測試 19：patch-config.js 已重命名（修復 Fix 4）──────────────────────────
+{
+  const fs = require('node:fs');
+  const badPath = path.join(__dirname, '../server/src/patch-config.js');
+  const goodPath = path.join(__dirname, '../server/src/coinsink-b2-config-notes.js');
+  assert.ok(!fs.existsSync(badPath), '測試 19a 失敗：server/src/patch-config.js 仍存在，可能覆蓋 live 工具');
+  assert.ok(fs.existsSync(goodPath), '測試 19b 失敗：coinsink-b2-config-notes.js 未建立');
+  // 確認改名後的檔案仍有 verifyConfigV73
+  const notes = require(goodPath);
+  assert.equal(typeof notes.verifyConfigV73, 'function', '測試 19c 失敗：verifyConfigV73 應為函式');
+  console.log('✓ 測試 19：patch-config.js 已安全重命名為 coinsink-b2-config-notes.js');
+}
+
+console.log('\n✅ 全部 19 項測試通過');

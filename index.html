@@ -3549,7 +3549,7 @@ const capAt=lv=>CFG.capacity.base+CFG.capacity.upgrades.slice(0,lv).reduce((a,u)
 const KEEP=['id','sp','name','hue','size','growth','full','health','cd','coinT','seed','px','py','dir','stress','finDmg','evoFrom','imm','herb','bt','gift','giftFrom','lineage','caught','breedValue'];/*FRIENDSV2-GIFTFISH 保留禮物標記*/
 function serial(f){if(f.x!=null){f.px=+(f.x/W).toFixed(4);f.py=+(f.y/H).toFixed(4)}const o={};for(const k of KEEP)o[k]=f[k];return o}
 /*BACTERIA-AUTO-NUM-V1 water 只能存數字：舊版寫入的 true/false 轉成 1/0，其他非數字移除*/function waterNum(w){if(w&&typeof w==='object'&&'bacteriaAuto' in w){const v=w.bacteriaAuto;if(typeof v==='boolean')w.bacteriaAuto=v?1:0;else if(v!=null&&!Number.isFinite(v))delete w.bacteriaAuto}return w}
-function snapshot(){return{v:CFG.version,_serverSync:S._serverSync||0,coins:S.coins,_tankId:S._tankId||1,fish:S.fish.map(serial),up:S.up,found:S.found,adult:S.adult||{},capV:S.capV||2,water:waterNum(S.water),items:S.items,leftover:foods.length,last:S.last,tut:S.tut,tapHint:S.tapHint||0,...(S.born>0?{born:S.born}:{})/*SICKTUNE-BORN*/,...(S.nb?{nb:S.nb}:{}),...(S.egg?{egg:S.egg}:{}),pbreed:S.pbreed||{},medT:S.medT||{},...(Array.isArray(S.legacyDeco)&&S.legacyDeco.length?{legacyDeco:S.legacyDeco.slice()}:{}),...(S.cos?{cos:S.cos}:{}),...(S.gear?{plants:S.plants||[],cut:S.cut||{},gcut:(()=>{const g={};for(const k in (S.gcut||{})){const n=Math.min(S.gcut[k]|0,(S.cut||{})[k]||0);if(n>0)g[k]=n}return g})(),gear:S.gear,pfound:S.pfound||{}}:{})}}
+function snapshot(){return{v:CFG.version,_serverSync:S._serverSync||0,coins:S.coins,_tankId:S._tankId||1,fish:S.fish.map(serial),up:S.up,found:S.found,adult:S.adult||{},capV:S.capV||2,water:waterNum(S.water),items:S.items,leftover:foods.length,last:S.last,tut:S.tut,tapHint:S.tapHint||0,...(S.born>0?{born:S.born}:{})/*SICKTUNE-BORN*/,...(S.nb?{nb:S.nb}:{}),...(S.egg?{egg:S.egg}:{}),pbreed:S.pbreed||{},medT:S.medT||{},...(Array.isArray(S.legacyDeco)&&S.legacyDeco.length?{legacyDeco:S.legacyDeco.slice()}:{}),...(S.cos?{cos:S.cos}:{}),...(S.gear?{plants:S.plants||[],cut:S.cut||{},gcut:(()=>{const g={};for(const k in (S.gcut||{})){const n=Math.min(S.gcut[k]|0,(S.cut||{})[k]||0);if(n>0)g[k]=n}return g})(),gear:S.gear,pfound:S.pfound||{}}:{}),...(S.daily?{daily:{day:S.daily.day||'',produced:S.daily.produced|0,capToasted:!!S.daily.capToasted}}:{})}}
 function save(){if(!S)return;S.last=Date.now();writeSave(snapshot())}
 const capacity=()=>CFG.capacity.base+CFG.capacity.upgrades.slice(0,S.up.cap).reduce((a,u)=>a+u.add,0)+(AQ&&S?AQ.extraSpace(S):0);
 const legacyDecoSet=()=>new Set((S.legacyDeco||[]).filter(k=>DECOS[k]));
@@ -3585,9 +3585,10 @@ function drMultForFish(sp,allFish){
   return(th[0]*rt[0]+(th[1]-th[0])*rt[1]+(n-th[1])*rt[2])/n;
 }
 // 取得所有缸（含背景缸）的魚列表（供 DR 和 softcap 合算用）
+// GET /api/tanks 回傳 inactive 缸為 {tank: pick(save), fishCount, ...}，不是 t.fish
 function allTanksFish(){
   const fish=[...(S.fish||[])];
-  try{const tanks=window.MultiTankUI?.tanks;if(tanks)for(const t of tanks)if(!t.active&&Array.isArray(t.fish))fish.push(...t.fish)}catch(e){}
+  try{const tanks=window.MultiTankUI?.tanks;if(tanks)for(const t of tanks)if(!t.active&&t.tank&&Array.isArray(t.tank.fish))fish.push(...t.tank.fish)}catch(e){}
   return fish;
 }
 // 計算背景缸（save 物件）的理論每秒產率（供 softcap 合算）
@@ -3618,8 +3619,9 @@ function coinSoftMult(){
   const sc=CFG.coins?.softcap||{};if(sc.enabled===false||nbOn())return 1;
   const sec=Math.floor(Date.now()/1000);
   const allFish=allTanksFish();
-  // key 包含魚總數；背景缸魚數改變時快取失效
-  const key=allFish.length+'|cap'+(S.up.cap|0)+'|d'+(decoMult()*1e3|0)+'|w'+(waterGrade().coinMultiplier*1e3|0)+'|v'+(VIP.coinBonus*1e3|0);
+  // key 包含總魚數（主缸 + 背景缸）；任何缸魚數異動都會讓快取失效
+  const bgFishCount=allFish.length-(S.fish?.length||0);
+  const key=allFish.length+'|bg'+bgFishCount+'|cap'+(S.up.cap|0)+'|d'+(decoMult()*1e3|0)+'|w'+(waterGrade().coinMultiplier*1e3|0)+'|v'+(VIP.coinBonus*1e3|0);
   if(sec===_csSec&&key===_csKey)return _csM;
   // 主缸費率
   const aqM=AQ?AQ.coinMult(S):1;
